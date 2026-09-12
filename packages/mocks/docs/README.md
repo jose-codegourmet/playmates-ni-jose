@@ -23,7 +23,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 | Entry | Path | Exports |
 |---|---|---|
-| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). Seed and `getPlaymatesRepos` arrive in PNJ-013–PNJ-018. |
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). `getPlaymatesRepos` arrives in PNJ-015–PNJ-018. |
 
 ## Major dependencies
 
@@ -34,7 +34,16 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 ## Basic usage
 
 ```ts
-import type { PlaymatesComponentMeta, Session, SessionDetail } from "@fe-template/mocks";
+import {
+  assertSeedInvariants,
+  createSeedState,
+  type PlaymatesComponentMeta,
+  type Session,
+  type SessionDetail,
+} from "@fe-template/mocks";
+
+const state = createSeedState();
+assertSeedInvariants(state);
 ```
 
 ## How to swap the adapter later
