@@ -43,7 +43,7 @@ const MONTH_SHORT = [
   "Dec",
 ] as const;
 
-const DEFAULT_HASHTAGS = "#PlaymatesNiJose #Badminton";
+export const DEFAULT_FACEBOOK_HASHTAGS = "#PlaymatesNiJose #Badminton";
 
 export type SessionDateInput = Date | string;
 
@@ -248,7 +248,7 @@ export function formatFacebookBody(input: FacebookBodyInput): string {
     blocks.push("", "Notes", notes);
   }
 
-  const hashtags = input.hashtags?.trim() || DEFAULT_HASHTAGS;
+  const hashtags = input.hashtags?.trim() || DEFAULT_FACEBOOK_HASHTAGS;
   blocks.push("", hashtags);
 
   return blocks.join("\n");

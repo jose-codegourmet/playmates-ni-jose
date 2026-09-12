@@ -3,6 +3,7 @@
  * Pure: no Date.now(), I/O, or random IDs.
  */
 
+import { DEFAULT_FACEBOOK_HASHTAGS } from "./naming";
 import type {
   Court,
   Game,
@@ -10,6 +11,7 @@ import type {
   GameTeamPlayer,
   OauthConnection,
   Player,
+  PlaymatesSettings,
   PostDraft,
   Profile,
   ProviderAsset,
@@ -74,6 +76,7 @@ export interface MockState {
   uploadJobs: UploadJob[];
   postDrafts: PostDraft[];
   oauthConnections: OauthConnection[];
+  settings: PlaymatesSettings;
 }
 
 function player(id: string, displayName: string, slug: string, extras?: Partial<Player>): Player {
@@ -490,6 +493,10 @@ export function createSeedState(): MockState {
     uploadJobs: [],
     postDrafts,
     oauthConnections: [],
+    settings: {
+      facebookGroupUrl: "",
+      defaultHashtags: DEFAULT_FACEBOOK_HASHTAGS,
+    },
   };
 }
 
@@ -571,6 +578,10 @@ export function assertSeedInvariants(state: MockState): void {
       if (members.length !== 2) fail(`game ${game.gameNumber} team ${team.teamNo} needs 2 players`);
     }
   }
+
+  if (!state.settings) fail("missing settings bag");
+  if (typeof state.settings.facebookGroupUrl !== "string") fail("settings.facebookGroupUrl");
+  if (typeof state.settings.defaultHashtags !== "string") fail("settings.defaultHashtags");
 
   if (state.players.length < 8) fail("at least 8 players");
   if (state.venues.length < 2) fail("at least 2 venues");

@@ -3,6 +3,7 @@
  * Seed arrays live on `globalThis.__playmatesMock` so Next.js HMR keeps one graph.
  */
 
+import { DEFAULT_FACEBOOK_HASHTAGS } from "./naming";
 import { assertSeedInvariants, createSeedState, type MockState } from "./seed";
 
 type PlaymatesGlobal = typeof globalThis & {
@@ -27,9 +28,19 @@ function ensureState(): MockState {
   return globalRef.__playmatesMock;
 }
 
+function ensureSettings(state: MockState): MockState {
+  if (!state.settings) {
+    state.settings = {
+      facebookGroupUrl: "",
+      defaultHashtags: DEFAULT_FACEBOOK_HASHTAGS,
+    };
+  }
+  return state;
+}
+
 /** Current singleton. Mutate in place; do not replace the object except via `resetState`. */
 export function getState(): MockState {
-  return ensureState();
+  return ensureSettings(ensureState());
 }
 
 /** Replace the singleton with a fresh seed (21 Sep-9 recordings). */
