@@ -1,0 +1,47 @@
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  VERIFIED
+  DEACTIVATED
+  MOCK
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String?
+  avatarUrl String?
+  role      Role       @default(USER)
+  status    UserStatus @default(PENDING)
+  bio       String?
+  pets      Pet[]
+  posts     Post[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
+
+/// Application row for a Supabase Auth user. `id` must equal `auth.users.id`.
+/// The cross-schema FK is applied in `20260727060109_add_profiles_table`
+/// (not expressible in Prisma). That migration requires Supabase `auth.users`
+/// and is not edited after apply, so hosted checksums stay valid. Plain
+/// Postgres is unsupported — use hosted Supabase or `supabase start` locally.
+model Profile {
+  id        String     @id @db.Uuid // Supabase auth.users UUID
+  email     String     @unique
+  name      String?
+  avatarUrl String?
+  role      Role       @default(USER)
+  status    UserStatus @default(PENDING)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
