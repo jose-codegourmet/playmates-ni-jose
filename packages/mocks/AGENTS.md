@@ -20,7 +20,7 @@ This package is **mock data and types only**. Do not add filesystem, network, Pr
 
 | Entry | Path | What it provides |
 |---|---|---|
-| `.` | `src/index.ts` | Barrel. Re-exports `PlaymatesComponentMeta`, domain types, seed helpers, and repository interfaces (`PlaymatesRepos`, `ImportFileMeta`, per-entity repos). |
+| `.` | `src/index.ts` | Barrel. Re-exports `PlaymatesComponentMeta`, domain types, seed helpers, repository interfaces (`PlaymatesRepos`, `ImportFileMeta`, per-entity repos), and naming generators (`src/naming.ts`, PNJ-016). |
 
 ---
 

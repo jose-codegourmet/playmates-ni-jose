@@ -23,7 +23,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 | Entry | Path | Exports |
 |---|---|---|
-| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). `getPlaymatesRepos` arrives in PNJ-015–PNJ-018. |
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016). `getPlaymatesRepos` arrives in PNJ-015–PNJ-018. |
 
 ## Major dependencies
 
