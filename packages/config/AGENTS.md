@@ -1,12 +1,12 @@
 # Agent Instructions — `packages/config`
 
-Local agent instructions for the shared config package placeholder.
+Local agent instructions for the shared config package. Read `/AGENTS.md` first, then this file.
 
 ---
 
 ## Scope
 
-`packages/config` (`@fe-template/config`) is currently a placeholder. It contains only a `package.json` with no exports, no source code, no dependencies, and no consumers.
+`packages/config` (`@fe-template/config`) holds shared TypeScript types that are not mock data and are not UI primitives. The first export is `PlaymatesComponentMeta` (Track A catalogue descriptors; see `ROADMAP/02-metadata.md`).
 
 - **Workspace name**: `@fe-template/config`
 - **Filter**: `pnpm --filter @fe-template/config`
@@ -14,34 +14,40 @@ Local agent instructions for the shared config package placeholder.
 
 ---
 
-## Current state
+## Public entry points
 
-```json
-{
-  "name": "@fe-template/config",
-  "version": "0.0.1",
-  "private": true
-}
-```
+| Entry | Path | What it provides |
+|---|---|---|
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` |
 
-There are no scripts, no entry points, and no published artifacts.
+`package.json` also sets `main` and `types` to `./src/index.ts`.
+
+---
+
+## Consumers
+
+- `@fe-template/mocks` re-exports `PlaymatesComponentMeta`.
+- Apps should import the type from `@fe-template/config` (preferred) or `@fe-template/mocks`.
+
+---
+
+## Validation commands
+
+| Concern | Command |
+|---|---|
+| Type check | `pnpm --filter @fe-template/config typecheck` |
+| Biome (repo-wide) | `pnpm lint` |
 
 ---
 
 ## Restrictions
 
-- Do not add dependencies or source code here without a documented plan.
-- Do not add exports that are not intended to be shared by multiple apps or packages.
-- If you need to add shared config (e.g., a Biome config, shared ESLint config, or TypeScript base config), first update this package's `README.md` and `docs/README.md`, then update `docs/architecture.md` and `docs/dependency-guidelines.md` to reflect the new consumers.
-
----
-
-## Common task routing
-
-If a task requires shared config that would naturally live here, read `docs/dependency-guidelines.md` first, then create a plan and update the relevant docs before adding code.
+- Keep this package types-only unless a later ticket adds shared config files.
+- Do not import `@fe-template/mocks` or `@fe-template/db` here.
+- Do not add I/O, React, or Next.js runtime code.
 
 ---
 
 ## Documentation maintenance
 
-Update this file when `packages/config` gains real exports, consumers, or scripts.
+Update this file and `docs/architecture.md` / `docs/dependency-guidelines.md` when exports or consumers change.

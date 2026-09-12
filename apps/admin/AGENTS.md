@@ -35,6 +35,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 
 - `@fe-template/ui` — all shared UI primitives (Button, DataTable, Dialog, Form, FileUploader, etc.).
 - `@fe-template/db` — Prisma client, used in Server Components, Server Actions, and API routes.
+- `@fe-template/mocks` — prototype Playmates data layer (Phase 1; no Prisma).
 
 ---
 

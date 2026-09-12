@@ -50,6 +50,9 @@ packages/db/                ← @fe-template/db — Prisma client
 ├── prisma/schema/*.prisma  ← split schema (user, pet, post, marketing)
 ├── prisma/seed.ts
 └── src/client.ts           ← prisma singleton
+
+packages/mocks/             ← @fe-template/mocks — Playmates in-memory layer
+packages/config/            ← @fe-template/config — PlaymatesComponentMeta
 ```
 
 Reference docs:

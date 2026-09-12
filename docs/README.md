@@ -123,7 +123,8 @@ Full product file list: [`FILE_INDEX.md`](FILE_INDEX.md).
 | `apps/admin` | `apps/admin/docs/README.md` | `apps/admin/AGENTS.md` |
 | `packages/ui` | `packages/ui/docs/README.md` | `packages/ui/AGENTS.md` |
 | `packages/db` | `packages/db/docs/README.md` | `packages/db/AGENTS.md` |
-| `packages/config` | (placeholder) | `packages/config/AGENTS.md` |
+| `packages/mocks` | `packages/mocks/docs/README.md` | `packages/mocks/AGENTS.md` |
+| `packages/config` | `packages/config/docs/README.md` | `packages/config/AGENTS.md` |
 
 ## Root documentation (monorepo)
 

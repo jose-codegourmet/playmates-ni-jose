@@ -36,6 +36,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 - `@fe-template/ui` — shared UI primitives (Button, Card, ScrollReveal, etc.).
 - `@fe-template/db` — Prisma client used only in API routes (`src/app/api/*`).
+- `@fe-template/mocks` — prototype Playmates data layer (Phase 1; no Prisma).
 
 ---
 

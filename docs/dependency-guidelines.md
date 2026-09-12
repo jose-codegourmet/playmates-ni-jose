@@ -53,10 +53,11 @@ Apps import packages by their workspace name:
 
 ```json
 "@fe-template/ui": "workspace:*",
-"@fe-template/db": "workspace:*"
+"@fe-template/db": "workspace:*",
+"@fe-template/mocks": "workspace:*"
 ```
 
-No app currently imports `@fe-template/config`. Do not add the dependency unless it has real exports to consume.
+`@fe-template/config` exports `PlaymatesComponentMeta`. Apps usually import it via `@fe-template/mocks`. Add a direct `@fe-template/config` workspace dep only when an app imports that package.
 
 ---
 
