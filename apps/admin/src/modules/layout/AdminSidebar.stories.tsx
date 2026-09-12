@@ -23,7 +23,7 @@ const meta: Meta<typeof AdminSidebar> = {
     nextjs: {
       appDirectory: true,
       navigation: {
-        pathname: "/users",
+        pathname: "/dashboard",
       },
     },
   },
@@ -47,14 +47,25 @@ const meta: Meta<typeof AdminSidebar> = {
 export default meta;
 type Story = StoryObj<typeof AdminSidebar>;
 
-export const UsersActive: Story = {};
+export const DashboardActive: Story = {};
 
-export const DashboardActive: Story = {
+export const SessionsActive: Story = {
   parameters: {
     nextjs: {
       appDirectory: true,
       navigation: {
-        pathname: "/dashboard",
+        pathname: "/sessions",
+      },
+    },
+  },
+};
+
+export const SettingsActive: Story = {
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        pathname: "/settings/google",
       },
     },
   },
