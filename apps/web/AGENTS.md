@@ -52,6 +52,8 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 | `/players/[playerSlug]` | `src/app/players/[playerSlug]/page.tsx` | Public player detail (PNJ-048) |
 | `/venues` | `src/app/venues/page.tsx` | Public venues index (PNJ-049) |
 | `/venues/[venueSlug]` | `src/app/venues/[venueSlug]/page.tsx` | Public venue detail (PNJ-050) |
+| `/sitemap.xml` | `src/app/sitemap.ts` | Public sitemap (PNJ-051); public slugs only |
+| `/robots.txt` | `src/app/robots.ts` | Crawl rules (`allow: /`) |
 | `not-found` | `src/app/not-found.tsx` | Branded 404 (`NotFoundHeroSection`) |
 
 ---
