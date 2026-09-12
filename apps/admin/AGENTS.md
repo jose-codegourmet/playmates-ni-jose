@@ -6,7 +6,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 
 ## Scope
 
-`apps/admin` is the internal admin portal. It manages users, pets, blog posts, pricing plans, testimonials, and contacts stored in the shared Prisma database. It uses Supabase Auth for authentication.
+`apps/admin` is the internal admin portal. PawPair CRUD pages were removed in PNJ-005; the dashboard is a Playmates stub until later phases. It uses Supabase Auth for authentication.
 
 - **Port**: 9001
 - **Filter**: `pnpm --filter admin`
@@ -22,7 +22,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `src/app/(dashboard)/` | Dashboard shell and all protected pages |
 | `src/app/login/`, `src/app/signup/`, `src/app/otp/`, `src/app/auth/callback/` | Public auth routes |
 | `src/app/api/images/route.ts` | Image upload endpoint for Supabase Storage |
-| `src/hooks/` | TanStack Query data hooks in `use-<name>/` folders (`use-users`, `use-pets`, `use-posts`, `use-contacts`, `use-testimonials`, `use-pricing-plans`, `use-current-user`). Viewport utility `use-mobile.ts` stays a single file. |
+| `src/hooks/` | TanStack Query data hook `use-current-user`. Viewport utility `use-mobile.ts` stays a single file. |
 | `src/lib/supabase/` | Browser, server, and service-role Supabase clients |
 | `src/modules/auth/` | Login, signup, and OTP forms |
 | `src/modules/layout/` | AdminSidebar, AdminHeader, sidebar components |
@@ -47,16 +47,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `/signup` | `src/app/signup/page.tsx` | Sign up |
 | `/otp` | `src/app/otp/page.tsx` | OTP confirmation |
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation (PKCE code exchange) |
-| `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Dashboard with stats and charts |
-| `/users` | `src/app/(dashboard)/users/page.tsx` | User list |
-| `/users/[id]` | `src/app/(dashboard)/users/[id]/page.tsx` | User detail |
-| `/pets` | `src/app/(dashboard)/pets/page.tsx` | Pet list |
-| `/posts` | `src/app/(dashboard)/posts/page.tsx` | Blog post list |
-| `/posts/new` | `src/app/(dashboard)/posts/new/page.tsx` | Create post |
-| `/posts/[id]` | `src/app/(dashboard)/posts/[id]/page.tsx` | Edit post |
-| `/testimonials` | `src/app/(dashboard)/testimonials/page.tsx` | Testimonial moderation |
-| `/contacts` | `src/app/(dashboard)/contacts/page.tsx` | Contact inbox |
-| `/pricing-plans` | `src/app/(dashboard)/pricing-plans/page.tsx` | Pricing plan CRUD |
+| `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates admin stub |
 | `/profile` | `src/app/(dashboard)/profile/page.tsx` | Admin profile |
 | `/api/images` | `src/app/api/images/route.ts` | Upload image to Supabase Storage |
 
@@ -78,7 +69,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 ## Restrictions and boundaries
 
 - All routes under `(dashboard)` are protected by `middleware.ts` by session presence only. Unauthenticated `/api/*` requests are not redirected to `/login`; the route handler returns JSON. A TODO in `middleware.ts` notes that `User.role === ADMIN` enforcement is not yet wired.
-- `(dashboard)/layout.tsx` is a client component (pathname → header title). Dashboard widgets `community-growth-chart.tsx` and `recent-activity.tsx` live at the route-group root. There are two 404 files (`app/not-found.tsx` and `(dashboard)/not-found.tsx`) plus `loading.tsx` / `error.tsx` at the app root and `(dashboard)` group. See `apps/admin/docs/architecture.md`.
+- `(dashboard)/layout.tsx` is a client component (pathname → header title). There are two 404 files (`app/not-found.tsx` and `(dashboard)/not-found.tsx`) plus `loading.tsx` / `error.tsx` at the app root and `(dashboard)` group. See `apps/admin/docs/architecture.md`.
 - `@fe-template/db` and `src/lib/supabase/admin.ts` are server-only. Never import them from client components.
 - Forms use `react-hook-form` + `zod` + `@hookform/resolvers`. Follow the existing `.schema.ts` and `.defaults.ts` pattern in auth modules.
 - Shared UI wiring must remain in place: `transpilePackages` in `next.config.ts` and the `@source` directive in `globals.css`.

@@ -30,6 +30,11 @@ export async function updateProfile(data: ProfileFormValues): Promise<ActionResu
     return { success: false, error: "You must be signed in to update your profile." };
   }
 
+  // TODO(PNJ-007): full MOCK_AUTH bypass — skip Prisma User writes in prototype mode.
+  if (process.env.MOCK_AUTH === "true") {
+    return { success: true, message: "Profile updated." };
+  }
+
   try {
     await prisma.user.update({
       where: { email: user.email },
