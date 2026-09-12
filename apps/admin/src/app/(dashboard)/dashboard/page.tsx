@@ -1,7 +1,8 @@
-export default function DashboardPage() {
-  return (
-    <div className="space-y-4">
-      <h1 className="font-display text-3xl tracking-tight md:text-4xl">Playmates admin</h1>
-    </div>
-  );
+import { DashboardWidgets } from "@/modules/playmates/dashboard/dashboard-widgets/DashboardWidgets";
+import { getDashboardData } from "@/modules/playmates/dashboard/get-dashboard-data";
+
+export default async function DashboardPage() {
+  const data = await getDashboardData();
+
+  return <DashboardWidgets {...data} />;
 }

@@ -26,6 +26,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `src/lib/supabase/` | Browser, server, and service-role Supabase clients |
 | `src/modules/auth/` | Login, signup, and OTP forms |
 | `src/modules/layout/` | AdminSidebar, AdminHeader, sidebar components |
+| `src/modules/playmates/dashboard/` | Dashboard widgets (latest sessions, uploads, Facebook, quick create) |
 | `src/modules/providers/` | Query client, theme, toaster providers |
 | `email-templates/` | Supabase Auth email HTML templates (copied to dashboard) |
 
@@ -48,7 +49,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `/signup` | `src/app/signup/page.tsx` | Sign up |
 | `/otp` | `src/app/otp/page.tsx` | OTP confirmation |
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation (PKCE code exchange) |
-| `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates admin stub |
+| `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets (mock repos) |
 | `/profile` | `src/app/(dashboard)/profile/page.tsx` | Admin profile |
 | `/api/images` | `src/app/api/images/route.ts` | Upload image to Supabase Storage |
 
