@@ -6,3 +6,6 @@ export const NAV_LINKS = [
   { label: "Players", href: ROUTES.players },
   { label: "Venues", href: ROUTES.venues },
 ] as const;
+
+export type NavLink = (typeof NAV_LINKS)[number];
+export type NavHref = NavLink["href"];

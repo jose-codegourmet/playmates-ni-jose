@@ -46,3 +46,17 @@ export const PAGE_SEO = {
     description: "This page is not in the Playmates archive.",
   },
 } as const;
+
+export type DefaultSeo = typeof DEFAULT_SEO;
+export type PageSeo = typeof PAGE_SEO;
+export type PageSeoKey = keyof PageSeo;
+export type StaticPageSeoKey = {
+  [K in PageSeoKey]: "title" extends keyof PageSeo[K] ? K : never;
+}[PageSeoKey];
+export type TemplatedPageSeoKey = {
+  [K in PageSeoKey]: "titleTemplate" extends keyof PageSeo[K] ? K : never;
+}[PageSeoKey];
+
+export function formatPageTitle(key: TemplatedPageSeoKey, name: string): string {
+  return PAGE_SEO[key].titleTemplate.replace("%s", name);
+}
