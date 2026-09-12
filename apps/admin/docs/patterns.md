@@ -8,6 +8,21 @@ Concrete patterns found in the admin portal. Imitate these files when adding new
 
 A typical dashboard entity lives under `src/app/(dashboard)/[entity]/` as a Server Component page plus route-colocated actions and client UI.
 
+Playmates players (PNJ-055) follow this layout with mock repos instead of Prisma:
+
+```text
+src/app/(dashboard)/players/
+  ├── page.tsx
+  ├── actions.ts
+  ├── players-table/PlayersTable.tsx
+  └── players-dialog/
+      ├── PlayersDialog.tsx
+      └── player-form/
+          ├── PlayerForm.tsx
+          ├── PlayerForm.schema.ts
+          └── PlayerForm.defaults.ts
+```
+
 Refactored create/edit flows use a nested folder with a PascalCase component, plus colocated `*.schema.ts` and `*.defaults.ts`. List and table clients follow the same kebab-folder + PascalCase file convention.
 
 ```text

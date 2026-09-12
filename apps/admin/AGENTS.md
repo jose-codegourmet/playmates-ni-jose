@@ -50,6 +50,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `/otp` | `src/app/otp/page.tsx` | OTP confirmation |
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation (PKCE code exchange) |
 | `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets (mock repos) |
+| `/players` | `src/app/(dashboard)/players/page.tsx` | Players list, create/edit dialog, archive |
 | `/profile` | `src/app/(dashboard)/profile/page.tsx` | Admin profile |
 | `/api/images` | `src/app/api/images/route.ts` | Upload image to Supabase Storage |
 
