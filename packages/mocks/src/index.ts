@@ -1,5 +1,23 @@
 export type { PlaymatesComponentMeta } from "@fe-template/config";
 export type {
+  DriveFilenameInput,
+  FacebookBodyInput,
+  RecordingNameInput,
+  SessionDateInput,
+  YoutubeTitleInput,
+} from "./naming";
+export {
+  formatDriveFilename,
+  formatFacebookBody,
+  formatGameSlug,
+  formatMatchup,
+  formatRecordingDisplayName,
+  formatSessionDisplayDate,
+  formatSessionFolderName,
+  formatYoutubeTitle,
+  slugify,
+} from "./naming";
+export type {
   GameRepository,
   ImportFileMeta,
   PlayerRepository,
