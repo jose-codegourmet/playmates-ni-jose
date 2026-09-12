@@ -106,6 +106,41 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: var(--color-brand-coral);
+
+  /* JabKit token bridge
+     JabKit blocks read --jk-* (and sometimes var(--jk-*) in shadows).
+     Alias them to the existing Tailwind 4 / shadcn semantic tokens so
+     a future CLI-installed Button stays in sync with light/dark + next-themes.
+     Do not hardcode hex here or in components. */
+  --jk-background: var(--background);
+  --jk-foreground: var(--foreground);
+  --jk-card: var(--card);
+  --jk-card-foreground: var(--card-foreground);
+  --jk-popover: var(--popover);
+  --jk-popover-foreground: var(--popover-foreground);
+  --jk-primary: var(--primary);
+  --jk-primary-foreground: var(--primary-foreground);
+  --jk-secondary: var(--secondary);
+  --jk-secondary-foreground: var(--secondary-foreground);
+  --jk-accent: var(--accent);
+  --jk-accent-foreground: var(--accent-foreground);
+  --jk-muted: var(--muted);
+  --jk-muted-foreground: var(--muted-foreground);
+  --jk-destructive: var(--destructive);
+  --jk-destructive-foreground: var(--primary-foreground);
+  --jk-success: var(--color-brand-mint);
+  --jk-success-foreground: var(--color-brand-deep-ink);
+  --jk-warning: var(--color-brand-yellow);
+  --jk-warning-foreground: var(--color-brand-deep-ink);
+  --jk-border: var(--border);
+  --jk-input: var(--input);
+  --jk-ring: var(--ring);
+  --jk-chart-1: var(--chart-1);
+  --jk-chart-2: var(--chart-2);
+  --jk-chart-3: var(--chart-3);
+  --jk-chart-4: var(--chart-4);
+  --jk-chart-5: var(--chart-5);
+  --jk-radius: var(--radius);
 }
 
 .dark {
@@ -140,6 +175,41 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: var(--color-brand-coral);
+}
+
+/* JabKit token bridge — sits next to the existing .dark block; does not replace it.
+   Class dark mode + next-themes remain the source of truth. These aliases
+   re-resolve to the semantic tokens defined above. */
+.dark {
+  --jk-background: var(--background);
+  --jk-foreground: var(--foreground);
+  --jk-card: var(--card);
+  --jk-card-foreground: var(--card-foreground);
+  --jk-popover: var(--popover);
+  --jk-popover-foreground: var(--popover-foreground);
+  --jk-primary: var(--primary);
+  --jk-primary-foreground: var(--primary-foreground);
+  --jk-secondary: var(--secondary);
+  --jk-secondary-foreground: var(--secondary-foreground);
+  --jk-accent: var(--accent);
+  --jk-accent-foreground: var(--accent-foreground);
+  --jk-muted: var(--muted);
+  --jk-muted-foreground: var(--muted-foreground);
+  --jk-destructive: var(--destructive);
+  --jk-destructive-foreground: var(--primary-foreground);
+  --jk-success: var(--color-brand-mint);
+  --jk-success-foreground: var(--color-brand-deep-ink);
+  --jk-warning: var(--color-brand-yellow);
+  --jk-warning-foreground: var(--color-brand-deep-ink);
+  --jk-border: var(--border);
+  --jk-input: var(--input);
+  --jk-ring: var(--ring);
+  --jk-chart-1: var(--chart-1);
+  --jk-chart-2: var(--chart-2);
+  --jk-chart-3: var(--chart-3);
+  --jk-chart-4: var(--chart-4);
+  --jk-chart-5: var(--chart-5);
+  --jk-radius: var(--radius);
 }
 
 @layer base {

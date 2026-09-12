@@ -110,6 +110,12 @@ import Link from "next/link";
 
 - Uses `next-themes` directly via `Providers.tsx` (no Redux).
 
+### JabKit token bridge (`--jk-*`)
+
+JabKit blocks use `--jk-*` custom properties (see `packages/tokens/tokens.css` in [jabkit](https://github.com/jose-codegourmet/jabkit)). We do **not** import `@jabkit/tokens` and we do **not** overwrite `@theme` mappings used by `@fe-template/ui`.
+
+`apps/web/src/app/globals.css` aliases `--jk-*` to the existing semantic tokens (`--background`, `--foreground`, `--primary`, …) via `var()`. A dedicated `.dark` block sits next to the existing class dark-mode block so next-themes contrast stays readable. Bridge in CSS only — no hardcoded hex in components.
+
 ---
 
 ## Animation rules
