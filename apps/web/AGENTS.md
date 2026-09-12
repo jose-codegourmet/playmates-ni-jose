@@ -50,6 +50,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 | `/games/[gameSlug]` | `src/app/games/[gameSlug]/page.tsx` | Public game detail (PNJ-046) |
 | `/players` | `src/app/players/page.tsx` | Public players index (PNJ-047) |
 | `/players/[playerSlug]` | `src/app/players/[playerSlug]/page.tsx` | Public player detail (PNJ-048) |
+| `/venues` | `src/app/venues/page.tsx` | Public venues index (PNJ-049) |
 | `not-found` | `src/app/not-found.tsx` | Branded 404 (`NotFoundHeroSection`) |
 
 ---
