@@ -118,3 +118,5 @@ Installed names (CLI output only; do not hand-edit):
 | `label` | atom (registryDependency of `footer-section`) | PNJ-020 |
 
 `hero-section-5` and `tubelight-navbar` were not installed.
+
+The CLI rewrites `@/lib/cn` to `@/components/jabkit/lib/cn` but leaves `@/atoms/<name>` imports as-is. `tsconfig.json` maps `@/atoms/*` → `./src/components/jabkit/*` so those registryDependencies resolve without editing installed source.
