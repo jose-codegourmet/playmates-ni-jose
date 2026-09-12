@@ -96,3 +96,25 @@ Update this file and `apps/web/docs/` when:
 ## UI components (JabKit)
 
 This project uses JabKit. Search its MCP catalogue before hand-writing a reusable UI component. Installed files live in `src/components/jabkit/`; use semantic token classes, never hardcoded colors.
+
+Installed names (CLI output only; do not hand-edit):
+
+| Name | Kind | Ticket |
+|---|---|---|
+| `button` | atom | PNJ-019 |
+| `badge` | atom | PNJ-019 |
+| `skeleton` | atom | PNJ-019 |
+| `separator` | atom | PNJ-019 |
+| `avatar` | atom | PNJ-019 |
+| `hero228` | marketing | PNJ-020 |
+| `gallery31` | marketing | PNJ-020 |
+| `projects16` | marketing | PNJ-020 |
+| `team17` | marketing | PNJ-020 |
+| `count-up` | marketing | PNJ-020 |
+| `split-text` | marketing | PNJ-020 |
+| `spotlight-card` | marketing | PNJ-020 |
+| `footer-section` | marketing | PNJ-020 |
+| `input` | atom (registryDependency of `footer-section`) | PNJ-020 |
+| `label` | atom (registryDependency of `footer-section`) | PNJ-020 |
+
+`hero-section-5` and `tubelight-navbar` were not installed.
