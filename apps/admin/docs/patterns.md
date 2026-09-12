@@ -8,7 +8,7 @@ Concrete patterns found in the admin portal. Imitate these files when adding new
 
 A typical dashboard entity lives under `src/app/(dashboard)/[entity]/` as a Server Component page plus route-colocated actions and client UI.
 
-Playmates players (PNJ-055) follow this layout with mock repos instead of Prisma:
+Playmates players (PNJ-055) and venues (PNJ-056) follow this layout with mock repos instead of Prisma:
 
 ```text
 src/app/(dashboard)/players/
@@ -21,6 +21,18 @@ src/app/(dashboard)/players/
           ├── PlayerForm.tsx
           ├── PlayerForm.schema.ts
           └── PlayerForm.defaults.ts
+
+src/app/(dashboard)/venues/
+  ├── page.tsx
+  ├── actions.ts
+  ├── venues-table/VenuesTable.tsx
+  ├── venues-dialog/
+  │   ├── VenuesDialog.tsx
+  │   └── venue-form/
+  └── [id]/
+      ├── page.tsx
+      ├── add-court-form/
+      └── venue-courts/
 ```
 
 Refactored create/edit flows use a nested folder with a PascalCase component, plus colocated `*.schema.ts` and `*.defaults.ts`. List and table clients follow the same kebab-folder + PascalCase file convention.

@@ -38,14 +38,15 @@ export type PlayerRepository = {
 };
 
 export type VenueRepository = {
-  list(): Promise<Venue[]>;
+  list(opts?: { includeArchived?: boolean }): Promise<Venue[]>;
   getById(id: string): Promise<Venue | null>;
   getBySlug(slug: string): Promise<Venue | null>;
   create(input: { name: string; address?: string; notes?: string }): Promise<Venue>;
   update(id: string, patch: Partial<Venue>): Promise<Venue>;
   archive(id: string): Promise<Venue>;
-  listCourts(venueId: string): Promise<Court[]>;
+  listCourts(venueId: string, opts?: { includeArchived?: boolean }): Promise<Court[]>;
   addCourt(venueId: string, input: { name: string }): Promise<Court>;
+  archiveCourt(courtId: string): Promise<Court>;
 };
 
 export type SessionRepository = {

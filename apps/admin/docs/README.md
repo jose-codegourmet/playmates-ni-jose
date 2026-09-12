@@ -52,6 +52,8 @@ Purpose, routes, features, and commands for the admin portal.
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation callback |
 | `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets |
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players CRUD (mock repos) |
+| `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues CRUD (mock repos) |
+| `/venues/[id]` | `src/app/(dashboard)/venues/[id]/page.tsx` | Venue courts (add / archive) |
 | `/users` | `src/app/(dashboard)/users/page.tsx` | User list |
 | `/users/[id]` | `src/app/(dashboard)/users/[id]/page.tsx` | User detail |
 | `/pets` | `src/app/(dashboard)/pets/page.tsx` | Pet list |

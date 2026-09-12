@@ -19,6 +19,7 @@ const TITLES: Record<string, string> = {
 function resolveTitle(pathname: string) {
   if (TITLES[pathname]) return TITLES[pathname];
   if (pathname.startsWith("/sessions/")) return "Session workspace";
+  if (pathname.startsWith("/venues/")) return "Venue";
   return "Admin";
 }
 

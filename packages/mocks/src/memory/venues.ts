@@ -5,8 +5,10 @@ import type { Court, Venue } from "../types";
 
 export function createVenueRepository(): VenueRepository {
   return {
-    async list() {
-      return getState().venues.filter((venue) => !venue.isArchived);
+    async list(opts) {
+      const venues = getState().venues;
+      if (opts?.includeArchived) return [...venues];
+      return venues.filter((venue) => !venue.isArchived);
     },
 
     async getById(id) {
@@ -65,9 +67,12 @@ export function createVenueRepository(): VenueRepository {
       return venue;
     },
 
-    async listCourts(venueId) {
+    async listCourts(venueId, opts) {
       return getState()
-        .courts.filter((court) => court.venueId === venueId && !court.isArchived)
+        .courts.filter(
+          (court) =>
+            court.venueId === venueId && (opts?.includeArchived ? true : !court.isArchived),
+        )
         .sort((a, b) => a.sortOrder - b.sortOrder);
     },
 
@@ -89,6 +94,17 @@ export function createVenueRepository(): VenueRepository {
         isArchived: false,
       };
       state.courts.push(court);
+      return court;
+    },
+
+    async archiveCourt(courtId) {
+      const state = getState();
+      const court = requireEntity(
+        state.courts.find((row) => row.id === courtId),
+        "Court",
+        courtId,
+      );
+      court.isArchived = true;
       return court;
     },
   };
