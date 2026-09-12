@@ -84,7 +84,7 @@ Before coding:
    - [`05-integrations/google-drive.md`](05-integrations/google-drive.md)
    - [`05-integrations/youtube.md`](05-integrations/youtube.md)
    - [`06-ui/information-architecture.md`](06-ui/information-architecture.md)
-4. For UI primitives in this scaffold, reuse `@fe-template/ui` (shadcn/Base UI). [`10-decisions/ADR-006-jabkit-first.md`](10-decisions/ADR-006-jabkit-first.md) is a recorded conflict: **do not introduce Jabkit until that ADR is revised**.
+4. For UI primitives, follow the hybrid rule in the amended [`10-decisions/ADR-006-jabkit-first.md`](10-decisions/ADR-006-jabkit-first.md): JabKit for public-site visual/marketing blocks (`@jabkit/cli` → `apps/web/src/components/jabkit`); `@fe-template/ui` for admin and all form/table primitives; domain widgets stay app-local. Operational detail: [`ROADMAP/00-conventions.md`](../ROADMAP/00-conventions.md).
 5. Do not replace established monorepo conventions without a documented reason.
 6. Create a plan before implementing a large feature.
 

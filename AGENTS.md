@@ -14,7 +14,7 @@ The stack is a **pnpm workspaces + Turborepo** monorepo that pairs a public site
 
 - Product docs describe Playmates; running apps still render PawPair.
 - [`docs/03-data/`](docs/03-data/) is the intended Playmates schema; `packages/db` still has the template PawPair Prisma models.
-- [`docs/10-decisions/ADR-006-jabkit-first.md`](docs/10-decisions/ADR-006-jabkit-first.md) says Jabkit-first. **For this scaffold, implementation wins: use `@fe-template/ui`. Do not introduce Jabkit.**
+- [`docs/10-decisions/ADR-006-jabkit-first.md`](docs/10-decisions/ADR-006-jabkit-first.md) is **Amended** (2026-09-12) to a hybrid UI boundary: public-site visual/marketing blocks use JabKit via `@jabkit/cli` into `apps/web/src/components/jabkit`; admin and all form/table primitives stay on `@fe-template/ui`; domain widgets stay app-local; do not add JabKit as an npm workspace package. See [`ROADMAP/00-conventions.md`](ROADMAP/00-conventions.md).
 
 - Apps: `apps/web` (port 9000), `apps/admin` (port 9001)
 - Packages: `packages/ui` (`@fe-template/ui`), `packages/db` (`@fe-template/db`), `packages/config` (placeholder)
