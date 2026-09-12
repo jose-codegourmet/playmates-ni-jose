@@ -1,0 +1,110 @@
+{
+  "components": [
+    {
+      "name": "button",
+      "files": {
+        "src/components/jabkit/button/Button.tsx": "1ac9d3b7abd0029e6cf6b30e9b36187f90db964977a39a340df41bbe63428245",
+        "src/components/jabkit/button/Button.types.ts": "2c3632e7311caaf8eed46c7806176ac7efbfac8d213a7bcd4757841d17133198",
+        "src/components/jabkit/button/index.ts": "8549f9c03ab94170ec0e4139cc8d021f86616cf4a9cb207e161429d5197201fa",
+        "src/components/jabkit/lib/cn.ts": "c9a57657916fff3eb276616da2952eab3029ace97a2f17441025e5ed748ce2a9",
+        "src/components/jabkit/badge/Badge.tsx": "f0a3bbfb32981991db40bf3bc9e42467fe7959007fb22f6d62b364799e6beebf",
+        "src/components/jabkit/badge/Badge.types.ts": "28d84b35a33c835e3a21c7e9118281e78b51e136ac9488476b21188ed9eb48ee",
+        "src/components/jabkit/badge/index.ts": "93300dc8bb6a3fed61167086beee2bf7e57caf667aa6e7110e170664483eb8ed",
+        "src/components/jabkit/skeleton/Skeleton.tsx": "5af612e9e56677b5033265e806ec5ba684c04eb244973eda93dc6fbfd9791524",
+        "src/components/jabkit/skeleton/Skeleton.types.ts": "a171decff80fab009fd19e512776b0b731f5b1bfe2e805dbadf28f5fa3eab6d7",
+        "src/components/jabkit/skeleton/index.ts": "9fe3082868dd70ff636a93d1c36ab637dc55315db370ec5195a51f6b8a030d06",
+        "src/components/jabkit/separator/Separator.tsx": "a8c98290926e2923c571484d56c3cc13aa64a6a1e2fd1e340c4845af9865fc22",
+        "src/components/jabkit/separator/Separator.types.ts": "9c4f25f2a8b9da0c9d16a89aa467109b6bc7c6d6bf538e057d83b0cc3b8080a3",
+        "src/components/jabkit/separator/index.ts": "f94837d095544a05d737d0995cb8a77359f4e4fe4e2f4e6ee19a4a564936b7b5",
+        "src/components/jabkit/avatar/Avatar.tsx": "4b6f824202daeb93151c5028c05bfd3311dd397dd01d6d8be12aaeb1996c5df5",
+        "src/components/jabkit/avatar/Avatar.types.ts": "d033775f95f3e2be443513e0996e8d9ea556003146baea5b6e9903f4678d2d42",
+        "src/components/jabkit/avatar/index.ts": "11570c66d78d83295d2d275bd077264da18fff9564b54498b2d842f8dc367d38"
+      }
+    },
+    {
+      "name": "badge",
+      "files": {
+        "src/components/jabkit/button/Button.tsx": "1ac9d3b7abd0029e6cf6b30e9b36187f90db964977a39a340df41bbe63428245",
+        "src/components/jabkit/button/Button.types.ts": "2c3632e7311caaf8eed46c7806176ac7efbfac8d213a7bcd4757841d17133198",
+        "src/components/jabkit/button/index.ts": "8549f9c03ab94170ec0e4139cc8d021f86616cf4a9cb207e161429d5197201fa",
+        "src/components/jabkit/lib/cn.ts": "c9a57657916fff3eb276616da2952eab3029ace97a2f17441025e5ed748ce2a9",
+        "src/components/jabkit/badge/Badge.tsx": "f0a3bbfb32981991db40bf3bc9e42467fe7959007fb22f6d62b364799e6beebf",
+        "src/components/jabkit/badge/Badge.types.ts": "28d84b35a33c835e3a21c7e9118281e78b51e136ac9488476b21188ed9eb48ee",
+        "src/components/jabkit/badge/index.ts": "93300dc8bb6a3fed61167086beee2bf7e57caf667aa6e7110e170664483eb8ed",
+        "src/components/jabkit/skeleton/Skeleton.tsx": "5af612e9e56677b5033265e806ec5ba684c04eb244973eda93dc6fbfd9791524",
+        "src/components/jabkit/skeleton/Skeleton.types.ts": "a171decff80fab009fd19e512776b0b731f5b1bfe2e805dbadf28f5fa3eab6d7",
+        "src/components/jabkit/skeleton/index.ts": "9fe3082868dd70ff636a93d1c36ab637dc55315db370ec5195a51f6b8a030d06",
+        "src/components/jabkit/separator/Separator.tsx": "a8c98290926e2923c571484d56c3cc13aa64a6a1e2fd1e340c4845af9865fc22",
+        "src/components/jabkit/separator/Separator.types.ts": "9c4f25f2a8b9da0c9d16a89aa467109b6bc7c6d6bf538e057d83b0cc3b8080a3",
+        "src/components/jabkit/separator/index.ts": "f94837d095544a05d737d0995cb8a77359f4e4fe4e2f4e6ee19a4a564936b7b5",
+        "src/components/jabkit/avatar/Avatar.tsx": "4b6f824202daeb93151c5028c05bfd3311dd397dd01d6d8be12aaeb1996c5df5",
+        "src/components/jabkit/avatar/Avatar.types.ts": "d033775f95f3e2be443513e0996e8d9ea556003146baea5b6e9903f4678d2d42",
+        "src/components/jabkit/avatar/index.ts": "11570c66d78d83295d2d275bd077264da18fff9564b54498b2d842f8dc367d38"
+      }
+    },
+    {
+      "name": "skeleton",
+      "files": {
+        "src/components/jabkit/button/Button.tsx": "1ac9d3b7abd0029e6cf6b30e9b36187f90db964977a39a340df41bbe63428245",
+        "src/components/jabkit/button/Button.types.ts": "2c3632e7311caaf8eed46c7806176ac7efbfac8d213a7bcd4757841d17133198",
+        "src/components/jabkit/button/index.ts": "8549f9c03ab94170ec0e4139cc8d021f86616cf4a9cb207e161429d5197201fa",
+        "src/components/jabkit/lib/cn.ts": "c9a57657916fff3eb276616da2952eab3029ace97a2f17441025e5ed748ce2a9",
+        "src/components/jabkit/badge/Badge.tsx": "f0a3bbfb32981991db40bf3bc9e42467fe7959007fb22f6d62b364799e6beebf",
+        "src/components/jabkit/badge/Badge.types.ts": "28d84b35a33c835e3a21c7e9118281e78b51e136ac9488476b21188ed9eb48ee",
+        "src/components/jabkit/badge/index.ts": "93300dc8bb6a3fed61167086beee2bf7e57caf667aa6e7110e170664483eb8ed",
+        "src/components/jabkit/skeleton/Skeleton.tsx": "5af612e9e56677b5033265e806ec5ba684c04eb244973eda93dc6fbfd9791524",
+        "src/components/jabkit/skeleton/Skeleton.types.ts": "a171decff80fab009fd19e512776b0b731f5b1bfe2e805dbadf28f5fa3eab6d7",
+        "src/components/jabkit/skeleton/index.ts": "9fe3082868dd70ff636a93d1c36ab637dc55315db370ec5195a51f6b8a030d06",
+        "src/components/jabkit/separator/Separator.tsx": "a8c98290926e2923c571484d56c3cc13aa64a6a1e2fd1e340c4845af9865fc22",
+        "src/components/jabkit/separator/Separator.types.ts": "9c4f25f2a8b9da0c9d16a89aa467109b6bc7c6d6bf538e057d83b0cc3b8080a3",
+        "src/components/jabkit/separator/index.ts": "f94837d095544a05d737d0995cb8a77359f4e4fe4e2f4e6ee19a4a564936b7b5",
+        "src/components/jabkit/avatar/Avatar.tsx": "4b6f824202daeb93151c5028c05bfd3311dd397dd01d6d8be12aaeb1996c5df5",
+        "src/components/jabkit/avatar/Avatar.types.ts": "d033775f95f3e2be443513e0996e8d9ea556003146baea5b6e9903f4678d2d42",
+        "src/components/jabkit/avatar/index.ts": "11570c66d78d83295d2d275bd077264da18fff9564b54498b2d842f8dc367d38"
+      }
+    },
+    {
+      "name": "separator",
+      "files": {
+        "src/components/jabkit/button/Button.tsx": "1ac9d3b7abd0029e6cf6b30e9b36187f90db964977a39a340df41bbe63428245",
+        "src/components/jabkit/button/Button.types.ts": "2c3632e7311caaf8eed46c7806176ac7efbfac8d213a7bcd4757841d17133198",
+        "src/components/jabkit/button/index.ts": "8549f9c03ab94170ec0e4139cc8d021f86616cf4a9cb207e161429d5197201fa",
+        "src/components/jabkit/lib/cn.ts": "c9a57657916fff3eb276616da2952eab3029ace97a2f17441025e5ed748ce2a9",
+        "src/components/jabkit/badge/Badge.tsx": "f0a3bbfb32981991db40bf3bc9e42467fe7959007fb22f6d62b364799e6beebf",
+        "src/components/jabkit/badge/Badge.types.ts": "28d84b35a33c835e3a21c7e9118281e78b51e136ac9488476b21188ed9eb48ee",
+        "src/components/jabkit/badge/index.ts": "93300dc8bb6a3fed61167086beee2bf7e57caf667aa6e7110e170664483eb8ed",
+        "src/components/jabkit/skeleton/Skeleton.tsx": "5af612e9e56677b5033265e806ec5ba684c04eb244973eda93dc6fbfd9791524",
+        "src/components/jabkit/skeleton/Skeleton.types.ts": "a171decff80fab009fd19e512776b0b731f5b1bfe2e805dbadf28f5fa3eab6d7",
+        "src/components/jabkit/skeleton/index.ts": "9fe3082868dd70ff636a93d1c36ab637dc55315db370ec5195a51f6b8a030d06",
+        "src/components/jabkit/separator/Separator.tsx": "a8c98290926e2923c571484d56c3cc13aa64a6a1e2fd1e340c4845af9865fc22",
+        "src/components/jabkit/separator/Separator.types.ts": "9c4f25f2a8b9da0c9d16a89aa467109b6bc7c6d6bf538e057d83b0cc3b8080a3",
+        "src/components/jabkit/separator/index.ts": "f94837d095544a05d737d0995cb8a77359f4e4fe4e2f4e6ee19a4a564936b7b5",
+        "src/components/jabkit/avatar/Avatar.tsx": "4b6f824202daeb93151c5028c05bfd3311dd397dd01d6d8be12aaeb1996c5df5",
+        "src/components/jabkit/avatar/Avatar.types.ts": "d033775f95f3e2be443513e0996e8d9ea556003146baea5b6e9903f4678d2d42",
+        "src/components/jabkit/avatar/index.ts": "11570c66d78d83295d2d275bd077264da18fff9564b54498b2d842f8dc367d38"
+      }
+    },
+    {
+      "name": "avatar",
+      "files": {
+        "src/components/jabkit/button/Button.tsx": "1ac9d3b7abd0029e6cf6b30e9b36187f90db964977a39a340df41bbe63428245",
+        "src/components/jabkit/button/Button.types.ts": "2c3632e7311caaf8eed46c7806176ac7efbfac8d213a7bcd4757841d17133198",
+        "src/components/jabkit/button/index.ts": "8549f9c03ab94170ec0e4139cc8d021f86616cf4a9cb207e161429d5197201fa",
+        "src/components/jabkit/lib/cn.ts": "c9a57657916fff3eb276616da2952eab3029ace97a2f17441025e5ed748ce2a9",
+        "src/components/jabkit/badge/Badge.tsx": "f0a3bbfb32981991db40bf3bc9e42467fe7959007fb22f6d62b364799e6beebf",
+        "src/components/jabkit/badge/Badge.types.ts": "28d84b35a33c835e3a21c7e9118281e78b51e136ac9488476b21188ed9eb48ee",
+        "src/components/jabkit/badge/index.ts": "93300dc8bb6a3fed61167086beee2bf7e57caf667aa6e7110e170664483eb8ed",
+        "src/components/jabkit/skeleton/Skeleton.tsx": "5af612e9e56677b5033265e806ec5ba684c04eb244973eda93dc6fbfd9791524",
+        "src/components/jabkit/skeleton/Skeleton.types.ts": "a171decff80fab009fd19e512776b0b731f5b1bfe2e805dbadf28f5fa3eab6d7",
+        "src/components/jabkit/skeleton/index.ts": "9fe3082868dd70ff636a93d1c36ab637dc55315db370ec5195a51f6b8a030d06",
+        "src/components/jabkit/separator/Separator.tsx": "a8c98290926e2923c571484d56c3cc13aa64a6a1e2fd1e340c4845af9865fc22",
+        "src/components/jabkit/separator/Separator.types.ts": "9c4f25f2a8b9da0c9d16a89aa467109b6bc7c6d6bf538e057d83b0cc3b8080a3",
+        "src/components/jabkit/separator/index.ts": "f94837d095544a05d737d0995cb8a77359f4e4fe4e2f4e6ee19a4a564936b7b5",
+        "src/components/jabkit/avatar/Avatar.tsx": "4b6f824202daeb93151c5028c05bfd3311dd397dd01d6d8be12aaeb1996c5df5",
+        "src/components/jabkit/avatar/Avatar.types.ts": "d033775f95f3e2be443513e0996e8d9ea556003146baea5b6e9903f4678d2d42",
+        "src/components/jabkit/avatar/index.ts": "11570c66d78d83295d2d275bd077264da18fff9564b54498b2d842f8dc367d38"
+      }
+    }
+  ],
+  "updatedAt": "2026-09-12T06:12:32.881Z"
+}
