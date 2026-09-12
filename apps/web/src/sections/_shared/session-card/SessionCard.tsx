@@ -66,5 +66,5 @@ function SessionCard({
   );
 }
 
-export { SessionCard };
 export type { SessionCardProps };
+export { SessionCard };
