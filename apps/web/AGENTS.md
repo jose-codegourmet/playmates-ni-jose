@@ -20,6 +20,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 |---|---|
 | `src/app/` | Next.js App Router routes and API routes |
 | `src/sections/` | Page sections, organized per page |
+| `src/components/jabkit/` | **Only** allowed `src/components/` tree. Written by `@jabkit/cli`, not by hand. See [`ROADMAP/00-conventions.md`](../../ROADMAP/00-conventions.md). Domain UI stays in `sections/` and `modules/`. |
 | `src/modules/layout/` | Header, footer, navigation |
 | `src/modules/providers/` | Redux + TanStack Query + theme providers |
 | `src/hooks/` | TanStack Query hooks (`use-blog-posts`, `use-pricing-plans`, `use-testimonials`) |
@@ -81,6 +82,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 - No authentication. Do not add middleware, login, or signup pages here without a plan.
 - Do not import `@fe-template/db` from client components or pages. Only import it in API routes.
 - Do not create a local `src/components/ui/` folder. Use `@fe-template/ui`.
+- Do not grow `src/components/` except `src/components/jabkit/` via `@jabkit/cli`. Admin never gets `src/components/`. CLI recipe: [`ROADMAP/00-conventions.md`](../../ROADMAP/00-conventions.md).
 - Shared UI wiring must remain in place: `transpilePackages` in `next.config.ts` and the `@source` directive in `globals.css`.
 - `NEXT_PUBLIC_SITE_URL` is used for server-side self-fetching but is not in `.env.example`. Document it if you add it.
 
