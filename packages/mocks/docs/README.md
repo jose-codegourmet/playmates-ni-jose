@@ -23,7 +23,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 | Entry | Path | Exports |
 |---|---|---|
-| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types, seed, and `getPlaymatesRepos` arrive in PNJ-012–PNJ-018. |
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). Seed and `getPlaymatesRepos` arrive in PNJ-013–PNJ-018. |
 
 ## Major dependencies
 
@@ -34,7 +34,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 ## Basic usage
 
 ```ts
-import type { PlaymatesComponentMeta } from "@fe-template/mocks";
+import type { PlaymatesComponentMeta, Session, SessionDetail } from "@fe-template/mocks";
 ```
 
 ## How to swap the adapter later
