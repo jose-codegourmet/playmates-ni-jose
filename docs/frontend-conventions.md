@@ -16,6 +16,12 @@ import { Button, Card, ScrollReveal, cn } from "@fe-template/ui";
 - Add new primitives to `packages/ui/src/components/[name]/` and re-export from `packages/ui/src/index.ts`.
 - See `packages/ui/docs/development.md` and `docs/template/COMPONENTS.md`.
 
+### JabKit exception (`apps/web/src/components/jabkit/` only)
+
+The old rule “never create `apps/*/src/components`” still holds for shared primitives and for **admin**. The only allowed `apps/web/src/components/` tree is `jabkit/`, written by `@jabkit/cli` (not by hand). Domain UI stays in `sections/` and `modules/`. `apps/admin` never grows `src/components/`.
+
+CLI init/add recipe: [`ROADMAP/00-conventions.md`](../ROADMAP/00-conventions.md).
+
 ---
 
 ## `apps/web` — page composition

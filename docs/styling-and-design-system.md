@@ -153,13 +153,20 @@ The CLI still emits a flat file. After it runs:
 1. Move the file into `packages/ui/src/components/<kebab-name>/<PascalName>.tsx`.
 2. Add a story and `.usecase.md`.
 3. Re-export from `packages/ui/src/index.ts`.
-4. Do not leave generated files under `apps/web/src/components/` and do not recreate `src/components/ui/`.
+4. Do not leave **shadcn** generated files under `apps/web/src/components/` and do not recreate `src/components/ui/`.
 5. App-only composition stays in `src/modules/` or `src/sections/`.
+
+### JabKit exception (`apps/web/src/components/jabkit/` only)
+
+The old rule “never create `apps/*/src/components`” still holds for shared primitives and for **admin**. The only allowed `apps/web/src/components/` tree is `jabkit/`, written by `@jabkit/cli`. Domain UI stays in `sections/` and `modules/`. `apps/admin` never grows `src/components/`.
+
+CLI init/add recipe: [`ROADMAP/00-conventions.md`](../ROADMAP/00-conventions.md).
 
 ---
 
 ## Common mistakes to avoid
 
 - Do not add a `src/components/ui/` folder inside apps.
+- Do not treat “never create `apps/*/src/components`” as absolute: JabKit CLI output under `apps/web/src/components/jabkit/` is the documented exception.
 - Do not forget the `@source` directive in `globals.css` when adding new UI package components; otherwise Tailwind will miss their classes.
 - Do not import `@fe-template/ui` from client code unless the component itself supports client use (most do, but the data layer does not).
