@@ -32,7 +32,7 @@ export default function RootError({
         This fetch went <span className="italic text-primary">sideways</span>
       </h1>
       <p className="mt-3 max-w-md text-muted-foreground">
-        Something broke in the PawPair admin. Try again or head back to sign in.
+        Something broke in the Playmates admin. Try again or head back to sign in.
       </p>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Button className="rounded-full" onClick={() => reset()}>

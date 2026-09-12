@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fe-template/ui";
-import { KeyRoundIcon, PawPrintIcon, ShieldCheckIcon } from "lucide-react";
+import { CircleDotIcon, KeyRoundIcon, ShieldCheckIcon } from "lucide-react";
 import Link from "next/link";
 import { LoginForm } from "@/modules/auth/login-form/LoginForm";
 
@@ -14,14 +14,12 @@ export default function LoginPage() {
       <Card className="relative z-10 w-full max-w-[480px] rounded-3xl border-border/60 shadow-xl">
         <CardHeader className="space-y-3 text-center">
           <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-            <PawPrintIcon className="size-6" />
+            <CircleDotIcon className="size-6" />
           </div>
           <CardTitle className="font-display text-3xl tracking-tight">
-            Welcome back, Admin.
+            Playmates ni José — Admin
           </CardTitle>
-          <CardDescription className="text-base">
-            Sign in to manage the PawPair community.
-          </CardDescription>
+          <CardDescription className="text-base">Playmates ni José — Admin</CardDescription>
         </CardHeader>
         <CardContent>
           <LoginForm />
@@ -32,7 +30,7 @@ export default function LoginPage() {
               Encrypted admin access
             </p>
             <div className="flex items-center justify-center gap-4 text-muted-foreground/50">
-              <PawPrintIcon className="size-4" />
+              <CircleDotIcon className="size-4" />
               <ShieldCheckIcon className="size-4" />
               <KeyRoundIcon className="size-4" />
             </div>

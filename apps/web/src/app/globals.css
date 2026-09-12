@@ -54,7 +54,7 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* PawPair brand colour tokens */
+  /* Brand colour tokens */
   --color-brand-coral: #ff6b6b;
   --color-brand-deep-ink: #17151f;
   --color-brand-warm-cream: #fff8ee;

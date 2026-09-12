@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
+import { DEFAULT_SEO } from "@/constants/seo";
 import { Footer } from "@/modules/layout/footer/Footer";
 import { Header } from "@/modules/layout/navigation/header/Header";
 import { Providers } from "@/modules/providers/Providers";
@@ -19,8 +20,14 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "PawPair — Better matches. Happier tails.",
-  description: "Find the right playmates, walking buddies, and pet-parent friends nearby.",
+  title: DEFAULT_SEO.title,
+  description: DEFAULT_SEO.description,
+  openGraph: {
+    title: DEFAULT_SEO.title,
+    description: DEFAULT_SEO.description,
+    siteName: DEFAULT_SEO.siteName,
+    images: [{ url: DEFAULT_SEO.ogImage, width: 1200, height: 630 }],
+  },
 };
 
 export default function RootLayout({

@@ -24,7 +24,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 | `src/modules/layout/` | Header, footer, navigation |
 | `src/modules/providers/` | Redux + TanStack Query + theme providers |
 | `src/hooks/` | Query hooks (PawPair hooks deleted in PNJ-004; folder may be empty) |
-| `src/constants/` | Routes, SEO metadata, navigation (still PawPair until PNJ-006) |
+| `src/constants/` | Routes, SEO metadata, navigation (Playmates set from PNJ-006) |
 | `src/types/` | App-local types |
 | `src/store/` | Redux store + theme slice |
 | `src/lib/` | Utility helpers |

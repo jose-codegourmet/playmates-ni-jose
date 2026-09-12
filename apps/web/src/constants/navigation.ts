@@ -2,10 +2,7 @@ import { ROUTES } from "./routes";
 
 export const NAV_LINKS = [
   { label: "Home", href: ROUTES.home },
-  { label: "About", href: ROUTES.about },
-  { label: "How it works", href: ROUTES.howItWorks },
-  { label: "Pricing", href: ROUTES.pricing },
-  { label: "Blog", href: ROUTES.blog },
-  { label: "Contact", href: ROUTES.contact },
-  { label: "Showcase", href: ROUTES.showcase },
+  { label: "Sessions", href: ROUTES.sessions },
+  { label: "Players", href: ROUTES.players },
+  { label: "Venues", href: ROUTES.venues },
 ] as const;
