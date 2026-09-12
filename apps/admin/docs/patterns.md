@@ -8,9 +8,14 @@ Concrete patterns found in the admin portal. Imitate these files when adding new
 
 A typical dashboard entity lives under `src/app/(dashboard)/[entity]/` as a Server Component page plus route-colocated actions and client UI.
 
-Playmates players (PNJ-055) and venues (PNJ-056) follow this layout with mock repos instead of Prisma:
+Playmates players (PNJ-055), venues (PNJ-056), and sessions (PNJ-057) follow this layout with mock repos instead of Prisma:
 
 ```text
+src/app/(dashboard)/sessions/
+  ├── page.tsx
+  ├── sessions-table/SessionsTable.tsx
+  └── [id]/page.tsx
+
 src/app/(dashboard)/players/
   ├── page.tsx
   ├── actions.ts

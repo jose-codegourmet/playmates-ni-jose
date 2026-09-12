@@ -51,6 +51,8 @@ Purpose, routes, features, and commands for the admin portal.
 | `/otp` | `src/app/otp/page.tsx` | OTP confirmation |
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation callback |
 | `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets |
+| `/sessions` | `src/app/(dashboard)/sessions/page.tsx` | Sessions list (admin sees private) |
+| `/sessions/[id]` | `src/app/(dashboard)/sessions/[id]/page.tsx` | Session workspace stub |
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players CRUD (mock repos) |
 | `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues CRUD (mock repos) |
 | `/venues/[id]` | `src/app/(dashboard)/venues/[id]/page.tsx` | Venue courts (add / archive) |
