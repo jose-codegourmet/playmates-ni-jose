@@ -6,7 +6,7 @@ import { SeededQueryProvider } from "@/storybook/seeded-query";
 import { AdminHeader } from "./AdminHeader";
 
 const storyAdmin: CurrentUser = {
-  email: "ada@pawpair.example",
+  email: "ada@local.dev",
   name: "Ada Admin",
   avatarUrl: null,
   role: "ADMIN",

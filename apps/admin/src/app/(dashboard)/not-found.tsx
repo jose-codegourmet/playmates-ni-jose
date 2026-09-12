@@ -18,15 +18,11 @@ export default function DashboardNotFound() {
         This trail went <span className="italic text-primary">cold</span>
       </h1>
       <p className="mt-3 max-w-md text-muted-foreground">
-        We couldn&apos;t find that page in the PawPair admin. Head back to the dashboard or browse
-        the pets registry.
+        We couldn&apos;t find that page in the Playmates admin. Head back to the dashboard.
       </p>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Button className="rounded-full" render={<Link href="/dashboard" />}>
           Return to dashboard
-        </Button>
-        <Button variant="outline" className="rounded-full" render={<Link href="/pets" />}>
-          Browse pets
         </Button>
       </div>
     </div>

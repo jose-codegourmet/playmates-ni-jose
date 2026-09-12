@@ -7,20 +7,18 @@ import { SidebarInset, SidebarProvider } from "@/modules/layout/sidebar/Sidebar"
 
 const TITLES: Record<string, string> = {
   "/dashboard": "Dashboard",
-  "/users": "Users",
-  "/pets": "Pets",
-  "/posts": "Blog",
-  "/posts/new": "New post",
-  "/testimonials": "Testimonials",
-  "/pricing-plans": "Pricing",
-  "/contacts": "Contacts",
-  "/profile": "Profile",
+  "/sessions": "Sessions",
+  "/sessions/new": "New session",
+  "/players": "Players",
+  "/venues": "Venues",
+  "/settings": "Settings",
+  "/settings/google": "Google",
+  "/settings/publishing": "Publishing",
 };
 
 function resolveTitle(pathname: string) {
   if (TITLES[pathname]) return TITLES[pathname];
-  if (pathname.startsWith("/users/")) return "User detail";
-  if (pathname.startsWith("/posts/")) return "Edit post";
+  if (pathname.startsWith("/sessions/")) return "Session workspace";
   return "Admin";
 }
 

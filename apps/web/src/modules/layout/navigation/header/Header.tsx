@@ -10,11 +10,11 @@ import {
   SheetTrigger,
 } from "@fe-template/ui";
 import { Menu, Monitor, Moon, Sun } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { NAV_LINKS } from "@/constants/navigation";
 import { ROUTES } from "@/constants/routes";
+import { DEFAULT_SEO } from "@/constants/seo";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setTheme, type ThemeMode } from "@/store/slices/themeSlice";
@@ -55,17 +55,10 @@ function Logo({ className }: { className?: string }) {
   return (
     <Link
       href={ROUTES.home}
-      className={cn("inline-flex items-center gap-2 shrink-0", className)}
-      aria-label="PawPair home"
+      className={cn("inline-flex shrink-0 items-center gap-2", className)}
+      aria-label={`${DEFAULT_SEO.siteName} home`}
     >
-      <Image
-        src="/images/brand/logo-pawpair-primary.png"
-        alt="PawPair"
-        width={140}
-        height={36}
-        className="h-8 w-auto dark:brightness-0 dark:invert"
-        priority
-      />
+      <span className="font-display text-lg font-semibold tracking-tight">{DEFAULT_SEO.siteName}</span>
     </Link>
   );
 }
@@ -87,27 +80,10 @@ function NavLinks({ className, onNavigate }: { className?: string; onNavigate?: 
   );
 }
 
-function HeaderActions({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
+function HeaderActions({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <ThemeToggle />
-      <Link
-        href={ROUTES.signIn}
-        onClick={onNavigate}
-        className={buttonVariants({ variant: "ghost", size: "sm" })}
-      >
-        Sign in
-      </Link>
-      <Link
-        href={ROUTES.createProfile}
-        onClick={onNavigate}
-        className={cn(
-          buttonVariants({ size: "sm" }),
-          "bg-brand-coral text-white hover:bg-brand-coral/90",
-        )}
-      >
-        Create a profile
-      </Link>
     </div>
   );
 }
@@ -146,10 +122,7 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
                 className="flex-col items-stretch gap-1"
                 onNavigate={() => setMobileOpen(false)}
               />
-              <HeaderActions
-                className="flex-col items-stretch [&_a]:justify-center"
-                onNavigate={() => setMobileOpen(false)}
-              />
+              <HeaderActions className="flex-col items-stretch" />
             </div>
           </SheetContent>
         </Sheet>

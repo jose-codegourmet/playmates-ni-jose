@@ -17,8 +17,8 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "PawPair Admin",
-  description: "Admin portal for PawPair — users, CMS, and analytics.",
+  title: "Playmates ni José — Admin",
+  description: "Admin portal for the Playmates ni José badminton archive.",
 };
 
 export default function RootLayout({

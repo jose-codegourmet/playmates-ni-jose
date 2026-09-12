@@ -13,7 +13,9 @@ const meta: Meta<typeof Header> = {
 export default meta;
 type Story = StoryObj<typeof Header>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  name: "Playmates nav (Home, Sessions, Players, Venues)",
+};
 
 export const Dark: Story = {
   globals: {

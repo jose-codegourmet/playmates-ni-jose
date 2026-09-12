@@ -17,7 +17,7 @@ export default function SignupPage() {
           </div>
           <CardTitle className="font-display text-3xl tracking-tight">Create an account.</CardTitle>
           <CardDescription className="text-base">
-            Sign up to join the PawPair admin team.
+            Sign up to join the Playmates admin team.
           </CardDescription>
         </CardHeader>
         <CardContent>

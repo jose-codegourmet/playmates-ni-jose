@@ -53,7 +53,7 @@ export function AdminHeader({ title }: AdminHeaderProps) {
         size="icon-sm"
         aria-label="Help"
         className="rounded-full"
-        render={<a href="mailto:support@pawpair.example" />}
+        render={<a href="mailto:jose@local.dev" />}
       >
         <HelpCircleIcon className="size-4" />
       </Button>
