@@ -91,3 +91,7 @@ Update this file and `apps/web/docs/` when:
 - A new shared package is consumed.
 - A new environment variable is required.
 - The validation commands change.
+
+## UI components (JabKit)
+
+This project uses JabKit. Search its MCP catalogue before hand-writing a reusable UI component. Installed files live in `src/components/jabkit/`; use semantic token classes, never hardcoded colors.
