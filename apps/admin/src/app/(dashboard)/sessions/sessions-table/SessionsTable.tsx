@@ -84,11 +84,14 @@ function SessionsTable({ sessions }: SessionsTableProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl tracking-tight">Sessions</h1>
-        <p className="text-sm text-muted-foreground">
-          Admin list includes private drafts. Open a row to enter the workspace.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl tracking-tight">Sessions</h1>
+          <p className="text-sm text-muted-foreground">
+            Admin list includes private drafts. Open a row to enter the workspace.
+          </p>
+        </div>
+        <Button render={<Link href="/sessions/new" />}>New session</Button>
       </div>
 
       <fieldset className="flex flex-wrap items-center gap-2 border-0 p-0">

@@ -52,6 +52,7 @@ Purpose, routes, features, and commands for the admin portal.
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation callback |
 | `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets |
 | `/sessions` | `src/app/(dashboard)/sessions/page.tsx` | Sessions list (admin sees private) |
+| `/sessions/new` | `src/app/(dashboard)/sessions/new/page.tsx` | Create draft session |
 | `/sessions/[id]` | `src/app/(dashboard)/sessions/[id]/page.tsx` | Session workspace stub |
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players CRUD (mock repos) |
 | `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues CRUD (mock repos) |
@@ -81,6 +82,7 @@ Purpose, routes, features, and commands for the admin portal.
 | `src/modules/auth/` | Login, signup, OTP forms |
 | `src/modules/layout/` | AdminSidebar, AdminHeader, sidebar |
 | `src/modules/playmates/dashboard/` | Dashboard widgets (sessions, uploads, Facebook, quick create) |
+| `src/modules/playmates/session-form/` | Create-session form (date, venue/court, roster) |
 | `src/modules/providers/` | Query client, theme, toaster providers |
 | `email-templates/` | Supabase Auth email HTML |
 

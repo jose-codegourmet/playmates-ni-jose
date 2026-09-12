@@ -51,6 +51,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation (PKCE code exchange) |
 | `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets (mock repos) |
 | `/sessions` | `src/app/(dashboard)/sessions/page.tsx` | Sessions list (all / draft / published) |
+| `/sessions/new` | `src/app/(dashboard)/sessions/new/page.tsx` | Create draft session |
 | `/sessions/[id]` | `src/app/(dashboard)/sessions/[id]/page.tsx` | Session workspace stub (PNJ-060 later) |
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players list, create/edit dialog, archive |
 | `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues list, create/edit dialog, archive |
