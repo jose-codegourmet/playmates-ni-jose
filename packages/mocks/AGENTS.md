@@ -12,7 +12,7 @@ Local agent instructions for the in-memory Playmates data layer. Read `/AGENTS.m
 - **Filter**: `pnpm --filter @fe-template/mocks`
 - **Package name**: `@fe-template/mocks`
 
-This package is **mock data and types only**. Do not add filesystem, network, Prisma, or other I/O here. Seed and repository work lands in later Phase 1 tickets (PNJ-013+).
+This package is **mock data and types only**. Do not add filesystem, network, Prisma, or other I/O here. Seed data is in `src/seed.ts` (PNJ-013). Repository store work lands in later Phase 1 tickets (PNJ-014+).
 
 ---
 
@@ -20,7 +20,7 @@ This package is **mock data and types only**. Do not add filesystem, network, Pr
 
 | Entry | Path | What it provides |
 |---|---|---|
-| `.` | `src/index.ts` | Barrel. Re-exports `PlaymatesComponentMeta` and domain types from `src/types.ts`. |
+| `.` | `src/index.ts` | Barrel. Re-exports `PlaymatesComponentMeta`, domain types, `createSeedState`, `assertSeedInvariants`, `SEED_IDS`, and `MockState`. |
 
 ---
 

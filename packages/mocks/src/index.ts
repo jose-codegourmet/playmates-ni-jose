@@ -1,4 +1,6 @@
 export type { PlaymatesComponentMeta } from "@fe-template/config";
+export type { MockState } from "./seed";
+export { assertSeedInvariants, createSeedState, SEED_IDS } from "./seed";
 export type {
   CameraSide,
   Court,
