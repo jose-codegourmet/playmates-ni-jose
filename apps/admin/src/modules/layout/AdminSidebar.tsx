@@ -1,15 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@fe-template/ui";
-import {
-  CreditCardIcon,
-  FileTextIcon,
-  LayoutDashboardIcon,
-  MailIcon,
-  MessageSquareQuoteIcon,
-  PawPrintIcon,
-  UsersIcon,
-} from "lucide-react";
+import { CircleDotIcon, LayoutDashboardIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getInitials, useCurrentUser } from "@/hooks/use-current-user/client";
@@ -26,15 +18,7 @@ import {
   SidebarMenuItem,
 } from "@/modules/layout/sidebar/Sidebar";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
-  { href: "/users", label: "Users", icon: UsersIcon },
-  { href: "/pets", label: "Pets", icon: PawPrintIcon },
-  { href: "/posts", label: "Blog", icon: FileTextIcon },
-  { href: "/pricing-plans", label: "Pricing", icon: CreditCardIcon },
-  { href: "/testimonials", label: "Testimonials", icon: MessageSquareQuoteIcon },
-  { href: "/contacts", label: "Contacts", icon: MailIcon },
-] as const;
+const NAV_ITEMS = [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon }] as const;
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -46,9 +30,9 @@ export function AdminSidebar() {
     <Sidebar collapsible="icon" className="bg-sidebar">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <PawPrintIcon className="size-5 shrink-0 text-primary" />
+          <CircleDotIcon className="size-5 shrink-0 text-primary" />
           <span className="truncate font-semibold group-data-[collapsible=icon]:hidden">
-            PawPair Admin
+            Playmates Admin
           </span>
         </div>
       </SidebarHeader>

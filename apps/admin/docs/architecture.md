@@ -54,20 +54,9 @@ After OTP confirmation, `src/modules/auth/otp-form/actions.ts` creates a `Profil
 
 ### Client dashboard layout
 
-`(dashboard)/layout.tsx` is a **client** component (`"use client"`). It calls `usePathname()` to map the URL to the `AdminHeader` title (`TITLES` plus `/users/` and `/posts/` prefixes). Keep it a client component unless the title mapping is moved to a nested client child; converting it to a Server Component without that split would break the header title.
+`(dashboard)/layout.tsx` is a **client** component (`"use client"`). It calls `usePathname()` to map the URL to the `AdminHeader` title. Keep it a client component unless the title mapping is moved to a nested client child; converting it to a Server Component without that split would break the header title.
 
-### Route-group widgets (not routes)
-
-These files sit at the `(dashboard)` group root and are **not** pages. `dashboard/page.tsx` imports them via `../`:
-
-- `src/app/(dashboard)/community-growth-chart.tsx`
-- `src/app/(dashboard)/recent-activity.tsx`
-
-Do not add `page.tsx` next to them or treat them as dead leftovers.
-
-### Post editor wrappers
-
-`src/app/(dashboard)/posts/post-editor/PostEditor.tsx` exports `NewPostEditor` and `EditPostEditor`. They load authors/posts through `use-posts` and render `post-form/PostForm.tsx`. `/posts/new` and `/posts/[id]` use these wrappers rather than importing `PostForm` directly.
+PawPair CRUD routes, dashboard widgets, and list hooks were removed in PNJ-005. `/dashboard` is a Playmates stub; `/profile` remains.
 
 ### Two 404 boundaries
 

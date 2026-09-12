@@ -56,13 +56,9 @@ apps/admin/src/app/(dashboard)/[route]/
   └── dialog.tsx            # Client dialog/form (optional)
 ```
 
-Examples:
-- `apps/admin/src/app/(dashboard)/users/page.tsx`
-- `apps/admin/src/app/(dashboard)/users/actions.ts`
-- `apps/admin/src/app/(dashboard)/posts/posts-table.tsx`
-- `apps/admin/src/app/(dashboard)/posts/post-form/PostForm.tsx`
+PawPair CRUD routes were removed in PNJ-005. Remaining dashboard pages: `dashboard/page.tsx` (stub) and `profile/`.
 
-See `apps/admin/docs/patterns.md` for concrete file references.
+See `apps/admin/docs/patterns.md` for historical CRUD file patterns.
 
 ---
 
@@ -80,7 +76,7 @@ hooks/use-[name]/
 ```
 
 - `apps/web` uses `client.ts` / `server.ts` / `query.ts` / `types.ts` for `use-blog-posts`, `use-pricing-plans`, `use-testimonials` (no barrels).
-- `apps/admin` also uses this pattern for `use-users`, `use-pets`, `use-posts`, `use-contacts`, `use-testimonials`, `use-pricing-plans`, `use-current-user`.
+- `apps/admin` uses this pattern for `use-current-user` (PawPair list hooks were removed in PNJ-005).
 - Admin Server Components often query `prisma` directly instead of going through hooks.
 
 See `docs/template/HOOKS.md` for the full hook convention.
