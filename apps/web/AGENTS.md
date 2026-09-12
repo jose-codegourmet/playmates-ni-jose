@@ -45,6 +45,8 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 | Route | File | Purpose |
 |---|---|---|
 | `/` | `src/app/page.tsx` | Archive home (PNJ-043): hero, latest sessions, recent games, players strip |
+| `/sessions` | `src/app/sessions/page.tsx` | Public sessions index (PNJ-044) |
+| `/sessions/[sessionSlug]` | `src/app/sessions/[sessionSlug]/page.tsx` | Public session detail (PNJ-045) |
 | `not-found` | `src/app/not-found.tsx` | Branded 404 (`NotFoundHeroSection`) |
 
 ---
