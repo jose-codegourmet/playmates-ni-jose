@@ -20,6 +20,8 @@ src/app/(dashboard)/sessions/
 
 Create-session form lives at `src/modules/playmates/session-form/` (schema, defaults, stories, meta).
 
+Settings placeholders (PNJ-059) are thin pages under `src/app/(dashboard)/settings/` composed from `src/modules/playmates/settings/` (index cards, Google placeholder, publishing form). Publishing save writes `getState().settings`.
+
 src/app/(dashboard)/players/
   ├── page.tsx
   ├── actions.ts

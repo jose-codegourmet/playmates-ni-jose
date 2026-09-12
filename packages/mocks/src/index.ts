@@ -7,16 +7,6 @@ export {
   MockDomainError,
 } from "./errors";
 export { getPlaymatesRepos } from "./get-repos";
-export {
-  getPublicGame,
-  getPublicPlayer,
-  getPublicSession,
-  getPublicVenue,
-  listPublicPlayers,
-  listPublicSessions,
-  listPublicVenues,
-} from "./public";
-
 export type {
   DriveFilenameInput,
   FacebookBodyInput,
@@ -25,6 +15,7 @@ export type {
   YoutubeTitleInput,
 } from "./naming";
 export {
+  DEFAULT_FACEBOOK_HASHTAGS,
   formatDriveFilename,
   formatFacebookBody,
   formatGameSlug,
@@ -35,6 +26,15 @@ export {
   formatYoutubeTitle,
   slugify,
 } from "./naming";
+export {
+  getPublicGame,
+  getPublicPlayer,
+  getPublicSession,
+  getPublicVenue,
+  listPublicPlayers,
+  listPublicSessions,
+  listPublicVenues,
+} from "./public";
 export type {
   GameRepository,
   ImportFileMeta,
@@ -62,6 +62,7 @@ export type {
   GameWithTeamsAndRecordings,
   OauthConnection,
   Player,
+  PlaymatesSettings,
   PostDraft,
   PostPlatform,
   Profile,

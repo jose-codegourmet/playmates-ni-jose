@@ -57,6 +57,9 @@ Purpose, routes, features, and commands for the admin portal.
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players CRUD (mock repos) |
 | `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues CRUD (mock repos) |
 | `/venues/[id]` | `src/app/(dashboard)/venues/[id]/page.tsx` | Venue courts (add / archive) |
+| `/settings` | `src/app/(dashboard)/settings/page.tsx` | Settings index (Google + Publishing) |
+| `/settings/google` | `src/app/(dashboard)/settings/google/page.tsx` | Google OAuth placeholder |
+| `/settings/publishing` | `src/app/(dashboard)/settings/publishing/page.tsx` | Facebook Group URL + default hashtags |
 | `/users` | `src/app/(dashboard)/users/page.tsx` | User list |
 | `/users/[id]` | `src/app/(dashboard)/users/[id]/page.tsx` | User detail |
 | `/pets` | `src/app/(dashboard)/pets/page.tsx` | Pet list |

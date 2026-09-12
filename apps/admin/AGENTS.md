@@ -56,6 +56,9 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players list, create/edit dialog, archive |
 | `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues list, create/edit dialog, archive |
 | `/venues/[id]` | `src/app/(dashboard)/venues/[id]/page.tsx` | Venue detail, add/archive courts |
+| `/settings` | `src/app/(dashboard)/settings/page.tsx` | Settings index (Google + Publishing) |
+| `/settings/google` | `src/app/(dashboard)/settings/google/page.tsx` | Google OAuth placeholder (disabled) |
+| `/settings/publishing` | `src/app/(dashboard)/settings/publishing/page.tsx` | Facebook Group URL + default hashtags |
 | `/profile` | `src/app/(dashboard)/profile/page.tsx` | Admin profile |
 | `/api/images` | `src/app/api/images/route.ts` | Upload image to Supabase Storage |
 

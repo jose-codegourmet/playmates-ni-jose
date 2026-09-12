@@ -43,6 +43,7 @@ function draftBody(gameId: string): { title: string; body: string } {
     youtubeUrls,
     driveUrls,
     notes: game.notes,
+    hashtags: state.settings.defaultHashtags,
   });
   const title = `${formatSessionDisplayDate(session.sessionDate)} | Game ${gameNumber}`;
   return { title, body };

@@ -206,6 +206,12 @@ export interface PostDraft {
   updatedAt: string;
 }
 
+/** In-memory app settings bag (PNJ-059). Used by Facebook body generation. */
+export interface PlaymatesSettings {
+  facebookGroupUrl: string;
+  defaultHashtags: string;
+}
+
 /** Stub only — unused in the prototype. Never store plaintext tokens. */
 export interface OauthConnection {
   id: string;
