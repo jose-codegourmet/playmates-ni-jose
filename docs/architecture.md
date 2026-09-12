@@ -16,20 +16,22 @@ flowchart TD
     subgraph packages [Packages]
         UI["@fe-template/ui\nshared UI primitives"]
         DB["@fe-template/db\nPrisma client + schema"]
-        CONFIG["@fe-template/config\nplaceholder"]
+        MOCKS["@fe-template/mocks\nin-memory Playmates layer"]
+        CONFIG["@fe-template/config\nshared types"]
     end
 
     UI --> WEB
     UI --> ADMIN
     DB --> WEB
     DB --> ADMIN
-    CONFIG -.->|not consumed| WEB
-    CONFIG -.->|not consumed| ADMIN
+    MOCKS --> WEB
+    MOCKS --> ADMIN
+    CONFIG --> MOCKS
 ```
 
-- `apps/web` and `apps/admin` both consume `@fe-template/ui` and `@fe-template/db`.
-- `@fe-template/config` is a placeholder and has no code or consumers.
-- Packages do not depend on each other.
+- `apps/web` and `apps/admin` consume `@fe-template/ui`, `@fe-template/db`, and `@fe-template/mocks`.
+- `@fe-template/config` exports `PlaymatesComponentMeta`. `@fe-template/mocks` re-exports it.
+- Other packages do not depend on each other.
 
 ---
 
@@ -121,9 +123,16 @@ See `docs/state-management.md` for details.
 - Server-only. Never import from client components in either app.
 - Multi-file Prisma schema under `packages/db/prisma/schema/`.
 
+### `@fe-template/mocks`
+
+- Ships TypeScript source. No build step.
+- Prototype Playmates data layer. Do not add I/O. Do not edit `packages/db` Prisma from this package.
+- Public entry: `.` (`src/index.ts`). Re-exports `PlaymatesComponentMeta`. Domain repos arrive in later Phase 1 tickets.
+
 ### `@fe-template/config`
 
-- Placeholder. No exports, no consumers. Do not add dependencies here without a documented plan.
+- Exports `PlaymatesComponentMeta` (`main` / `types` / `exports` → `src/index.ts`).
+- Consumed by `@fe-template/mocks`. Apps may import the type from `@fe-template/config` or the mocks re-export.
 
 ---
 

@@ -147,11 +147,29 @@ packages/db/
     └── constants/            # Seed data constants
 ```
 
-### `packages/config` — placeholder
+### `packages/mocks` — `@fe-template/mocks`
+
+```text
+packages/mocks/
+├── package.json              # workspace package, exports "." → src/index.ts
+├── tsconfig.json             # same noEmit / bundler pattern as packages/db
+├── AGENTS.md
+├── docs/README.md            # adapter swap notes
+└── src/
+    └── index.ts              # barrel (PlaymatesComponentMeta re-export)
+```
+
+### `packages/config` — `@fe-template/config`
 
 ```text
 packages/config/
-└── package.json              # No exports, no dependencies, no consumers
+├── package.json              # main/types/exports → src/index.ts
+├── tsconfig.json
+├── AGENTS.md
+├── docs/README.md
+└── src/
+    ├── index.ts
+    └── component-meta.ts     # PlaymatesComponentMeta
 ```
 
 ---
@@ -201,7 +219,8 @@ packages/config/
 | New hook | `apps/<app>/src/hooks/use-[name]/` with `client.ts` + `server.ts` |
 | New route constant | `apps/web/src/constants/routes.ts` |
 | New SEO metadata | `apps/web/src/constants/seo.ts` |
-| New shared config | Prefer `packages/config` only after planning; currently empty |
+| New shared config / catalogue type | `packages/config` (`PlaymatesComponentMeta`) |
+| New Playmates mock / repo type | `packages/mocks` |
 
 ---
 

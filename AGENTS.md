@@ -17,7 +17,7 @@ The stack is a **pnpm workspaces + Turborepo** monorepo that pairs a public site
 - [`docs/10-decisions/ADR-006-jabkit-first.md`](docs/10-decisions/ADR-006-jabkit-first.md) is **Amended** (2026-09-12) to a hybrid UI boundary: public-site visual/marketing blocks use JabKit via `@jabkit/cli` into `apps/web/src/components/jabkit`; admin and all form/table primitives stay on `@fe-template/ui`; domain widgets stay app-local; do not add JabKit as an npm workspace package. See [`ROADMAP/00-conventions.md`](ROADMAP/00-conventions.md).
 
 - Apps: `apps/web` (port 9000), `apps/admin` (port 9001)
-- Packages: `packages/ui` (`@fe-template/ui`), `packages/db` (`@fe-template/db`), `packages/config` (placeholder)
+- Packages: `packages/ui` (`@fe-template/ui`), `packages/db` (`@fe-template/db`), `packages/mocks` (`@fe-template/mocks`), `packages/config` (`@fe-template/config`)
 - Auth: Supabase Auth + `@supabase/ssr` in `apps/admin` only
 - Database: Prisma 6 on Supabase Postgres
 - Lint/Format: Biome at root; ESLint flat config in each app
@@ -123,6 +123,7 @@ Update documentation whenever you change the corresponding surface area:
 | `apps/admin` | `admin` | 9001 |
 | `packages/ui` | `@fe-template/ui` | — |
 | `packages/db` | `@fe-template/db` | — |
+| `packages/mocks` | `@fe-template/mocks` | — |
 | `packages/config` | `@fe-template/config` | — |
 
 Key docs:
