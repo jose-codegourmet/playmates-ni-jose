@@ -15,6 +15,22 @@ type Story = StoryObj<typeof Header>;
 
 export const Default: Story = {
   name: "Playmates nav (Home, Sessions, Players, Venues)",
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+      navigation: { pathname: "/" },
+    },
+  },
+};
+
+export const ActiveSessions: Story = {
+  name: "Active Sessions from pathname",
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+      navigation: { pathname: "/sessions" },
+    },
+  },
 };
 
 export const Dark: Story = {
