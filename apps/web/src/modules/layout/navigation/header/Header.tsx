@@ -11,6 +11,7 @@ import {
 } from "@fe-template/ui";
 import { Menu, Monitor, Moon, Sun } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { NAV_LINKS } from "@/constants/navigation";
 import { ROUTES } from "@/constants/routes";
@@ -20,6 +21,13 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setTheme, type ThemeMode } from "@/store/slices/themeSlice";
 
 type HeaderProps = { className?: string; defaultMobileOpen?: boolean };
+
+function isActiveNavHref(pathname: string, href: string) {
+  if (href === ROUTES.home) {
+    return pathname === ROUTES.home;
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 const THEME_ORDER: ThemeMode[] = ["light", "dark", "system"];
 
@@ -58,24 +66,35 @@ function Logo({ className }: { className?: string }) {
       className={cn("inline-flex shrink-0 items-center gap-2", className)}
       aria-label={`${DEFAULT_SEO.siteName} home`}
     >
-      <span className="font-display text-lg font-semibold tracking-tight">{DEFAULT_SEO.siteName}</span>
+      <span className="font-display text-lg font-semibold tracking-tight">
+        {DEFAULT_SEO.siteName}
+      </span>
     </Link>
   );
 }
 
 function NavLinks({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
+  const pathname = usePathname() ?? ROUTES.home;
+
   return (
-    <nav className={cn("flex items-center gap-1", className)} aria-label="Main">
-      {NAV_LINKS.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          onClick={onNavigate}
-          className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
-        >
-          {link.label}
-        </Link>
-      ))}
+    <nav className={cn("flex min-w-0 items-center gap-1", className)} aria-label="Main">
+      {NAV_LINKS.map((link) => {
+        const active = isActiveNavHref(pathname, link.href);
+        return (
+          <Link
+            key={link.href}
+            href={link.href}
+            onClick={onNavigate}
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground",
+              active ? "bg-muted text-foreground" : "text-foreground/80",
+            )}
+          >
+            {link.label}
+          </Link>
+        );
+      })}
     </nav>
   );
 }
@@ -95,11 +114,11 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
     <header
       data-slot="header"
       className={cn(
-        "sticky top-0 z-40 w-full border-b border-border/60 bg-background/90 backdrop-blur-md",
+        "sticky top-0 z-40 w-full min-w-0 overflow-x-clip border-b border-border/60 bg-background/90 backdrop-blur-md",
         className,
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 min-w-0 max-w-7xl items-center justify-between gap-4 overflow-x-clip px-4 sm:px-6 lg:px-8">
         <Logo />
 
         <NavLinks className="hidden lg:flex" />
@@ -117,7 +136,7 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
             <SheetHeader>
               <SheetTitle className="font-display text-lg">Menu</SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col gap-6 px-4 pb-6">
+            <div className="flex min-w-0 flex-col gap-6 overflow-x-clip px-4 pb-6">
               <NavLinks
                 className="flex-col items-stretch gap-1"
                 onNavigate={() => setMobileOpen(false)}

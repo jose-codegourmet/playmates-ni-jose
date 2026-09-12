@@ -13,7 +13,9 @@ const meta: Meta<typeof Footer> = {
 export default meta;
 type Story = StoryObj<typeof Footer>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  name: "Playmates links via footer-section",
+};
 
 export const Dark: Story = {
   globals: {
