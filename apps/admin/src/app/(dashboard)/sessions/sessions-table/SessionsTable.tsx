@@ -15,7 +15,7 @@ import { useMemo, useState } from "react";
 
 import { StatusBadge, VisibilityBadge } from "@/modules/playmates/status-badge/StatusBadge";
 
-import type { SessionRow, SessionsTableProps, SessionStatusFilter } from "./SessionsTable.types";
+import type { SessionRow, SessionStatusFilter, SessionsTableProps } from "./SessionsTable.types";
 
 const STATUS_FILTERS: { value: SessionStatusFilter; label: string }[] = [
   { value: "all", label: "All" },
@@ -69,7 +69,11 @@ function SessionsTable({ sessions }: SessionsTableProps) {
         header: "Actions",
         enableSorting: false,
         cell: ({ row }) => (
-          <Button size="sm" variant="outline" render={<Link href={`/sessions/${row.original.id}`} />}>
+          <Button
+            size="sm"
+            variant="outline"
+            render={<Link href={`/sessions/${row.original.id}`} />}
+          >
             Open
           </Button>
         ),
@@ -87,11 +91,8 @@ function SessionsTable({ sessions }: SessionsTableProps) {
         </p>
       </div>
 
-      <div
-        className="flex flex-wrap items-center gap-2"
-        role="group"
-        aria-label="Filter sessions by status"
-      >
+      <fieldset className="flex flex-wrap items-center gap-2 border-0 p-0">
+        <legend className="sr-only">Filter sessions by status</legend>
         {STATUS_FILTERS.map((filter) => (
           <Button
             key={filter.value}
@@ -104,7 +105,7 @@ function SessionsTable({ sessions }: SessionsTableProps) {
             {filter.label}
           </Button>
         ))}
-      </div>
+      </fieldset>
 
       {visibleSessions.length === 0 ? (
         <Empty className="border">
