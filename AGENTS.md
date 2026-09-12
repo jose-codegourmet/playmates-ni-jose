@@ -59,6 +59,7 @@ The stack is a **pnpm workspaces + Turborepo** monorepo that pairs a public site
 | Playmates admin/public workflows | `docs/04-workflows/` | `docs/05-integrations/` |
 | Playmates UI information architecture | `docs/06-ui/` | `docs/frontend-conventions.md` |
 | Playmates architectural decisions | `docs/10-decisions/` | Relevant product/engineering docs |
+| Playmates capability behavior | `openspec/specs/<capability>/spec.md` then `docs/01-product/` | |
 
 For the full documentation index, see `docs/README.md`. Product file list: `docs/FILE_INDEX.md`.
 
