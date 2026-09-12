@@ -51,6 +51,8 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation (PKCE code exchange) |
 | `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets (mock repos) |
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players list, create/edit dialog, archive |
+| `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues list, create/edit dialog, archive |
+| `/venues/[id]` | `src/app/(dashboard)/venues/[id]/page.tsx` | Venue detail, add/archive courts |
 | `/profile` | `src/app/(dashboard)/profile/page.tsx` | Admin profile |
 | `/api/images` | `src/app/api/images/route.ts` | Upload image to Supabase Storage |
 
