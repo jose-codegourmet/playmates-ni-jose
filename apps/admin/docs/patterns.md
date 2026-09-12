@@ -13,8 +13,12 @@ Playmates players (PNJ-055), venues (PNJ-056), and sessions (PNJ-057) follow thi
 ```text
 src/app/(dashboard)/sessions/
   ├── page.tsx
+  ├── actions.ts
   ├── sessions-table/SessionsTable.tsx
+  ├── new/page.tsx
   └── [id]/page.tsx
+
+Create-session form lives at `src/modules/playmates/session-form/` (schema, defaults, stories, meta).
 
 src/app/(dashboard)/players/
   ├── page.tsx
