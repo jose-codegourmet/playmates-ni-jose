@@ -1,4 +1,11 @@
 export type { PlaymatesComponentMeta } from "@fe-template/config";
+export {
+  ASSET_EXISTS,
+  assetExistsError,
+  isMockDomainError,
+  MOCK_PROVIDER_ERROR,
+  MockDomainError,
+} from "./errors";
 export { getPlaymatesRepos } from "./get-repos";
 export type {
   DriveFilenameInput,
@@ -65,3 +72,13 @@ export type {
   Venue,
   Visibility,
 } from "./types";
+export {
+  applyUploadSimulation,
+  assertCanEnqueue,
+  findActiveJob,
+  getJobView,
+  isActiveUploadStatus,
+  mockYoutubeVideoId,
+  shouldForceFail,
+  simulatedDurationMs,
+} from "./upload-simulator";

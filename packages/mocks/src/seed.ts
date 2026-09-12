@@ -53,6 +53,10 @@ export const SEED_IDS = {
     draftSep2: "dddddddd-0004-4000-8000-000000000002",
     aug26: "dddddddd-0004-4000-8000-000000000003",
   },
+  recordings: {
+    /** Draft-session only; YouTube force-fail hook (PNJ-017). Not on Sep 9. */
+    draftForceFailYoutube: "12121212-0017-4000-8000-000000000001",
+  },
 } as const;
 
 export interface MockState {
@@ -439,6 +443,27 @@ export function createSeedState(): MockState {
     });
   }
 
+  recordings.push({
+    id: SEED_IDS.recordings.draftForceFailYoutube,
+    sessionId: SEED_IDS.sessions.draftSep2,
+    gameId: null,
+    originalFilename: "IMG_2099.MOV",
+    displayName: "Draft force-fail YouTube",
+    cameraSide: "UNASSIGNED",
+    partNumber: 1,
+    sortOrder: 0,
+    mimeType: "video/quicktime",
+    sizeBytes: 42_000_000,
+    durationSeconds: 180,
+    capturedAt: T_SEP02,
+    localLastModifiedAt: T_SEP02,
+    checksum: null,
+    notes: "force-fail-youtube",
+    status: "imported",
+    createdAt: T_SEP02,
+    updatedAt: T_SEP02,
+  });
+
   const uniqueAugPlayers = new Set(
     sessionPlayers
       .filter((sp) => sp.sessionId === SEED_IDS.sessions.aug26)
@@ -486,6 +511,19 @@ export function assertSeedInvariants(state: MockState): void {
   if (!draft) fail("missing draft session");
   if (draft.status !== "draft") fail("draft status");
   if (draft.visibility !== "private") fail("draft visibility must be private");
+
+  const draftForceFail = state.recordings.find(
+    (r) => r.id === SEED_IDS.recordings.draftForceFailYoutube,
+  );
+  if (!draftForceFail) fail("missing draft force-fail recording (PNJ-017)");
+  if (draftForceFail.sessionId !== draft.id) fail("force-fail recording must be on draft session");
+  if (draftForceFail.notes !== "force-fail-youtube") fail("force-fail notes");
+  const sep9ForceFail = state.recordings.some(
+    (r) =>
+      r.sessionId === sep9.id &&
+      (r.notes === "force-fail-youtube" || r.originalFilename.includes("FAIL")),
+  );
+  if (sep9ForceFail) fail("Sep 9 must not include force-fail recordings");
 
   const sep9Recordings = state.recordings.filter((r) => r.sessionId === sep9.id);
   if (sep9Recordings.length !== 21) {

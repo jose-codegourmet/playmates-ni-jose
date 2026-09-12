@@ -12,7 +12,7 @@ Local agent instructions for the in-memory Playmates data layer. Read `/AGENTS.m
 - **Filter**: `pnpm --filter @fe-template/mocks`
 - **Package name**: `@fe-template/mocks`
 
-This package is **mock data and types only**. Do not add filesystem, network, Prisma, or other I/O here. Seed data is in `src/seed.ts` (PNJ-013). Repository interfaces are in `src/repositories/types.ts` (PNJ-014). In-memory implementations are in `src/store.ts`, `src/memory/*.ts`, and `src/get-repos.ts` (PNJ-015).
+This package is **mock data and types only**. Do not add filesystem, network, Prisma, or other I/O here. Seed data is in `src/seed.ts` (PNJ-013). Repository interfaces are in `src/repositories/types.ts` (PNJ-014). In-memory implementations are in `src/store.ts`, `src/memory/*.ts`, and `src/get-repos.ts` (PNJ-015). The upload simulator (`src/upload-simulator.ts`, PNJ-017) is time-based and must not read `File` bytes.
 
 ---
 
@@ -20,7 +20,7 @@ This package is **mock data and types only**. Do not add filesystem, network, Pr
 
 | Entry | Path | What it provides |
 |---|---|---|
-| `.` | `src/index.ts` | Barrel. Re-exports `PlaymatesComponentMeta`, domain types, seed helpers, repository interfaces, `getPlaymatesRepos` / `getState` / `resetState` (PNJ-015), and naming generators (`src/naming.ts`, PNJ-016). |
+| `.` | `src/index.ts` | Barrel. Re-exports `PlaymatesComponentMeta`, domain types, seed helpers, repository interfaces, `getPlaymatesRepos` / `getState` / `resetState` (PNJ-015), naming generators (`src/naming.ts`, PNJ-016), and the upload simulator / `ASSET_EXISTS` errors (PNJ-017). |
 
 ---
 
