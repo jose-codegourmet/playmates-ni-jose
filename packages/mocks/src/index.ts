@@ -7,6 +7,16 @@ export {
   MockDomainError,
 } from "./errors";
 export { getPlaymatesRepos } from "./get-repos";
+export {
+  getPublicGame,
+  getPublicPlayer,
+  getPublicSession,
+  getPublicVenue,
+  listPublicPlayers,
+  listPublicSessions,
+  listPublicVenues,
+} from "./public";
+
 export type {
   DriveFilenameInput,
   FacebookBodyInput,
