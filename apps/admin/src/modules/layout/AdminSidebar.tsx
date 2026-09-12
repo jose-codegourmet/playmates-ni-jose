@@ -1,7 +1,14 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@fe-template/ui";
-import { CircleDotIcon, LayoutDashboardIcon } from "lucide-react";
+import {
+  CalendarDaysIcon,
+  CircleDotIcon,
+  LayoutDashboardIcon,
+  MapPinIcon,
+  SettingsIcon,
+  UsersIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getInitials, useCurrentUser } from "@/hooks/use-current-user/client";
@@ -18,7 +25,13 @@ import {
   SidebarMenuItem,
 } from "@/modules/layout/sidebar/Sidebar";
 
-const NAV_ITEMS = [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon }] as const;
+const NAV_ITEMS = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
+  { href: "/sessions", label: "Sessions", icon: CalendarDaysIcon },
+  { href: "/players", label: "Players", icon: UsersIcon },
+  { href: "/venues", label: "Venues", icon: MapPinIcon },
+  { href: "/settings", label: "Settings", icon: SettingsIcon },
+] as const;
 
 export function AdminSidebar() {
   const pathname = usePathname();
