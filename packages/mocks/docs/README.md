@@ -23,7 +23,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 | Entry | Path | Exports |
 |---|---|---|
-| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). In-memory `getPlaymatesRepos`, `getState`, and `resetState` (PNJ-015). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016). |
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). In-memory `getPlaymatesRepos`, `getState`, and `resetState` (PNJ-015). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016). Time-based upload simulator (`getJobView`, `simulatedDurationMs`) and `MockDomainError` / `ASSET_EXISTS` (PNJ-017). |
 
 ## Major dependencies
 
@@ -50,6 +50,18 @@ Keep repository **interfaces** and app call sites. Replace **implementations**.
 3. Delete in-memory store / seed files (and any later `store.json` helper) once Postgres is the source of truth.
 
 Do not scatter `prisma.session.findMany` across pages. The seam is `getPlaymatesRepos()`.
+
+## Fake upload simulator (PNJ-017)
+
+`src/upload-simulator.ts` advances jobs from `startedAt` + elapsed time. There is **no** `setInterval`. Repo methods call `applyUploadSimulation()` so a refetch after ~6s can complete Drive and YouTube independently.
+
+- `enqueue(recordingId, provider)` returns an active job for that pair; throws `MockDomainError` with `code: "ASSET_EXISTS"` when a completed job **and** `ProviderAsset` already exist. Actions will later require `replace: true`.
+- Duration is 2500–6000 ms from `sizeBytes`. After the upload window, the job sits in `processing` for 400 ms, then completes and writes a `ProviderAsset`. YouTube `embedUrl` is `https://www.youtube.com/embed/MOCK{8hex}`.
+- Force-fail: `originalFilename` contains `FAIL`, or `notes === "force-fail-youtube"` on the **youtube** provider. Seed includes one such recording on the **draft** session only (`SEED_IDS.recordings.draftForceFailYoutube`).
+- `retry` is allowed from `failed|cancelled` only; increments `attemptCount` and clears errors. Providers are independent — retrying YouTube does not reset Drive.
+- `cancel` is allowed from `queued|initiating|uploading`.
+
+The simulator **does not read `File` bytes**. Do not add a server-side `sourceHandlePresent` map. Admin import UI keeps `File` objects in React state; after refresh that handle is gone. Prototype upload actions still run the simulator, but the UI must show a reselect banner (PNJ-063 / PNJ-072).
 
 `packages/db` Prisma schema stays PawPair until the owner migrates it. This package must not start that migration.
 
