@@ -6,7 +6,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 ## Scope
 
-`apps/web` is the public PawPair marketing site. It renders demo content and internal API routes query Prisma. It does **not** have authentication, middleware, or Supabase clients.
+`apps/web` is the public Playmates ni José site. PawPair marketing pages were removed in PNJ-004. It does **not** have authentication, middleware, or Supabase clients.
 
 - **Port**: 9000
 - **Filter**: `pnpm --filter web`
@@ -23,11 +23,11 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 | `src/components/jabkit/` | **Only** allowed `src/components/` tree. Written by `@jabkit/cli`, not by hand. See [`ROADMAP/00-conventions.md`](../../ROADMAP/00-conventions.md). Domain UI stays in `sections/` and `modules/`. |
 | `src/modules/layout/` | Header, footer, navigation |
 | `src/modules/providers/` | Redux + TanStack Query + theme providers |
-| `src/hooks/` | TanStack Query hooks (`use-blog-posts`, `use-pricing-plans`, `use-testimonials`) |
-| `src/constants/` | Routes, SEO metadata, navigation |
-| `src/types/` | Marketing-domain types |
+| `src/hooks/` | Query hooks (PawPair hooks deleted in PNJ-004; folder may be empty) |
+| `src/constants/` | Routes, SEO metadata, navigation (still PawPair until PNJ-006) |
+| `src/types/` | App-local types |
 | `src/store/` | Redux store + theme slice |
-| `src/lib/` | Utility helpers and mock data |
+| `src/lib/` | Utility helpers |
 | `public/images/` | Brand and marketing image assets |
 
 ---
@@ -43,24 +43,8 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/app/page.tsx` | Home page (ISR, `revalidate = 60`) |
-| `/about` | `src/app/about/page.tsx` | About page |
-| `/blog` | `src/app/blog/page.tsx` | Blog list (editorial, ISR `revalidate = 60`) |
-| `/blog/grid` | `src/app/blog/grid/page.tsx` | Blog grid (`PAGE_SEO.blogGrid`, ISR `revalidate = 60`) |
-| `/blog/[slug]` | `src/app/blog/[slug]/page.tsx` | Blog post detail (ISR + `generateStaticParams`) |
-| `/pricing` | `src/app/pricing/page.tsx` | Pricing page |
-| `/contact` | `src/app/contact/page.tsx` | Contact page |
-| `/otp` | `src/app/otp/page.tsx` | OTP verification demo (`PAGE_SEO.otp`) |
-| `/careers`, `/partners`, `/press` | `src/app/{careers,partners,press}/page.tsx` | Company stub pages (`PLACEHOLDER_PAGES`) |
-| `/resources/community-guide`, `/resources/first-meet-checklist` | `src/app/resources/*/page.tsx` | Resource stub pages |
-| `/help`, `/status` | `src/app/{help,status}/page.tsx` | Support stub pages |
-| `/legal/*` | `src/app/legal/*/page.tsx` | Legal stub pages (privacy, terms, guidelines, cookies, accessibility) |
-| `/sign-in`, `/create-profile` | `src/app/{sign-in,create-profile}/page.tsx` | Auth CTA stubs — no real authentication |
-| `/showcase` | `src/app/showcase/page.tsx` | Dev catalog (`ComponentsShowcase`, `SectionsShowcase`, `ThemePreview`). Intentionally omitted from `PAGE_SEO` — not a marketing page. |
-| `not-found` | `src/app/not-found.tsx` | Branded 404 (`PAGE_SEO.notFound`) |
-| `/api/blog` | `src/app/api/blog/route.ts` | Blog posts API |
-| `/api/pricing` | `src/app/api/pricing/route.ts` | Pricing plans API |
-| `/api/testimonials` | `src/app/api/testimonials/route.ts` | Testimonials API |
+| `/` | `src/app/page.tsx` | Temporary stub heading “Playmates ni José” (Phase 3 replaces it) |
+| `not-found` | `src/app/not-found.tsx` | Branded 404 (`NotFoundHeroSection`) |
 
 ---
 
@@ -93,9 +77,9 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 | Task | Read next |
 |---|---|
 | New page | `docs/frontend-conventions.md`, `docs/template/PAGES.md`, then `apps/web/docs/patterns.md` |
-| New section | `docs/frontend-conventions.md`, `docs/template/COMPONENTS.md`, then inspect `src/sections/home/` |
-| New API route | `docs/api-and-data-fetching.md`, then inspect `src/app/api/blog/route.ts` |
-| New hook | `docs/template/HOOKS.md`, then inspect `src/hooks/use-blog-posts/` |
+| New section | `docs/frontend-conventions.md`, `docs/template/COMPONENTS.md`, then inspect `src/sections/not-found/` |
+| New API route | `docs/api-and-data-fetching.md` |
+| New hook | `docs/template/HOOKS.md` |
 | Style change | `docs/styling-and-design-system.md` |
 
 ---
