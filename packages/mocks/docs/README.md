@@ -23,7 +23,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 | Entry | Path | Exports |
 |---|---|---|
-| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016). `getPlaymatesRepos` arrives in PNJ-015–PNJ-018. |
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). In-memory `getPlaymatesRepos`, `getState`, and `resetState` (PNJ-015). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016). |
 
 ## Major dependencies
 
@@ -34,16 +34,11 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 ## Basic usage
 
 ```ts
-import {
-  assertSeedInvariants,
-  createSeedState,
-  type PlaymatesComponentMeta,
-  type Session,
-  type SessionDetail,
-} from "@fe-template/mocks";
+import { getPlaymatesRepos, resetState } from "@fe-template/mocks";
 
-const state = createSeedState();
-assertSeedInvariants(state);
+const repos = getPlaymatesRepos();
+const players = await repos.players.list();
+resetState();
 ```
 
 ## How to swap the adapter later
