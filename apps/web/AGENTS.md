@@ -44,7 +44,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/app/page.tsx` | Temporary stub heading “Playmates ni José” (Phase 3 replaces it) |
+| `/` | `src/app/page.tsx` | Archive home (PNJ-043): hero, latest sessions, recent games, players strip |
 | `not-found` | `src/app/not-found.tsx` | Branded 404 (`NotFoundHeroSection`) |
 
 ---
