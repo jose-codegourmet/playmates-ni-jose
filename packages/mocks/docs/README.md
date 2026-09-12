@@ -23,7 +23,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 | Entry | Path | Exports |
 |---|---|---|
-| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). In-memory `getPlaymatesRepos`, `getState`, and `resetState` (PNJ-015). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016). Time-based upload simulator (`getJobView`, `simulatedDurationMs`) and `MockDomainError` / `ASSET_EXISTS` (PNJ-017). |
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012). `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). In-memory `getPlaymatesRepos`, `getState`, and `resetState` (PNJ-015). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016). Time-based upload simulator (`getJobView`, `simulatedDurationMs`) and `MockDomainError` / `ASSET_EXISTS` (PNJ-017). Public-site accessors from `src/public.ts` (PNJ-018): `listPublicSessions`, `getPublicSession`, `getPublicGame`, `listPublicPlayers`, `getPublicPlayer`, `listPublicVenues`, `getPublicVenue`. |
 
 ## Major dependencies
 
@@ -50,6 +50,12 @@ Keep repository **interfaces** and app call sites. Replace **implementations**.
 3. Delete in-memory store / seed files (and any later `store.json` helper) once Postgres is the source of truth.
 
 Do not scatter `prisma.session.findMany` across pages. The seam is `getPlaymatesRepos()`.
+
+## Replacing memory with Prisma
+
+Owner work — not for prototype tickets. Follow [`ROADMAP/11-handoff-to-real-data.md`](../../../ROADMAP/11-handoff-to-real-data.md).
+
+Keep `PlaymatesRepos` and the public helpers (`listPublicSessions`, `getPublicSession`, …). Reimplement `getPlaymatesRepos()` against Prisma (suggested `packages/db/src/prisma-repos.ts`) and change `apps/web/src/lib/playmates.ts` and `apps/admin/src/lib/playmates.ts` to import that function from `@fe-template/db`. Delete `packages/mocks/src/memory/*` (or keep as a test double) and any later `store.json` persistence. Do not call Prisma from pages.
 
 ## Fake upload simulator (PNJ-017)
 
