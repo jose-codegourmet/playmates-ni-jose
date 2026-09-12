@@ -50,7 +50,7 @@ Purpose, routes, features, and commands for the admin portal.
 | `/signup` | `src/app/signup/page.tsx` | Sign up |
 | `/otp` | `src/app/otp/page.tsx` | OTP confirmation |
 | `/auth/callback` | `src/app/auth/callback/route.ts` | Signup email confirmation callback |
-| `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Dashboard |
+| `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets |
 | `/users` | `src/app/(dashboard)/users/page.tsx` | User list |
 | `/users/[id]` | `src/app/(dashboard)/users/[id]/page.tsx` | User detail |
 | `/pets` | `src/app/(dashboard)/pets/page.tsx` | Pet list |
@@ -75,6 +75,7 @@ Purpose, routes, features, and commands for the admin portal.
 | `src/lib/supabase/` | Browser, server, and service-role Supabase clients |
 | `src/modules/auth/` | Login, signup, OTP forms |
 | `src/modules/layout/` | AdminSidebar, AdminHeader, sidebar |
+| `src/modules/playmates/dashboard/` | Dashboard widgets (sessions, uploads, Facebook, quick create) |
 | `src/modules/providers/` | Query client, theme, toaster providers |
 | `email-templates/` | Supabase Auth email HTML |
 
