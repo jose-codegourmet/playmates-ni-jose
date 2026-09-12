@@ -1,26 +1,45 @@
 "use server";
 
 import { prisma } from "@fe-template/db";
+import { isMockAuthEnabled, MOCK_ADMIN_USER } from "@/lib/auth/mock-user";
+import { createClient } from "@/lib/supabase/server";
 import type { CurrentUser } from "./types";
 
-const MOCK_CURRENT_USER: CurrentUser = {
-  email: "jose@local.dev",
-  name: "José",
-  avatarUrl: null,
-  role: "ADMIN",
-  bio: null,
-  createdAt: new Date(0).toISOString(),
-};
+function mockCurrentUser(): CurrentUser {
+  return {
+    id: MOCK_ADMIN_USER.id,
+    email: MOCK_ADMIN_USER.email,
+    name: MOCK_ADMIN_USER.name,
+    avatarUrl: null,
+    role: MOCK_ADMIN_USER.role,
+    bio: null,
+    createdAt: new Date(0).toISOString(),
+  };
+}
+
+export async function fetchCurrentUser(): Promise<CurrentUser | null> {
+  if (isMockAuthEnabled()) {
+    return mockCurrentUser();
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user?.email) return null;
+  return fetchCurrentUserByEmail(user.email);
+}
 
 export async function fetchCurrentUserByEmail(email: string): Promise<CurrentUser | null> {
-  // TODO(PNJ-007): full MOCK_AUTH bypass in middleware + dedicated mock-user module.
-  if (process.env.MOCK_AUTH === "true") {
-    return { ...MOCK_CURRENT_USER, email: email || MOCK_CURRENT_USER.email };
+  if (isMockAuthEnabled()) {
+    return mockCurrentUser();
   }
 
   const user = await prisma.user.findUnique({
     where: { email },
     select: {
+      id: true,
       email: true,
       name: true,
       avatarUrl: true,
@@ -33,6 +52,7 @@ export async function fetchCurrentUserByEmail(email: string): Promise<CurrentUse
   if (!user) return null;
 
   return {
+    id: user.id,
     email: user.email,
     name: user.name,
     avatarUrl: user.avatarUrl,
