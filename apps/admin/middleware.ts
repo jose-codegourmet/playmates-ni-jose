@@ -1,7 +1,19 @@
+// Prototype escape hatch: MOCK_AUTH=true skips the Supabase session check
+// so local admin work can proceed without project keys or a real login.
+// This is not production authentication. Never enable it in a deployed app.
+// Unset or any value other than "true" keeps the existing login redirect.
+// Do not log tokens, cookies, or session material from this file.
+
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  if (process.env.MOCK_AUTH === "true") {
+    return NextResponse.next({
+      request,
+    });
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
