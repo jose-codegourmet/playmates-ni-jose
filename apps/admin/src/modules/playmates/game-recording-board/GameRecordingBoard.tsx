@@ -28,6 +28,9 @@ function isMoveControlTarget(target: EventTarget | null): boolean {
     if (
       slot === "native-select" ||
       slot === "native-select-wrapper" ||
+      slot === "select-trigger" ||
+      slot === "select-content" ||
+      slot === "select-item" ||
       node.tagName === "SELECT" ||
       node.tagName === "OPTION" ||
       node.tagName === "LABEL"

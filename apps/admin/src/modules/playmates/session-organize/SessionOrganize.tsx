@@ -25,6 +25,7 @@ function SessionOrganize({
     }
 
     if (!sessionId) {
+      toast.error("Missing session id for assign");
       return;
     }
 

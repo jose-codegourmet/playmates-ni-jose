@@ -8,8 +8,11 @@ import {
   Button,
   Card,
   CardContent,
-  NativeSelect,
-  NativeSelectOption,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@fe-template/ui";
 import { GripVerticalIcon } from "lucide-react";
 
@@ -110,33 +113,39 @@ function RecordingCard({
             <StatusBadge kind="recording" status={recordingStatusForSide(cameraSide)} />
           </div>
           {moveTargets && moveTargets.length > 0 && onMoveTo ? (
-            <label
-              htmlFor={`move-to-${id}`}
+            <div
               className="flex min-w-0 flex-col gap-1"
               onPointerDown={(event) => event.stopPropagation()}
             >
-              <span className="text-xs text-muted-foreground">Move to…</span>
-              <NativeSelect
-                id={`move-to-${id}`}
-                size="sm"
-                className="w-full max-w-full"
-                aria-label="Move to"
+              <span className="text-xs text-muted-foreground" id={`move-to-label-${id}`}>
+                Move to…
+              </span>
+              <Select
                 value={droppableId}
-                onPointerDown={(event) => event.stopPropagation()}
-                onChange={(event) => {
-                  const next = event.target.value;
-                  if (next !== droppableId) {
+                onValueChange={(next) => {
+                  if (typeof next === "string" && next !== droppableId) {
                     onMoveTo(next);
                   }
                 }}
               >
-                {moveTargets.map((target) => (
-                  <NativeSelectOption key={target.value} value={target.value}>
-                    {target.label}
-                  </NativeSelectOption>
-                ))}
-              </NativeSelect>
-            </label>
+                <SelectTrigger
+                  id={`move-to-${id}`}
+                  size="sm"
+                  className="w-full max-w-full"
+                  aria-labelledby={`move-to-label-${id}`}
+                  aria-label="Move to"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent align="start" alignItemWithTrigger={false}>
+                  {moveTargets.map((target) => (
+                    <SelectItem key={target.value} value={target.value}>
+                      {target.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           ) : null}
         </div>
       </CardContent>
