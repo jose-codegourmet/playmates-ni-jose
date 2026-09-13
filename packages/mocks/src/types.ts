@@ -202,6 +202,9 @@ export interface PostDraft {
   title: string | null;
   body: string;
   version: number;
+  /** Set when José marks the draft posted (manual; no Facebook API). */
+  postedAt?: string;
+  postedUrl?: string;
   createdAt: string;
   updatedAt: string;
 }

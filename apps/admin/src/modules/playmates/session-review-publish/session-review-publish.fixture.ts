@@ -14,6 +14,9 @@ function game(n: number, extras: Partial<SessionReviewPublishGame> = {}): Sessio
     visibility: "public",
     facebookTitle: `Sep 9, 2026 | Game ${n}`,
     facebookBody: `Game ${n}\nJosé & Carlo vs Mika & Marco\n#PlaymatesNiJose #Badminton`,
+    facebookDraftId: `draft-${n}`,
+    facebookPostedAt: null,
+    facebookPostedUrl: null,
     ...extras,
   };
 }
@@ -22,6 +25,7 @@ export const sep9ReviewFixture: SessionReviewPublishProps = {
   sessionId: "session-sep-9",
   sessionStatus: "published",
   sessionVisibility: "public",
+  facebookGroupUrl: "https://www.facebook.com/groups/playmatesnijose",
   games: Array.from({ length: 10 }, (_, index) => game(index + 1)),
 };
 
@@ -40,6 +44,7 @@ export const missingDraftFixture: SessionReviewPublishProps = {
     game(1, {
       facebookTitle: "Game 1 Facebook draft",
       facebookBody: FACEBOOK_GENERATE_PLACEHOLDER,
+      facebookDraftId: null,
       visibility: "private",
       driveStatus: null,
     }),

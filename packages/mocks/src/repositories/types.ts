@@ -119,6 +119,7 @@ export type PostDraftRepository = {
   generate(gameId: string): Promise<PostDraft>;
   update(id: string, body: string): Promise<PostDraft>;
   markPosted(id: string, url?: string): Promise<PostDraft>;
+  unmarkPosted(id: string): Promise<PostDraft>;
 };
 
 export type PlaymatesRepos = {

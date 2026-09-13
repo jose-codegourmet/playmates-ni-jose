@@ -28,17 +28,33 @@ export default async function SessionPublishPage({ params }: SessionPublishPageP
       provider: asset.provider,
     }));
 
-  const drafts = new Map<string, { title: string | null; body: string }>();
+  const drafts = new Map<
+    string,
+    {
+      id: string;
+      title: string | null;
+      body: string;
+      postedAt?: string;
+      postedUrl?: string;
+    }
+  >();
   await Promise.all(
     detail.games.map(async (game) => {
       const draft = await repos.posts.getByGame(game.id);
       if (draft) {
-        drafts.set(game.id, { title: draft.title, body: draft.body });
+        drafts.set(game.id, {
+          id: draft.id,
+          title: draft.title,
+          body: draft.body,
+          postedAt: draft.postedAt,
+          postedUrl: draft.postedUrl,
+        });
       }
     }),
   );
 
   const games = toReviewPublishGames(detail.games, jobs, assets, drafts);
+  const facebookGroupUrl = getState().settings.facebookGroupUrl.trim();
 
   return (
     <section className="mx-auto max-w-3xl space-y-6">
@@ -55,6 +71,7 @@ export default async function SessionPublishPage({ params }: SessionPublishPageP
         sessionId={detail.session.id}
         sessionStatus={detail.session.status}
         sessionVisibility={detail.session.visibility}
+        facebookGroupUrl={facebookGroupUrl || undefined}
         games={games}
       />
     </section>

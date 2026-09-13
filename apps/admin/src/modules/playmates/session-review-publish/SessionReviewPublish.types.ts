@@ -9,12 +9,16 @@ export type SessionReviewPublishGame = {
   visibility: Visibility;
   facebookTitle: string;
   facebookBody: string;
+  facebookDraftId: string | null;
+  facebookPostedAt: string | null;
+  facebookPostedUrl: string | null;
 };
 
 export type SessionReviewPublishProps = {
   sessionId: string;
   sessionStatus: SessionStatus;
   sessionVisibility: Visibility;
+  facebookGroupUrl?: string;
   games: SessionReviewPublishGame[];
   onPublishGame?: (gameId: string) => Promise<void> | void;
   onUnpublishGame?: (gameId: string) => Promise<void> | void;

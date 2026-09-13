@@ -103,8 +103,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     for (const game of detail.games) {
       if (game.visibility !== "public") continue;
       const draft = await repos.posts.getByGame(game.id);
-      // Seed drafts are unposted; `markPosted` does not persist a posted flag yet.
-      if (!draft) continue;
+      if (!draft || draft.postedAt) continue;
       awaitingFacebook.push({
         gameId: game.id,
         gameNumber: game.gameNumber,

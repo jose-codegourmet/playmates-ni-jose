@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Label, Textarea } from "@fe-template/ui";
-import { useId, useSyncExternalStore } from "react";
+import { useId, useRef, useSyncExternalStore } from "react";
 
 import type { FacebookPostPreviewProps } from "./FacebookPostPreview.types";
 
@@ -15,6 +15,7 @@ function subscribeClipboard() {
 
 export function FacebookPostPreview({ title, body, onChange, onCopy }: FacebookPostPreviewProps) {
   const textareaId = useId();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isReadOnly = onChange == null;
   const clipboardAvailable = useSyncExternalStore(
     subscribeClipboard,
@@ -27,8 +28,10 @@ export function FacebookPostPreview({ title, body, onChange, onCopy }: FacebookP
       return;
     }
 
+    const currentBody = textareaRef.current?.value ?? body;
+
     try {
-      await navigator.clipboard.writeText(body);
+      await navigator.clipboard.writeText(currentBody);
       onCopy();
     } catch {
       // Clipboard permission denied or write failed — do not pretend copy succeeded.
@@ -50,6 +53,7 @@ export function FacebookPostPreview({ title, body, onChange, onCopy }: FacebookP
         </Button>
       </div>
       <Textarea
+        ref={textareaRef}
         id={textareaId}
         value={body}
         readOnly={isReadOnly}

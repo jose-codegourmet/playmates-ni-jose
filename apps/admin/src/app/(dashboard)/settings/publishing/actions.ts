@@ -25,6 +25,8 @@ export async function savePublishingSettings(
   state.settings.defaultHashtags = parsed.data.defaultHashtags.trim();
   persistState();
   revalidatePath("/settings/publishing");
+  revalidatePath("/sessions", "layout");
+  revalidatePath("/dashboard");
 
   return { success: true, message: "Publishing settings saved." };
 }
