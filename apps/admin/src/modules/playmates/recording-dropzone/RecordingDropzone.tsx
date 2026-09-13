@@ -60,6 +60,7 @@ function RecordingDropzone({
   filesMeta,
   children,
   onFiles,
+  restrictToVideo = true,
   dragActive: dragActiveOverride,
   disabled = false,
   className,
@@ -76,7 +77,9 @@ function RecordingDropzone({
       return;
     }
 
-    const files = Array.from(fileList).filter(isVideoFile);
+    const files = Array.from(fileList).filter((file) =>
+      restrictToVideo ? isVideoFile(file) : true,
+    );
     if (files.length === 0) {
       return;
     }
@@ -124,7 +127,7 @@ function RecordingDropzone({
           ref={inputRef}
           id={inputId}
           type="file"
-          accept="video/*"
+          accept={restrictToVideo ? "video/*" : undefined}
           multiple
           hidden
           disabled={disabled}
