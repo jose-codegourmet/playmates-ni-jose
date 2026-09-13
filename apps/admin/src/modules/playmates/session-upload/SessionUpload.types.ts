@@ -20,6 +20,7 @@ export type SessionUploadJob = {
 export type SessionUploadAsset = {
   recordingId: string;
   provider: Provider;
+  url?: string | null;
 };
 
 export type SessionUploadProps = {
@@ -28,4 +29,6 @@ export type SessionUploadProps = {
   jobs: SessionUploadJob[];
   assets: SessionUploadAsset[];
   onEnqueue?: (providers: Provider[]) => Promise<void> | void;
+  /** Live pages poll `getJobs`. Stories should set false. */
+  enableJobPolling?: boolean;
 };

@@ -26,6 +26,7 @@ export default async function SessionUploadPage({ params }: SessionUploadPagePro
     .map((asset) => ({
       recordingId: asset.recordingId,
       provider: asset.provider,
+      url: asset.url,
     }));
 
   return (
@@ -34,7 +35,7 @@ export default async function SessionUploadPage({ params }: SessionUploadPagePro
         <h2 className="font-heading text-xl font-medium">Upload</h2>
         <p className="text-sm text-muted-foreground">
           Queue Drive and YouTube jobs from this browser. Source files stay in the tab until you
-          reselect them after a refresh.
+          reselect them after a refresh. File bytes are never sent from this step.
         </p>
       </div>
       <SessionUpload

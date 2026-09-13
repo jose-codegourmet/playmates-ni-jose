@@ -15,7 +15,7 @@ const meta: Meta<typeof SessionUpload> = {
   parameters: {
     layout: "padded",
   },
-  args: sep9CompletedFixture,
+  args: { ...sep9CompletedFixture, enableJobPolling: false },
   decorators: [
     (Story) => (
       <SessionWorkspaceSaveProvider>
