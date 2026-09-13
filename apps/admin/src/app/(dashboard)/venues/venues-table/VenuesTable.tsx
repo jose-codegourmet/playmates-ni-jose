@@ -65,7 +65,14 @@ function VenuesTable({ venues }: VenuesTableProps) {
   async function confirmArchive() {
     if (!archiveTarget) return;
     setIsArchiving(true);
-    const result = await archiveVenue(archiveTarget.id);
+    let result: Awaited<ReturnType<typeof archiveVenue>>;
+    try {
+      result = await archiveVenue(archiveTarget.id);
+    } catch {
+      setIsArchiving(false);
+      toast.error("Could not archive venue.");
+      return;
+    }
     setIsArchiving(false);
 
     if (!result.success) {

@@ -1,5 +1,16 @@
 import type { Provider, UploadJobStatus } from "@fe-template/mocks";
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@fe-template/ui";
+import {
+  Button,
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@fe-template/ui";
 
 import type { UploadProviderStatusProps } from "../upload-provider-status/UploadProviderStatus.types";
 import { UploadProviderStatus } from "../upload-provider-status/UploadProviderStatus";
@@ -98,6 +109,18 @@ function ProviderCell({
 function UploadMatrix(props: UploadMatrixProps) {
   const { rows } = props;
 
+  if (rows.length === 0) {
+    return (
+      <Empty className="min-h-0 border p-4" data-slot="upload-matrix">
+        <EmptyHeader>
+          <EmptyTitle className="font-normal text-muted-foreground">
+            No recordings in the upload matrix.
+          </EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
+
   return (
     <div
       data-slot="upload-matrix"
@@ -112,37 +135,29 @@ function UploadMatrix(props: UploadMatrixProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
-                No recordings in the upload matrix.
+          {rows.map((row: UploadMatrixRow) => (
+            <TableRow key={row.recordingId}>
+              <TableCell className="align-top font-heading text-sm font-medium whitespace-normal">
+                {row.recordingLabel}
+              </TableCell>
+              <TableCell className="align-top whitespace-normal">
+                <ProviderCell
+                  cell={row.drive}
+                  recordingId={row.recordingId}
+                  provider="google_drive"
+                  matrix={props}
+                />
+              </TableCell>
+              <TableCell className="align-top whitespace-normal">
+                <ProviderCell
+                  cell={row.youtube}
+                  recordingId={row.recordingId}
+                  provider="youtube"
+                  matrix={props}
+                />
               </TableCell>
             </TableRow>
-          ) : (
-            rows.map((row: UploadMatrixRow) => (
-              <TableRow key={row.recordingId}>
-                <TableCell className="align-top font-heading text-sm font-medium whitespace-normal">
-                  {row.recordingLabel}
-                </TableCell>
-                <TableCell className="align-top whitespace-normal">
-                  <ProviderCell
-                    cell={row.drive}
-                    recordingId={row.recordingId}
-                    provider="google_drive"
-                    matrix={props}
-                  />
-                </TableCell>
-                <TableCell className="align-top whitespace-normal">
-                  <ProviderCell
-                    cell={row.youtube}
-                    recordingId={row.recordingId}
-                    provider="youtube"
-                    matrix={props}
-                  />
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+          ))}
         </TableBody>
       </Table>
     </div>

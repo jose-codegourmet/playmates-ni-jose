@@ -5,6 +5,11 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
   NativeSelect,
   NativeSelectOption,
 } from "@fe-template/ui";
@@ -58,7 +63,14 @@ function SessionMatchups({
     action: () => Promise<T>,
   ): Promise<boolean> {
     beginSave();
-    const result = await action();
+    let result: T;
+    try {
+      result = await action();
+    } catch {
+      endSave(false);
+      toast.error("Could not save matchup.");
+      return false;
+    }
     if (!result.success) {
       endSave(false);
       toast.error(result.error ?? "Could not save matchup.");
@@ -123,35 +135,43 @@ function SessionMatchups({
 
   if (roster.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
-        Add players on the{" "}
-        <Button
-          variant="link"
-          size="sm"
-          className="h-auto px-0"
-          render={<Link href={`/sessions/${sessionId}/players`} />}
-        >
-          Players
-        </Button>{" "}
-        step first. Game pickers use that roster.
-      </p>
+      <Empty className="border">
+        <EmptyHeader>
+          <EmptyTitle>No roster players</EmptyTitle>
+          <EmptyDescription>Game pickers use the session roster.</EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button
+            variant="link"
+            size="sm"
+            className="h-auto px-0"
+            render={<Link href={`/sessions/${sessionId}/players`} />}
+          >
+            Add players
+          </Button>
+        </EmptyContent>
+      </Empty>
     );
   }
 
   if (localGames.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
-        No games yet. Add games on the{" "}
-        <Button
-          variant="link"
-          size="sm"
-          className="h-auto px-0"
-          render={<Link href={`/sessions/${sessionId}/organize`} />}
-        >
-          Organize
-        </Button>{" "}
-        step, then assign teams here.
-      </p>
+      <Empty className="border">
+        <EmptyHeader>
+          <EmptyTitle>No games yet</EmptyTitle>
+          <EmptyDescription>Add games on Organize, then assign teams here.</EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button
+            variant="link"
+            size="sm"
+            className="h-auto px-0"
+            render={<Link href={`/sessions/${sessionId}/organize`} />}
+          >
+            Organize
+          </Button>
+        </EmptyContent>
+      </Empty>
     );
   }
 

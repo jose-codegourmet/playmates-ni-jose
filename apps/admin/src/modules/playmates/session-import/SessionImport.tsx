@@ -1,6 +1,17 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle, Badge, Button, DataTable } from "@fe-template/ui";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  Badge,
+  Button,
+  DataTable,
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@fe-template/ui";
 import type { ColumnDef } from "@tanstack/react-table";
 import { InfoIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -121,15 +132,22 @@ function SessionImport({ sessionId, recordings, games }: SessionImportProps) {
     }
 
     setImporting(true);
-    const result = await importSessionRecordings(
-      sessionId,
-      accepted.map((file) => ({
-        originalFilename: file.name,
-        mimeType: file.type || "application/octet-stream",
-        sizeBytes: file.size,
-        localLastModifiedAt: new Date(file.lastModified).toISOString(),
-      })),
-    );
+    let result: Awaited<ReturnType<typeof importSessionRecordings>>;
+    try {
+      result = await importSessionRecordings(
+        sessionId,
+        accepted.map((file) => ({
+          originalFilename: file.name,
+          mimeType: file.type || "application/octet-stream",
+          sizeBytes: file.size,
+          localLastModifiedAt: new Date(file.lastModified).toISOString(),
+        })),
+      );
+    } catch {
+      setImporting(false);
+      toast.error("Could not import recordings.");
+      return;
+    }
     setImporting(false);
 
     if (!result.success) {
@@ -266,7 +284,12 @@ function SessionImport({ sessionId, recordings, games }: SessionImportProps) {
         }}
       />
       {rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No recordings imported yet.</p>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyTitle>No recordings imported yet</EmptyTitle>
+            <EmptyDescription>Drop video files above to add metadata rows.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <DataTable columns={columns} data={rows} pageSize={20} />
       )}

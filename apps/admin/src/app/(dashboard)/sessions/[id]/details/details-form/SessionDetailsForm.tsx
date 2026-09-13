@@ -53,7 +53,13 @@ function SessionDetailsForm({
   const courtDisabled = venueId === "";
 
   async function onSubmit(values: SessionDetailsFormValues) {
-    const result = await updateSession(sessionId, values);
+    let result: Awaited<ReturnType<typeof updateSession>>;
+    try {
+      result = await updateSession(sessionId, values);
+    } catch {
+      toast.error("Could not save session details.");
+      return;
+    }
     if (!result.success) {
       toast.error(result.error);
       return;

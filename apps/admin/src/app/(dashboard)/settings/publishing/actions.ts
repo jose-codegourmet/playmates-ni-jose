@@ -20,13 +20,16 @@ export async function savePublishingSettings(
     return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid form data" };
   }
 
-  const state = getState();
-  state.settings.facebookGroupUrl = parsed.data.facebookGroupUrl.trim();
-  state.settings.defaultHashtags = parsed.data.defaultHashtags.trim();
-  persistState();
-  revalidatePath("/settings/publishing");
-  revalidatePath("/sessions", "layout");
-  revalidatePath("/dashboard");
-
-  return { success: true, message: "Publishing settings saved." };
+  try {
+    const state = getState();
+    state.settings.facebookGroupUrl = parsed.data.facebookGroupUrl.trim();
+    state.settings.defaultHashtags = parsed.data.defaultHashtags.trim();
+    persistState();
+    revalidatePath("/settings/publishing");
+    revalidatePath("/sessions", "layout");
+    revalidatePath("/dashboard");
+    return { success: true, message: "Publishing settings saved." };
+  } catch {
+    return { success: false, error: "Could not save publishing settings." };
+  }
 }

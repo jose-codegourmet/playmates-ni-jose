@@ -148,6 +148,7 @@ function SessionUpload({
       endSave(ok);
     } catch {
       endSave(false);
+      toast.error("Could not update uploads.");
     } finally {
       setQueueing(false);
     }

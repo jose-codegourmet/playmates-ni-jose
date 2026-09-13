@@ -49,7 +49,14 @@ function VenueCourts({ venue, courts }: VenueCourtsProps) {
   async function confirmArchiveCourt() {
     if (!archiveTarget) return;
     setIsArchivingCourt(true);
-    const result = await archiveCourt(archiveTarget.id);
+    let result: Awaited<ReturnType<typeof archiveCourt>>;
+    try {
+      result = await archiveCourt(archiveTarget.id);
+    } catch {
+      setIsArchivingCourt(false);
+      toast.error("Could not archive court.");
+      return;
+    }
     setIsArchivingCourt(false);
 
     if (!result.success) {
@@ -64,7 +71,14 @@ function VenueCourts({ venue, courts }: VenueCourtsProps) {
 
   async function confirmArchiveVenue() {
     setIsArchivingVenue(true);
-    const result = await archiveVenue(venue.id);
+    let result: Awaited<ReturnType<typeof archiveVenue>>;
+    try {
+      result = await archiveVenue(venue.id);
+    } catch {
+      setIsArchivingVenue(false);
+      toast.error("Could not archive venue.");
+      return;
+    }
     setIsArchivingVenue(false);
 
     if (!result.success) {
