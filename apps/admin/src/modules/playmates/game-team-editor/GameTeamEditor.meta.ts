@@ -6,7 +6,7 @@ export default {
   version: "0.1.0",
   addedAt: "2026-09-12",
   description:
-    "Controlled admin widget for assigning a session roster into Team 1 and Team 2, with swap, clear, and copy-previous actions.",
+    "Controlled admin widget for assigning a session roster into Team 1 and Team 2, with swap, clear both teams, and copy-previous matchup actions.",
   sectionCategory: "workflow",
   purpose:
     "Let an admin set a game matchup from the session roster without inferring teams from camera sides.",
