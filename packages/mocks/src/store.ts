@@ -23,7 +23,7 @@ function nodeIo(): { fs: NodeFs; path: NodePath } | null {
   if (typeof process === "undefined" || typeof process.cwd !== "function") {
     return null;
   }
-  if (typeof window !== "undefined") {
+  if ("window" in globalThis) {
     return null;
   }
   const getter = (
