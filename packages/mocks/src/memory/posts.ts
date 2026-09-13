@@ -1,7 +1,11 @@
-import { formatFacebookBody, formatSessionDisplayDate } from "../naming";
+import {
+  formatFacebookBody,
+  formatRecordingDisplayName,
+  formatSessionDisplayDate,
+} from "../naming";
 import type { PostDraftRepository } from "../repositories/types";
 import { getState, newId, nowIso, persistState, requireEntity } from "../store";
-import type { PostDraft } from "../types";
+import type { PostDraft, Provider } from "../types";
 
 function teamNames(gameId: string, teamNo: number): string[] {
   const state = getState();
@@ -26,15 +30,39 @@ function draftBody(gameId: string): { title: string; body: string } {
     "Session",
     game.sessionId,
   );
-  const recordingIds = state.recordings.filter((row) => row.gameId === gameId).map((row) => row.id);
-  const assets = state.providerAssets.filter((asset) => recordingIds.includes(asset.recordingId));
-  const youtubeUrls = assets
-    .filter((asset) => asset.provider === "youtube" && asset.url)
-    .map((asset) => asset.url as string);
-  const driveUrls = assets
-    .filter((asset) => asset.provider === "google_drive" && asset.url)
-    .map((asset) => asset.url as string);
+  const recordings = state.recordings
+    .filter((row) => row.gameId === gameId)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+  const partCountBySide = recordings.reduce(
+    (counts, recording) => {
+      counts[recording.cameraSide] = (counts[recording.cameraSide] ?? 0) + 1;
+      return counts;
+    },
+    {} as Record<string, number>,
+  );
+
   const gameNumber = game.gameNumber ?? 0;
+
+  function assetLines(provider: Provider): string[] {
+    const lines: string[] = [];
+    for (const recording of recordings) {
+      const asset = state.providerAssets.find(
+        (row) => row.recordingId === recording.id && row.provider === provider && row.url,
+      );
+      if (!asset?.url) continue;
+      const label = formatRecordingDisplayName({
+        gameNumber,
+        side: recording.cameraSide,
+        partNumber: recording.partNumber,
+        partCount: partCountBySide[recording.cameraSide] ?? 1,
+      });
+      lines.push(`${label}: ${asset.url}`);
+    }
+    return lines;
+  }
+
+  const youtubeUrls = assetLines("youtube");
+  const driveUrls = assetLines("google_drive");
   const body = formatFacebookBody({
     date: session.sessionDate,
     gameNumber,
@@ -96,18 +124,41 @@ export function createPostDraftRepository(): PostDraftRepository {
         id,
       );
       draft.body = body;
+      draft.version += 1;
       draft.updatedAt = nowIso();
       persistState();
       return draft;
     },
 
-    async markPosted(id) {
+    async markPosted(id, url) {
       const state = getState();
       const draft = requireEntity(
         state.postDrafts.find((row) => row.id === id),
         "PostDraft",
         id,
       );
+      const now = nowIso();
+      draft.postedAt = draft.postedAt ?? now;
+      const trimmed = url?.trim();
+      if (trimmed) {
+        draft.postedUrl = trimmed;
+      } else if (url !== undefined) {
+        delete draft.postedUrl;
+      }
+      draft.updatedAt = now;
+      persistState();
+      return draft;
+    },
+
+    async unmarkPosted(id) {
+      const state = getState();
+      const draft = requireEntity(
+        state.postDrafts.find((row) => row.id === id),
+        "PostDraft",
+        id,
+      );
+      delete draft.postedAt;
+      delete draft.postedUrl;
       draft.updatedAt = nowIso();
       persistState();
       return draft;

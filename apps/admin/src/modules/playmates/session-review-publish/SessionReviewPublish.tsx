@@ -16,6 +16,8 @@ import {
   CardHeader,
   CardTitle,
   Checkbox,
+  Input,
+  Label,
   NativeSelect,
   NativeSelectOption,
 } from "@fe-template/ui";
@@ -23,13 +25,18 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import {
+  type FacebookDraftPayload,
+  generateDraft,
+  markDraftPosted,
   publishAllSessionGames,
   publishSessionGame,
   publishWorkspaceSession,
   setGamePublishVisibility,
   setSessionPublishVisibility,
+  unmarkDraftPosted,
   unpublishSessionGame,
   unpublishWorkspaceSession,
+  updateDraft,
 } from "@/app/(dashboard)/sessions/[id]/publish/actions";
 
 import { FacebookPostPreview } from "../facebook-post-preview/FacebookPostPreview";
@@ -64,10 +71,160 @@ function missingAssetLabel(game: SessionReviewPublishGame): string {
   return `Game ${game.gameNumber} (${missing.join(" and ")})`;
 }
 
+function applyDraftToGame(
+  game: SessionReviewPublishGame,
+  draft: FacebookDraftPayload,
+): SessionReviewPublishGame {
+  return {
+    ...game,
+    facebookDraftId: draft.id,
+    facebookTitle: draft.title?.trim() || game.facebookTitle,
+    facebookBody: draft.body,
+    facebookPostedAt: draft.postedAt ?? null,
+    facebookPostedUrl: draft.postedUrl ?? null,
+  };
+}
+
+function FacebookDraftCard({
+  game,
+  persistResult,
+  onApplyDraft,
+}: {
+  game: SessionReviewPublishGame;
+  persistResult: (action: () => Promise<ActionResult>) => Promise<boolean>;
+  onApplyDraft: (draft: FacebookDraftPayload) => void;
+}) {
+  const [body, setBody] = useState(game.facebookBody);
+  const [postedUrl, setPostedUrl] = useState(game.facebookPostedUrl ?? "");
+  const posted = Boolean(game.facebookPostedAt);
+  const postedCheckboxId = `facebook-posted-${game.id}`;
+  const postedUrlId = `facebook-posted-url-${game.id}`;
+
+  useEffect(() => {
+    setBody(game.facebookBody);
+    setPostedUrl(game.facebookPostedUrl ?? "");
+  }, [game.facebookBody, game.facebookPostedUrl]);
+
+  async function runDraftAction(
+    action: () => Promise<{ success: boolean; error?: string; draft?: FacebookDraftPayload }>,
+    successMessage: string | ((draft: FacebookDraftPayload) => string),
+  ): Promise<FacebookDraftPayload | null> {
+    let draft: FacebookDraftPayload | undefined;
+    const ok = await persistResult(async () => {
+      const result = await action();
+      if (result.success && result.draft) {
+        draft = result.draft;
+      }
+      return result;
+    });
+    if (!ok || !draft) return null;
+    onApplyDraft(draft);
+    setBody(draft.body);
+    if (draft.postedUrl) setPostedUrl(draft.postedUrl);
+    toast.success(
+      typeof successMessage === "function" ? successMessage(draft) : successMessage,
+    );
+    return draft;
+  }
+
+  async function handleGenerate() {
+    await runDraftAction(() => generateDraft(game.id), "Facebook draft generated");
+  }
+
+  async function handleSave() {
+    await runDraftAction(async () => {
+      let draftId = game.facebookDraftId;
+      if (!draftId) {
+        const generated = await generateDraft(game.id);
+        if (!generated.success) return generated;
+        draftId = generated.draft.id;
+      }
+      return updateDraft(draftId, body);
+    }, (draft) => `Draft saved (v${draft.version})`);
+  }
+
+  async function handlePostedChange(next: boolean) {
+    if (!next) {
+      if (!game.facebookDraftId) return;
+      await runDraftAction(
+        () => unmarkDraftPosted(game.facebookDraftId as string),
+        "Cleared Facebook posted mark",
+      );
+      return;
+    }
+
+    await runDraftAction(async () => {
+      let draftId = game.facebookDraftId;
+      if (!draftId) {
+        const generated = await generateDraft(game.id);
+        if (!generated.success) return generated;
+        draftId = generated.draft.id;
+      }
+      return markDraftPosted(draftId, postedUrl.trim() || undefined);
+    }, "Marked as posted to Facebook Group");
+  }
+
+  async function handlePostedUrlBlur() {
+    if (!posted || !game.facebookDraftId) return;
+    await runDraftAction(
+      () => markDraftPosted(game.facebookDraftId as string, postedUrl.trim() || undefined),
+      "Facebook post URL saved",
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <FacebookPostPreview
+        title={game.facebookTitle}
+        body={body}
+        onChange={setBody}
+        onCopy={() => {
+          toast.success("Copied Facebook draft");
+        }}
+      />
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="button" size="sm" variant="outline" onClick={() => void handleGenerate()}>
+          Generate
+        </Button>
+        <Button type="button" size="sm" onClick={() => void handleSave()}>
+          Save draft
+        </Button>
+      </div>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm text-foreground">
+          <Checkbox
+            id={postedCheckboxId}
+            checked={posted}
+            onCheckedChange={(next) => {
+              void handlePostedChange(next === true);
+            }}
+          />
+          <label htmlFor={postedCheckboxId}>Marked as posted to Facebook Group</label>
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor={postedUrlId}>Facebook post URL (optional)</Label>
+          <Input
+            id={postedUrlId}
+            type="url"
+            inputMode="url"
+            placeholder="https://www.facebook.com/groups/…"
+            value={postedUrl}
+            onChange={(event) => setPostedUrl(event.currentTarget.value)}
+            onBlur={() => {
+              void handlePostedUrlBlur();
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SessionReviewPublish({
   sessionId,
   sessionStatus,
   sessionVisibility,
+  facebookGroupUrl,
   games,
   onPublishGame,
   onUnpublishGame,
@@ -339,7 +496,19 @@ function SessionReviewPublish({
       />
 
       <div className="space-y-4">
-        <h3 className="font-heading text-base font-medium">Facebook drafts</h3>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-heading text-base font-medium">Facebook drafts</h3>
+          {facebookGroupUrl ? (
+            <a
+              href={facebookGroupUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              Open group
+            </a>
+          ) : null}
+        </div>
         {localGames.length === 0 ? (
           <p className="text-sm text-muted-foreground">No games to preview yet.</p>
         ) : (
@@ -373,11 +542,15 @@ function SessionReviewPublish({
                     </div>
                   </CardHeader>
                   <CardContent className="px-(--card-spacing) py-4">
-                    <FacebookPostPreview
-                      title={game.facebookTitle}
-                      body={game.facebookBody}
-                      onCopy={() => {
-                        toast.success("Copied Facebook draft");
+                    <FacebookDraftCard
+                      game={game}
+                      persistResult={persistResult}
+                      onApplyDraft={(draft) => {
+                        setLocalGames((current) =>
+                          current.map((row) =>
+                            row.id === game.id ? applyDraftToGame(row, draft) : row,
+                          ),
+                        );
                       }}
                     />
                   </CardContent>

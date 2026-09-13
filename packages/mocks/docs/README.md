@@ -75,6 +75,8 @@ The simulator **does not read `File` bytes**. Do not add a server-side `sourceHa
 
 Delete `store.json` (or call `resetState()`) to return both apps to the hardcoded seed.
 
+`PostDraft` may include optional `postedAt` / `postedUrl` (PNJ-075). `posts.generate` builds the body from `formatFacebookBody`, current matchup, provider asset URLs, and `settings.defaultHashtags`. `posts.update` increments `version`. `posts.markPosted` / `unmarkPosted` are local flags only — never a Facebook API call.
+
 `packages/db` Prisma schema stays PawPair until the owner migrates it. This package must not start that migration.
 
 ## Development commands

@@ -81,7 +81,16 @@ export function toReviewPublishGames(
   games: GameWithTeamsAndRecordings[],
   jobs: UploadJob[],
   assets: Pick<ProviderAsset, "recordingId" | "provider">[],
-  drafts: Map<string, { title: string | null; body: string }>,
+  drafts: Map<
+    string,
+    {
+      id: string;
+      title: string | null;
+      body: string;
+      postedAt?: string;
+      postedUrl?: string;
+    }
+  >,
 ): SessionReviewPublishGame[] {
   return games.map((game, index) => {
     const recordingIds = game.recordings.map((recording) => recording.id);
@@ -96,6 +105,9 @@ export function toReviewPublishGames(
       visibility: game.visibility,
       facebookTitle: draft?.title?.trim() || `Game ${gameNumber} Facebook draft`,
       facebookBody: facebookPreviewBody(draft?.body),
+      facebookDraftId: draft?.id ?? null,
+      facebookPostedAt: draft?.postedAt ?? null,
+      facebookPostedUrl: draft?.postedUrl ?? null,
     };
   });
 }

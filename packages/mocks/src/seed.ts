@@ -494,7 +494,7 @@ export function createSeedState(): MockState {
     postDrafts,
     oauthConnections: [],
     settings: {
-      facebookGroupUrl: "",
+      facebookGroupUrl: "https://www.facebook.com/groups/playmatesnijose",
       defaultHashtags: DEFAULT_FACEBOOK_HASHTAGS,
     },
   };
