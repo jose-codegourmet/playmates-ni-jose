@@ -1,7 +1,7 @@
 import {
   formatGameSlug,
   type GameWithTeamsAndRecordings,
-  getPlaymatesRepos,
+  type Player,
   getPublicGame,
   getPublicPlayer,
   getPublicSession,
@@ -11,6 +11,8 @@ import {
   listPublicSessions,
   listPublicVenues,
   type ProviderAsset,
+  type SessionListItem,
+  type Venue,
 } from "@fe-template/mocks";
 
 export {
@@ -40,6 +42,16 @@ export type PublicGamePageData = {
   assets: ProviderAsset[];
 };
 
+/** Public game with the parent public session slug/date (never a private game). */
+export type PublicListedGame = GameWithTeamsAndRecordings & {
+  sessionSlug: string;
+  sessionDate: string;
+};
+
+function playerAppearsOnGame(game: GameWithTeamsAndRecordings, player: Pick<Player, "id">): boolean {
+  return game.teams.some((team) => team.players.some((member) => member.id === player.id));
+}
+
 function publicNeighbor(
   games: GameWithTeamsAndRecordings[],
   sessionDate: string,
@@ -47,7 +59,7 @@ function publicNeighbor(
   delta: number,
 ): PublicGameNeighbor | null {
   const target = gameNumber + delta;
-  const found = games.find((row) => row.gameNumber === target && row.visibility === "public");
+  const found = games.find((row) => row.gameNumber === target);
   if (!found || found.gameNumber == null) {
     return null;
   }
@@ -57,26 +69,33 @@ function publicNeighbor(
   };
 }
 
-/** Public game plus session context. `null` if the game or session is private/missing. */
+/**
+ * Public game plus session context. `null` if the game or session is private/missing.
+ * Uses the same `getPublicSession` helper as the session page (private games omitted).
+ */
 export async function getPublicGamePage(slug: string): Promise<PublicGamePageData | null> {
   const game = await getPublicGame(slug);
   if (!game) {
     return null;
   }
 
-  const detail = await getPlaymatesRepos().sessions.getById(game.sessionId);
-  if (detail?.session.visibility !== "public") {
+  const listed = (await listPublicGames()).find((row) => row.id === game.id);
+  if (!listed || listed.gameNumber == null) {
     return null;
   }
 
-  const publicGames = detail.games.filter((row) => row.visibility === "public");
-  const current = publicGames.find((row) => row.id === game.id);
-  if (!current || current.gameNumber == null) {
-    return null;
-  }
-
-  const resolvedSlug = formatGameSlug(detail.session.sessionDate, current.gameNumber);
+  const resolvedSlug = formatGameSlug(listed.sessionDate, listed.gameNumber);
   if (resolvedSlug !== slug) {
+    return null;
+  }
+
+  const detail = await getPublicSession(listed.sessionSlug);
+  if (!detail) {
+    return null;
+  }
+
+  const current = detail.games.find((row) => row.id === listed.id);
+  if (!current || current.gameNumber == null) {
     return null;
   }
 
@@ -86,23 +105,62 @@ export async function getPublicGamePage(slug: string): Promise<PublicGamePageDat
   return {
     slug: resolvedSlug,
     game: current,
-    sessionSlug: detail.session.slug ?? detail.session.sessionDate,
+    sessionSlug: detail.session.slug ?? listed.sessionSlug,
     sessionDate: detail.session.sessionDate,
     sessionTitle: detail.session.title,
     venueName: detail.venue?.name ?? null,
-    previous: publicNeighbor(publicGames, detail.session.sessionDate, current.gameNumber, -1),
-    next: publicNeighbor(publicGames, detail.session.sessionDate, current.gameNumber, 1),
+    previous: publicNeighbor(detail.games, detail.session.sessionDate, current.gameNumber, -1),
+    next: publicNeighbor(detail.games, detail.session.sessionDate, current.gameNumber, 1),
     assets,
   };
 }
 
-/** Flatten public games from public sessions. Private sessions are never loaded. */
-export async function listPublicGames(): Promise<GameWithTeamsAndRecordings[]> {
+/** Flatten public games from public sessions. Private sessions/games are never loaded. */
+export async function listPublicGames(): Promise<PublicListedGame[]> {
   const sessions = await listPublicSessions();
   const details = await Promise.all(
-    sessions.map((session) =>
-      session.slug ? getPublicSession(session.slug) : Promise.resolve(null),
-    ),
+    sessions.map((item) => (item.slug ? getPublicSession(item.slug) : Promise.resolve(null))),
   );
-  return details.flatMap((detail) => detail?.games ?? []);
+
+  const listed: PublicListedGame[] = [];
+  for (let index = 0; index < sessions.length; index += 1) {
+    const item = sessions[index];
+    const detail = details[index];
+    if (!item?.slug || !detail) continue;
+    for (const game of detail.games) {
+      listed.push({
+        ...game,
+        sessionSlug: item.slug,
+        sessionDate: detail.session.sessionDate,
+      });
+    }
+  }
+  return listed;
+}
+
+/** Public sessions where this player appears on at least one public game. */
+export async function listPublicSessionsForPlayer(
+  player: Pick<Player, "id">,
+): Promise<SessionListItem[]> {
+  const [sessions, games] = await Promise.all([listPublicSessions(), listPublicGames()]);
+  const slugs = new Set(
+    games.filter((game) => playerAppearsOnGame(game, player)).map((game) => game.sessionSlug),
+  );
+  return sessions.filter((session) => Boolean(session.slug) && slugs.has(session.slug as string));
+}
+
+/** Public games this player appears on. */
+export async function listPublicGamesForPlayer(
+  player: Pick<Player, "id">,
+): Promise<PublicListedGame[]> {
+  const games = await listPublicGames();
+  return games.filter((game) => playerAppearsOnGame(game, player));
+}
+
+/** Public sessions at this venue. */
+export async function listPublicSessionsForVenue(
+  venue: Pick<Venue, "name">,
+): Promise<SessionListItem[]> {
+  const sessions = await listPublicSessions();
+  return sessions.filter((session) => (session.venueName ?? "").trim() === venue.name);
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
 import { formatPageTitle, PAGE_SEO } from "@/constants/seo";
-import { fetchPublicSessions } from "@/hooks/use-public-sessions/server";
+import { fetchPublicSessionsForVenue } from "@/hooks/use-public-sessions/server";
 import { fetchPublicVenue } from "@/hooks/use-public-venues/server";
 import { VenueDetailHeaderSection } from "@/sections/venue-detail/header/VenueDetailHeaderSection";
 import {
@@ -15,12 +15,12 @@ type VenueDetailPageProps = {
 };
 
 async function loadVenueDetail(venueSlug: string) {
-  const [venue, sessions] = await Promise.all([fetchPublicVenue(venueSlug), fetchPublicSessions()]);
-
+  const venue = await fetchPublicVenue(venueSlug);
   if (!venue) {
     return null;
   }
 
+  const sessions = await fetchPublicSessionsForVenue(venue);
   const history = toVenueDetailSessionCards(venue, sessions);
   if (history.length === 0) {
     return null;

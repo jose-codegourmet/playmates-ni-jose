@@ -1,7 +1,7 @@
-import type { GameWithTeamsAndRecordings, SessionListItem } from "@fe-template/mocks";
 import { formatGameSlug, formatMatchup } from "@fe-template/mocks";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 import { ROUTES } from "@/constants/routes";
+import type { PublicListedGame } from "@/lib/playmates";
 import { cn } from "@/lib/utils";
 import { GameCard } from "@/sections/_shared/game-card/GameCard";
 import type { GameCardProps } from "@/sections/_shared/game-card/GameCard.types";
@@ -10,36 +10,24 @@ import type { RecentGamesSectionProps } from "./RecentGamesSection.types";
 
 const RECENT_LIMIT = 6;
 
-export function toRecentGameCards(
-  sessions: SessionListItem[],
-  games: GameWithTeamsAndRecordings[],
-): GameCardProps[] {
-  const sortedSessions = [...sessions].sort((a, b) => b.date.localeCompare(a.date));
-  const cards: GameCardProps[] = [];
-  let offset = 0;
-
-  for (const session of sortedSessions) {
-    const slice = games.slice(offset, offset + session.gameCount);
-    offset += session.gameCount;
-
-    for (const game of slice) {
-      if (game.gameNumber == null) continue;
+export function toRecentGameCards(games: PublicListedGame[]): GameCardProps[] {
+  return games
+    .filter((game): game is PublicListedGame & { gameNumber: number } => game.gameNumber != null)
+    .map((game) => {
       const team1 =
         game.teams.find((team) => team.teamNo === 1)?.players.map((player) => player.displayName) ??
         [];
       const team2 =
         game.teams.find((team) => team.teamNo === 2)?.players.map((player) => player.displayName) ??
         [];
-      cards.push({
-        href: ROUTES.game(formatGameSlug(session.date, game.gameNumber)),
+      return {
+        href: ROUTES.game(formatGameSlug(game.sessionDate, game.gameNumber)),
         gameNumber: game.gameNumber,
         matchupLabel: formatMatchup(team1, team2),
         recordingCount: game.recordings.length,
-      });
-    }
-  }
-
-  return cards.slice(0, RECENT_LIMIT);
+      };
+    })
+    .slice(0, RECENT_LIMIT);
 }
 
 function RecentGamesSection({ className, games }: RecentGamesSectionProps) {

@@ -32,6 +32,7 @@ export {
   getPublicPlayer,
   getPublicSession,
   getPublicVenue,
+  listPublicGames,
   listPublicPlayers,
   listPublicSessions,
   listPublicVenues,

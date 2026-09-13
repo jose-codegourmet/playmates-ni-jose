@@ -1,10 +1,22 @@
 "use server";
 
-import { getPublicGame, getPublicGamePage, listPublicGames } from "@/lib/playmates";
-import type { Game, GameWithTeamsAndRecordings, PublicGamePageData } from "./types";
+import type { Player } from "@fe-template/mocks";
+import {
+  getPublicGame,
+  getPublicGamePage,
+  listPublicGames,
+  listPublicGamesForPlayer,
+} from "@/lib/playmates";
+import type { Game, PublicGamePageData, PublicListedGame } from "./types";
 
-export async function fetchPublicGames(): Promise<GameWithTeamsAndRecordings[]> {
+export async function fetchPublicGames(): Promise<PublicListedGame[]> {
   return listPublicGames();
+}
+
+export async function fetchPublicGamesForPlayer(
+  player: Pick<Player, "id">,
+): Promise<PublicListedGame[]> {
+  return listPublicGamesForPlayer(player);
 }
 
 /** Returns `null` for missing or private slugs. Do not prefetch private slugs for SEO. */

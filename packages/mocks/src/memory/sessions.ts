@@ -4,6 +4,23 @@ import { getState, newId, nowIso, persistState, requireEntity, uniqueSlug } from
 import type { GameWithTeamsAndRecordings, Session, SessionDetail, SessionListItem } from "../types";
 import { assertCourtMatchesVenue } from "./helpers";
 
+function playerNamesFromGames(
+  state: ReturnType<typeof getState>,
+  games: { id: string }[],
+): string[] {
+  const gameIds = new Set(games.map((game) => game.id));
+  const teamIds = new Set(
+    state.gameTeams.filter((team) => gameIds.has(team.gameId)).map((team) => team.id),
+  );
+  const names = new Set<string>();
+  for (const row of state.gameTeamPlayers) {
+    if (!teamIds.has(row.gameTeamId)) continue;
+    const player = state.players.find((member) => member.id === row.playerId);
+    if (player) names.add(player.displayName);
+  }
+  return [...names];
+}
+
 function toListItem(session: Session, visibility?: Session["visibility"]): SessionListItem {
   const state = getState();
   const venue = session.venueId
@@ -17,9 +34,10 @@ function toListItem(session: Session, visibility?: Session["visibility"]): Sessi
   const rosterIds = state.sessionPlayers
     .filter((row) => row.sessionId === session.id)
     .map((row) => row.playerId);
-  const playerNames = rosterIds
+  const rosterNames = rosterIds
     .map((id) => state.players.find((player) => player.id === id)?.displayName)
     .filter((name): name is string => Boolean(name));
+  const playerNames = visibility ? playerNamesFromGames(state, games) : rosterNames;
 
   return {
     date: session.sessionDate,
