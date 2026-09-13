@@ -7,11 +7,17 @@ import {
   KeyboardSensor,
   PointerSensor,
   type PointerSensorOptions,
+  pointerWithin,
   useDroppable,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Card, CardContent, CardHeader, Empty, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 
 import { CameraSideLane } from "../camera-side-lane/CameraSideLane";
@@ -56,14 +62,69 @@ class LanePointerSensor extends PointerSensor {
   ];
 }
 
-function laneCollisionDetection(...args: Parameters<typeof closestCenter>) {
+function organizeCollisionDetection(...args: Parameters<typeof closestCenter>) {
   const [input] = args;
+  const laneContainers = input.droppableContainers.filter(
+    (container) => container.data.current?.type === "lane",
+  );
+  const sortableContainers = input.droppableContainers.filter(
+    (container) => container.data.current?.sortable,
+  );
+  const activeLaneId = input.active.data.current?.laneId;
+  const closestSortable = closestCenter({
+    ...input,
+    droppableContainers: sortableContainers,
+  });
+  const sortableLaneId = closestSortable[0]?.data?.droppableContainer?.data.current?.laneId;
+  if (closestSortable.length > 0 && sortableLaneId === activeLaneId) {
+    return closestSortable;
+  }
+  const pointerLanes = pointerWithin({
+    ...input,
+    droppableContainers: laneContainers,
+  });
+  if (pointerLanes.length > 0) {
+    return pointerLanes;
+  }
   return closestCenter({
     ...input,
-    droppableContainers: input.droppableContainers.filter(
-      (container) => container.data.current?.type === "lane",
-    ),
+    droppableContainers: laneContainers,
   });
+}
+
+function laneIdsForBoard(
+  unassigned: GameRecordingBoardProps["unassigned"],
+  games: GameRecordingBoardProps["games"],
+): Map<string, string> {
+  const lanes = new Map<string, string>();
+  for (const recording of unassigned) {
+    lanes.set(recording.id, UNASSIGNED_DROPPABLE_ID);
+  }
+  for (const game of games) {
+    for (const recording of game.sides.A) {
+      lanes.set(recording.id, gameSideDroppableId(game.id, "A"));
+    }
+    for (const recording of game.sides.B) {
+      lanes.set(recording.id, gameSideDroppableId(game.id, "B"));
+    }
+  }
+  return lanes;
+}
+
+function recordingIdsInLane(
+  droppableId: string,
+  unassigned: GameRecordingBoardProps["unassigned"],
+  games: GameRecordingBoardProps["games"],
+): string[] {
+  if (droppableId === UNASSIGNED_DROPPABLE_ID) {
+    return unassigned.map((recording) => recording.id);
+  }
+  const target = parseDroppableId(droppableId);
+  if (!target?.gameId || (target.cameraSide !== "A" && target.cameraSide !== "B")) {
+    return [];
+  }
+  const game = games.find((row) => row.id === target.gameId);
+  return game ? game.sides[target.cameraSide].map((recording) => recording.id) : [];
 }
 
 function UnassignedColumn({
@@ -97,24 +158,34 @@ function UnassignedColumn({
           </EmptyHeader>
         </Empty>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {recordings.map((recording) => (
-            <li key={recording.id}>
-              <RecordingCard
-                {...recording}
-                droppableId={UNASSIGNED_DROPPABLE_ID}
-                moveTargets={moveTargets}
-                onMoveTo={(nextId) => onMoveRecording(recording.id, nextId)}
-              />
-            </li>
-          ))}
-        </ul>
+        <SortableContext
+          items={recordings.map((recording) => recording.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <ul className="flex flex-col gap-2">
+            {recordings.map((recording) => (
+              <li key={recording.id}>
+                <RecordingCard
+                  {...recording}
+                  droppableId={UNASSIGNED_DROPPABLE_ID}
+                  moveTargets={moveTargets}
+                  onMoveTo={(nextId) => onMoveRecording(recording.id, nextId)}
+                />
+              </li>
+            ))}
+          </ul>
+        </SortableContext>
       )}
     </div>
   );
 }
 
-function GameRecordingBoard({ unassigned, games, onAssignRecording }: GameRecordingBoardProps) {
+function GameRecordingBoard({
+  unassigned,
+  games,
+  onAssignRecording,
+  onReorderLane,
+}: GameRecordingBoardProps) {
   const sensors = useSensors(
     useSensor(LanePointerSensor, {
       activationConstraint: { distance: 6 },
@@ -143,13 +214,44 @@ function GameRecordingBoard({ unassigned, games, onAssignRecording }: GameRecord
     if (!over) {
       return;
     }
-    assignToDroppable(String(active.id), String(over.id));
+    const activeId = String(active.id);
+    const overId = String(over.id);
+    const lanes = laneIdsForBoard(unassigned, games);
+    const activeLane =
+      (typeof active.data.current?.laneId === "string" && active.data.current.laneId) ||
+      lanes.get(activeId);
+    const overLane =
+      parseDroppableId(overId) !== null
+        ? overId
+        : (typeof over.data.current?.laneId === "string" && over.data.current.laneId) ||
+          lanes.get(overId);
+
+    if (!activeLane || !overLane) {
+      return;
+    }
+
+    if (activeLane !== overLane) {
+      assignToDroppable(activeId, overLane);
+      return;
+    }
+
+    if (overId === activeId || overId === activeLane) {
+      return;
+    }
+
+    const currentIds = recordingIdsInLane(activeLane, unassigned, games);
+    const oldIndex = currentIds.indexOf(activeId);
+    const newIndex = currentIds.indexOf(overId);
+    if (oldIndex < 0 || newIndex < 0 || oldIndex === newIndex) {
+      return;
+    }
+    onReorderLane?.(activeLane, arrayMove(currentIds, oldIndex, newIndex));
   }
 
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={laneCollisionDetection}
+      collisionDetection={organizeCollisionDetection}
       onDragEnd={handleDragEnd}
     >
       <div

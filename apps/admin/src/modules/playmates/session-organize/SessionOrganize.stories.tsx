@@ -52,14 +52,42 @@ export const DragAssign: Story = {
           setRecordings((current) =>
             current.map((recording) =>
               recording.id === recordingId
-                ? { ...recording, gameId: target.gameId, cameraSide: target.cameraSide }
+                ? {
+                    ...recording,
+                    gameId: target.gameId,
+                    cameraSide: target.cameraSide,
+                    sortOrder: current.filter(
+                      (row) => row.gameId === target.gameId && row.cameraSide === target.cameraSide,
+                    ).length,
+                  }
                 : recording,
             ),
+          );
+        }}
+        onReorderLane={(target, recordingIds) => {
+          setRecordings((current) =>
+            current.map((recording) => {
+              const index = recordingIds.indexOf(recording.id);
+              if (index < 0) {
+                return recording;
+              }
+              return {
+                ...recording,
+                gameId: target.gameId,
+                cameraSide: target.cameraSide,
+                sortOrder: index,
+                partNumber: index + 1,
+              };
+            }),
           );
         }}
       />
     );
   },
+};
+
+export const ReorderParts: Story = {
+  ...DragAssign,
 };
 
 export const Dark: Story = {

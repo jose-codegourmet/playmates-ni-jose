@@ -31,4 +31,8 @@ export type SessionOrganizeProps = {
     recordingId: string,
     target: SessionOrganizeAssignTarget,
   ) => void | Promise<void>;
+  onReorderLane?: (
+    target: SessionOrganizeAssignTarget,
+    recordingIds: string[],
+  ) => void | Promise<void>;
 };

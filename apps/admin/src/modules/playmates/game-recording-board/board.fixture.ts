@@ -54,6 +54,7 @@ function buildMvpBoardFixture(): GameRecordingBoardProps {
         durationSeconds: spec.partCount > 1 ? 540 : 1080,
         cameraSide: spec.side,
         partNumber: spec.partNumber,
+        partCount: spec.partCount,
         gameLabel: `Game ${gameNumber}`,
       };
       sides[spec.side].push(card);

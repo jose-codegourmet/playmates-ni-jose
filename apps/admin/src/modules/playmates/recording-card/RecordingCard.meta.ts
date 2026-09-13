@@ -6,7 +6,7 @@ export default {
   version: "0.1.0",
   addedAt: "2026-09-12",
   description:
-    "Dense admin row for one imported recording: filename, size, duration, camera side, part, and organize status.",
+    "Dense admin row for one imported recording: filename, size, duration, camera side, optional part, and organize status.",
   sectionCategory: "workflow",
   purpose:
     "Let an admin scan and move a recording on the Organize board via drag handle or Move to….",
@@ -33,7 +33,13 @@ export default {
     supportsDarkMode: true,
   },
   tags: ["recording", "card", "organize", "camera", "admin"],
-  dependencies: ["@fe-template/ui", "@fe-template/mocks", "lucide-react", "@dnd-kit/core"],
+  dependencies: [
+    "@fe-template/ui",
+    "@fe-template/mocks",
+    "lucide-react",
+    "@dnd-kit/core",
+    "@dnd-kit/sortable",
+  ],
   registryDependencies: ["card", "badge", "button", "native-select", "status-badge"],
   a11y: { keyboardNav: true, reducedMotion: true },
   preview: { layout: "padded", capture: { themes: ["light", "dark"] } },

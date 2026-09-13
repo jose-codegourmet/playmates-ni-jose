@@ -6,10 +6,10 @@ export default {
   version: "0.1.0",
   addedAt: "2026-09-12",
   description:
-    "Organize board with dnd-kit: unassigned recordings beside Side A / Side B lanes. Cards drag onto lanes.",
+    "Organize board with dnd-kit: assign recordings to Side A / Side B and reorder parts within a lane.",
   sectionCategory: "workflow",
   purpose:
-    "Let an admin assign recordings to a game and camera side by drag-and-drop or Move to… without a two-file rule.",
+    "Let an admin assign recordings to a game and camera side, then reorder multi-part clips so Part labels stay 1..n.",
   bestFor: ["session organize step", "recording assignment"],
   tone: ["utilitarian", "archive"],
   contentDensity: "high",

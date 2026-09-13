@@ -1,16 +1,40 @@
+import { formatRecordingDisplayName } from "../naming";
 import type { RecordingRepository } from "../repositories/types";
 import { getState, newId, nowIso, requireEntity } from "../store";
 import type { CameraSide, Recording } from "../types";
 
-function normalizePartsSync(gameId: string, cameraSide: CameraSide): void {
-  if (cameraSide === "UNASSIGNED") return;
+function isAssignedSide(cameraSide: CameraSide): cameraSide is "A" | "B" {
+  return cameraSide === "A" || cameraSide === "B";
+}
+
+function recordingsInLane(gameId: string | null, cameraSide: CameraSide): Recording[] {
   const state = getState();
-  const group = state.recordings
-    .filter((row) => row.gameId === gameId && row.cameraSide === cameraSide)
-    .sort((a, b) => a.sortOrder - b.sortOrder || a.partNumber - b.partNumber);
+  if (!gameId || cameraSide === "UNASSIGNED") {
+    return state.recordings.filter((row) => row.gameId == null || row.cameraSide === "UNASSIGNED");
+  }
+  return state.recordings.filter((row) => row.gameId === gameId && row.cameraSide === cameraSide);
+}
+
+function normalizePartsSync(gameId: string, cameraSide: CameraSide): void {
+  if (!isAssignedSide(cameraSide)) return;
+  const state = getState();
+  const game = state.games.find((row) => row.id === gameId);
+  const group = recordingsInLane(gameId, cameraSide).sort(
+    (a, b) => a.sortOrder - b.sortOrder || a.partNumber - b.partNumber,
+  );
   const now = nowIso();
+  const partCount = group.length;
+  const gameNumber = game?.gameNumber ?? 1;
   group.forEach((recording, index) => {
-    recording.partNumber = index + 1;
+    const partNumber = index + 1;
+    recording.partNumber = partNumber;
+    recording.sortOrder = index;
+    recording.displayName = formatRecordingDisplayName({
+      gameNumber,
+      side: cameraSide,
+      partNumber,
+      partCount,
+    });
     recording.updatedAt = now;
   });
 }
@@ -76,17 +100,28 @@ export function createRecordingRepository(): RecordingRepository {
       if (patch.partNumber !== undefined) {
         recording.partNumber = patch.partNumber;
       }
-      if (patch.gameId && patch.cameraSide !== "UNASSIGNED") {
+      if (patch.gameId && isAssignedSide(patch.cameraSide)) {
         recording.status = recording.status === "imported" ? "organized" : recording.status;
+        const siblings = recordingsInLane(patch.gameId, patch.cameraSide).filter(
+          (row) => row.id !== recording.id,
+        );
+        recording.sortOrder = siblings.reduce((max, row) => Math.max(max, row.sortOrder), -1) + 1;
+      } else {
+        recording.displayName = null;
+        recording.partNumber = 1;
+        const siblings = recordingsInLane(null, "UNASSIGNED").filter(
+          (row) => row.id !== recording.id,
+        );
+        recording.sortOrder = siblings.reduce((max, row) => Math.max(max, row.sortOrder), -1) + 1;
       }
       recording.updatedAt = nowIso();
 
-      if (oldGameId && oldSide !== "UNASSIGNED") {
+      if (oldGameId && isAssignedSide(oldSide)) {
         normalizePartsSync(oldGameId, oldSide);
       }
       if (
         recording.gameId &&
-        recording.cameraSide !== "UNASSIGNED" &&
+        isAssignedSide(recording.cameraSide) &&
         (recording.gameId !== oldGameId || recording.cameraSide !== oldSide)
       ) {
         normalizePartsSync(recording.gameId, recording.cameraSide);
@@ -96,6 +131,22 @@ export function createRecordingRepository(): RecordingRepository {
 
     async normalizeParts(gameId, cameraSide) {
       normalizePartsSync(gameId, cameraSide);
+    },
+
+    async reorderInLane(gameId, cameraSide, recordingIds) {
+      const state = getState();
+      const now = nowIso();
+      recordingIds.forEach((id, index) => {
+        const recording = state.recordings.find((row) => row.id === id);
+        if (!recording) {
+          return;
+        }
+        recording.sortOrder = index;
+        recording.updatedAt = now;
+      });
+      if (gameId && isAssignedSide(cameraSide)) {
+        normalizePartsSync(gameId, cameraSide);
+      }
     },
 
     async update(id, patch) {

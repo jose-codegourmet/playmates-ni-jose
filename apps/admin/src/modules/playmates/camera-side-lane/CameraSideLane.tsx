@@ -1,6 +1,7 @@
 "use client";
 
 import { useDroppable } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Card, CardContent, CardHeader, Empty, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 
 import { RecordingCard } from "../recording-card/RecordingCard";
@@ -45,20 +46,27 @@ function CameraSideLane({
             </EmptyHeader>
           </Empty>
         ) : (
-          <ul className="flex flex-col gap-2">
-            {recordings.map((recording) => (
-              <li key={recording.id}>
-                <RecordingCard
-                  {...recording}
-                  droppableId={droppableId}
-                  moveTargets={moveTargets}
-                  onMoveTo={
-                    onMoveRecording ? (nextId) => onMoveRecording(recording.id, nextId) : undefined
-                  }
-                />
-              </li>
-            ))}
-          </ul>
+          <SortableContext
+            items={recordings.map((recording) => recording.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <ul className="flex flex-col gap-2">
+              {recordings.map((recording) => (
+                <li key={recording.id}>
+                  <RecordingCard
+                    {...recording}
+                    droppableId={droppableId}
+                    moveTargets={moveTargets}
+                    onMoveTo={
+                      onMoveRecording
+                        ? (nextId) => onMoveRecording(recording.id, nextId)
+                        : undefined
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          </SortableContext>
         )}
       </CardContent>
     </Card>

@@ -23,7 +23,8 @@ export default async function SessionOrganizePage({ params }: SessionOrganizePag
       <div>
         <h2 className="font-heading text-xl font-medium">Organize</h2>
         <p className="text-sm text-muted-foreground">
-          Drag a recording onto a Side A or Side B lane, or use Move to… on the card.
+          Drag a recording onto a Side A or Side B lane, reorder parts within a lane, or use Move
+          to… on the card.
         </p>
       </div>
       <SessionOrganize

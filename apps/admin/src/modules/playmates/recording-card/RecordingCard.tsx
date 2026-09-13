@@ -1,6 +1,6 @@
 "use client";
 
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { CameraSide, RecordingStatus } from "@fe-template/mocks";
 import {
@@ -54,6 +54,7 @@ function RecordingCard({
   durationSeconds,
   cameraSide,
   partNumber,
+  partCount = 1,
   gameLabel,
   droppableId = "unassigned",
   moveTargets,
@@ -65,26 +66,27 @@ function RecordingCard({
     formatFileSize(sizeBytes),
     durationSeconds === undefined ? null : formatDuration(durationSeconds),
   ].filter((bit): bit is string => bit !== null);
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     data: { type: "recording", laneId: droppableId },
   });
 
   return (
     <Card
+      ref={setNodeRef}
       size="sm"
       tabIndex={0}
       data-slot="recording-card"
       data-recording-id={id}
       className="flex-row items-center gap-2 py-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
       style={{
-        transform: CSS.Translate.toString(transform),
+        transform: CSS.Transform.toString(transform),
+        transition,
         opacity: isDragging ? 0.55 : 1,
         zIndex: isDragging ? 20 : undefined,
       }}
     >
       <Button
-        ref={setNodeRef}
         type="button"
         variant="ghost"
         size="icon-xs"
@@ -106,7 +108,7 @@ function RecordingCard({
             <Badge variant={cameraSide === "UNASSIGNED" ? "outline" : "secondary"}>
               {CAMERA_SIDE_LABEL[cameraSide]}
             </Badge>
-            <Badge variant="outline">Part {partNumber}</Badge>
+            {partCount > 1 ? <Badge variant="outline">Part {partNumber}</Badge> : null}
             {gameLabel ? <Badge variant="ghost">{gameLabel}</Badge> : null}
             <StatusBadge kind="recording" status={recordingStatusForSide(cameraSide)} />
           </div>

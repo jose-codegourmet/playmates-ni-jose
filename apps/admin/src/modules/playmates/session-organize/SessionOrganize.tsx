@@ -3,8 +3,11 @@
 import { Button } from "@fe-template/ui";
 import { toast } from "sonner";
 
-import { assignRecording } from "@/app/(dashboard)/sessions/actions";
-import type { RecordingAssignTarget } from "../game-recording-board/droppable-ids";
+import { assignRecording, reorderLaneRecordings } from "@/app/(dashboard)/sessions/actions";
+import {
+  parseDroppableId,
+  type RecordingAssignTarget,
+} from "../game-recording-board/droppable-ids";
 import { GameRecordingBoard } from "../game-recording-board/GameRecordingBoard";
 
 import { toGameRecordingBoardProps } from "./map-board";
@@ -15,6 +18,7 @@ function SessionOrganize({
   recordings,
   games,
   onAssignRecording,
+  onReorderLane,
 }: SessionOrganizeProps) {
   const board = toGameRecordingBoardProps(recordings, games);
 
@@ -35,6 +39,33 @@ function SessionOrganize({
     }
   }
 
+  async function handleReorder(droppableId: string, recordingIds: string[]) {
+    const target = parseDroppableId(droppableId);
+    if (!target) {
+      return;
+    }
+
+    if (onReorderLane) {
+      await onReorderLane(target, recordingIds);
+      return;
+    }
+
+    if (!sessionId) {
+      toast.error("Missing session id for reorder");
+      return;
+    }
+
+    const result = await reorderLaneRecordings(
+      sessionId,
+      target.gameId,
+      target.cameraSide,
+      recordingIds,
+    );
+    if (!result.success) {
+      toast.error(result.error);
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-end gap-2">
@@ -46,6 +77,7 @@ function SessionOrganize({
         unassigned={board.unassigned}
         games={board.games}
         onAssignRecording={handleAssign}
+        onReorderLane={handleReorder}
       />
     </div>
   );

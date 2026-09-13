@@ -13,6 +13,7 @@ export type RecordingCardProps = {
   durationSeconds?: number;
   cameraSide: CameraSide;
   partNumber: number;
+  partCount?: number;
   gameLabel?: string;
   droppableId?: string;
   moveTargets?: RecordingMoveTarget[];

@@ -82,6 +82,11 @@ export type RecordingRepository = {
     patch: { gameId: string | null; cameraSide: CameraSide; partNumber?: number },
   ): Promise<Recording>;
   normalizeParts(gameId: string, cameraSide: CameraSide): Promise<void>;
+  reorderInLane(
+    gameId: string | null,
+    cameraSide: CameraSide,
+    recordingIds: string[],
+  ): Promise<void>;
   update(id: string, patch: Partial<Recording>): Promise<Recording>;
 };
 

@@ -60,6 +60,7 @@ export const SideBPart2: Story = {
     durationSeconds: 548,
     cameraSide: "B",
     partNumber: 2,
+    partCount: 2,
     gameLabel: "Game 4",
   },
 };
@@ -96,6 +97,7 @@ export const Dark: Story = {
     durationSeconds: 548,
     cameraSide: "B",
     partNumber: 2,
+    partCount: 2,
     gameLabel: "Game 4",
   },
   globals: {
