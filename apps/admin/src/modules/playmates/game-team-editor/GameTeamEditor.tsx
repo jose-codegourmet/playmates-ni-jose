@@ -194,9 +194,18 @@ function GameTeamEditor({
           >
             Swap teams
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={team1.length === 0 && team2.length === 0}
+            onClick={() => emit({ team1: [], team2: [] })}
+          >
+            Clear
+          </Button>
           {onCopyPrevious ? (
             <Button type="button" variant="outline" size="sm" onClick={() => onCopyPrevious()}>
-              Copy previous
+              Copy previous matchup
             </Button>
           ) : null}
         </div>

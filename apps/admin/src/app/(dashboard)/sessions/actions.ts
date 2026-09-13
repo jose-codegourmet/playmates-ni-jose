@@ -385,3 +385,79 @@ export async function deleteSessionGame(
   revalidateOrganize(sessionId);
   return { success: true };
 }
+
+function revalidateMatchups(sessionId: string): void {
+  revalidatePath("/sessions");
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/matchups`);
+  revalidatePath("/dashboard");
+}
+
+export type SetGameTeamsResult = { success: true } | { success: false; error: string };
+
+export async function setGameTeams(
+  sessionId: string,
+  gameId: string,
+  teams: { team1: string[]; team2: string[] },
+): Promise<SetGameTeamsResult> {
+  try {
+    const repos = getPlaymatesRepos();
+    const session = await repos.sessions.getById(sessionId);
+    if (!session) {
+      return { success: false, error: "Session not found" };
+    }
+
+    const games = await repos.games.listBySession(sessionId);
+    if (!games.some((game) => game.id === gameId)) {
+      return { success: false, error: "Game not found in this session" };
+    }
+
+    const rosterIds = new Set(session.players.map((player) => player.id));
+    const team1 = teams.team1.filter((id) => rosterIds.has(id));
+    const team2 = teams.team2.filter((id) => rosterIds.has(id) && !team1.includes(id));
+
+    await repos.games.setTeams(gameId, [
+      { teamNo: 1, playerIds: team1 },
+      { teamNo: 2, playerIds: team2 },
+    ]);
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not save matchup." };
+  }
+
+  revalidateMatchups(sessionId);
+  return { success: true };
+}
+
+export type SetGameWinnerResult = { success: true } | { success: false; error: string };
+
+export async function setGameWinner(
+  sessionId: string,
+  gameId: string,
+  winnerTeamNo: 1 | 2 | null,
+): Promise<SetGameWinnerResult> {
+  try {
+    const repos = getPlaymatesRepos();
+    const session = await repos.sessions.getById(sessionId);
+    if (!session) {
+      return { success: false, error: "Session not found" };
+    }
+
+    const games = await repos.games.listBySession(sessionId);
+    if (!games.some((game) => game.id === gameId)) {
+      return { success: false, error: "Game not found in this session" };
+    }
+
+    await repos.games.update(gameId, { winnerTeamNo });
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not save winner." };
+  }
+
+  revalidateMatchups(sessionId);
+  return { success: true };
+}
