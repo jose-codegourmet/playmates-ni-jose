@@ -34,21 +34,17 @@ pnpm --filter web storybook      # start Storybook on port 6006
 pnpm --filter web build-storybook # build static Storybook
 ```
 
+`apps/web/.storybook/main.ts` aliases `@/atoms` → `src/components/jabkit` so installed JabKit blocks resolve in Vite the same way Next.js does. Do not rewrite files under `src/components/jabkit/`.
+
 ---
 
 ## `apps/admin` testing setup
 
-Storybook on port 6007 globs both `apps/admin/src/**/*.stories.*` and `packages/ui` stories. Admin coverage is a small, representative set — not every page:
+Storybook on port 6007 globs both `apps/admin/src/**/*.stories.*` and `packages/ui` stories.
 
-| Story | Path | Why it exists |
-|---|---|---|
-| `AdminHeader` | `src/modules/layout/AdminHeader.stories.tsx` | Dashboard shell chrome |
-| `AdminSidebar` | `src/modules/layout/AdminSidebar.stories.tsx` | Dashboard shell chrome |
-| `LoginForm` | `src/modules/auth/login-form/LoginForm.stories.tsx` | Representative auth form |
-| `UsersTable` | `src/app/(dashboard)/users/users-table/UsersTable.stories.tsx` | Representative DataTable usage |
-| `StatusBadge` | `src/app/(dashboard)/users/StatusBadge.stories.tsx` | User status chip used in tables |
+Playmates domain widgets live under `src/modules/playmates/` and each Phase 2 widget ships a co-located `.stories.tsx` (at least two variants plus a `Dark` story that sets `globals.theme`). Session workspace steps, dashboard widgets, and entity tables/forms also have stories with fixture props — they do not boot the mock memory store.
 
-Do not add a story for every admin route. Prefer isolated chrome, forms, and tables that regress independently of page data fetching.
+Do not add Chromatic or visual snapshot infrastructure. The template may already list `@chromatic-com/storybook` as an addon; do not wire a Chromatic project or snapshot tests.
 
 Stories that depend on TanStack Query seed cache via `src/storybook/seeded-query.tsx` so they render without Prisma or a live Supabase session.
 
@@ -66,9 +62,50 @@ pnpm --filter admin build-storybook # build static Storybook
 - Co-locate stories with components: `ComponentName.stories.tsx` next to `ComponentName.tsx`.
 - Co-locate use-case docs: `ComponentName.usecase.md` next to the component.
 - Shared primitives are in `packages/ui/src/components/**` and are consumed by both app Storybooks.
-- `apps/admin` also ships a small set of admin-only stories (shell, one form, one table). See the admin section above.
+- Both app previews register a Theme toolbar (`globals.theme`) that toggles a `.dark` wrapper. Domain stories also export an explicit `Dark` story.
+- Public page sections under `apps/web/src/sections/` use mock props. Do not import the mock memory store into Storybook (`SessionsIndex` is a query composer — story the child sections instead).
 
 See `docs/template/COMPONENTS.md` for story conventions.
+
+### PNJ-078 — Phase 2 domain coverage
+
+Every Phase 2 domain component has `.stories.tsx` with at least two variants plus `Dark`:
+
+| Component | Stories |
+|---|---|
+| `SessionCard` | `apps/web/src/sections/_shared/session-card/` |
+| `GameCard` | `apps/web/src/sections/_shared/game-card/` |
+| `PlayerCard` | `apps/web/src/sections/_shared/player-card/` |
+| `VenueCard` | `apps/web/src/sections/_shared/venue-card/` |
+| `MatchupLabel` | `apps/web/src/sections/_shared/matchup-label/` |
+| `ProviderLinkList` | `apps/web/src/sections/_shared/provider-link-list/` |
+| `YoutubeEmbed` | `apps/web/src/sections/_shared/youtube-embed/` |
+| `StatusBadge` / `VisibilityBadge` | `apps/web/src/sections/_shared/status-badge/` (admin copy under `modules/playmates/status-badge/`) |
+| `SessionWorkspaceHeader` | `apps/admin/src/modules/playmates/session-workspace-header/` |
+| `SessionWorkspaceStepper` | `apps/admin/src/modules/playmates/session-workspace-stepper/` |
+| `RecordingCard` | `apps/admin/src/modules/playmates/recording-card/` |
+| `RecordingDropzone` | `apps/admin/src/modules/playmates/recording-dropzone/` |
+| `CameraSideLane` | `apps/admin/src/modules/playmates/camera-side-lane/` |
+| `GameRecordingBoard` | `apps/admin/src/modules/playmates/game-recording-board/` |
+| `GameTeamEditor` | `apps/admin/src/modules/playmates/game-team-editor/` |
+| `UploadProviderStatus` | `apps/admin/src/modules/playmates/upload-provider-status/` |
+| `UploadQueue` | `apps/admin/src/modules/playmates/upload-queue/` |
+| `UploadMatrix` | `apps/admin/src/modules/playmates/upload-matrix/` |
+| `FacebookPostPreview` | `apps/admin/src/modules/playmates/facebook-post-preview/` |
+| `SessionPublishChecklist` | `apps/admin/src/modules/playmates/session-publish-checklist/` |
+
+Grep for a missing Phase 2 story file:
+
+```bash
+for f in \
+  apps/web/src/sections/_shared/{session-card/SessionCard,game-card/GameCard,player-card/PlayerCard,venue-card/VenueCard,matchup-label/MatchupLabel,provider-link-list/ProviderLinkList,youtube-embed/YoutubeEmbed,status-badge/StatusBadge} \
+  apps/admin/src/modules/playmates/{session-workspace-header/SessionWorkspaceHeader,session-workspace-stepper/SessionWorkspaceStepper,recording-card/RecordingCard,recording-dropzone/RecordingDropzone,camera-side-lane/CameraSideLane,game-recording-board/GameRecordingBoard,game-team-editor/GameTeamEditor,upload-provider-status/UploadProviderStatus,upload-queue/UploadQueue,upload-matrix/UploadMatrix,facebook-post-preview/FacebookPostPreview,session-publish-checklist/SessionPublishChecklist,status-badge/StatusBadge}
+do
+  test -f "${f}.stories.tsx" || echo "MISSING ${f}.stories.tsx"
+done
+```
+
+Phase 3 public sections (home, sessions, session detail, game detail, players, venues, not-found) each have stories with hardcoded mock props.
 
 ---
 

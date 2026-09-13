@@ -23,6 +23,9 @@ const config: StorybookConfig = {
     config.resolve ??= {};
     config.resolve.alias = {
       ...config.resolve.alias,
+      // More specific than `@` — JabKit registry imports (`@/atoms/button`)
+      // map to `src/components/jabkit` (same as apps/web/tsconfig.json).
+      "@/atoms": path.resolve(dirname, "../src/components/jabkit"),
       "@": path.resolve(dirname, "../src"),
     };
     return config;

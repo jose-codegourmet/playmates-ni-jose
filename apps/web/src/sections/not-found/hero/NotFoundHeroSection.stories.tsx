@@ -14,3 +14,18 @@ export default meta;
 type Story = StoryObj<typeof NotFoundHeroSection>;
 
 export const Default: Story = {};
+
+export const Compact: Story = {
+  args: {
+    className: "py-8",
+  },
+};
+
+export const Dark: Story = {
+  globals: {
+    theme: "dark",
+  },
+  parameters: {
+    backgrounds: { default: "dark" },
+  },
+};

@@ -16,6 +16,12 @@ type Story = StoryObj<typeof VenuesHeroSection>;
 
 export const Default: Story = {};
 
+export const Compact: Story = {
+  args: {
+    className: "pt-6 pb-2",
+  },
+};
+
 export const Dark: Story = {
   globals: {
     theme: "dark",
