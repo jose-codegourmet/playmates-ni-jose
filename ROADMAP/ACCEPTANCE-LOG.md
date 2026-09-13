@@ -54,8 +54,8 @@
 | No OAuth token in client payloads | **PASS (static).** Prototype has no Google OAuth; Settings copy is “OAuth will be wired later”. Walkthrough `oauthConnections: []`. No refresh/access tokens in `store.json`. |
 | `pnpm lint` | **Skipped** (owner constraint for this ticket). |
 | `pnpm typecheck` | **Skipped** (owner: validate with production builds instead). |
-| `pnpm --filter web build` | Recorded in the PR after this log; required to pass. |
-| `pnpm --filter admin build` | Recorded in the PR after this log; required to pass. |
+| `pnpm --filter web build` | **PASS** (Next.js 16.2.10 Turbopack, TypeScript finished, 9 routes). |
+| `pnpm --filter admin build` | **PASS** (Next.js 16.2.10 Turbopack, TypeScript finished, 17 pages + middleware). |
 
 ---
 
