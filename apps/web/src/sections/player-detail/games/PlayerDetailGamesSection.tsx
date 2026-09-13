@@ -1,7 +1,7 @@
-import type { GameWithTeamsAndRecordings, Player, SessionListItem } from "@fe-template/mocks";
 import { formatGameSlug, formatMatchup } from "@fe-template/mocks";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 import { ROUTES } from "@/constants/routes";
+import type { PublicListedGame } from "@/lib/playmates";
 import { cn } from "@/lib/utils";
 import { GameCard } from "@/sections/_shared/game-card/GameCard";
 import type { GameCardProps } from "@/sections/_shared/game-card/GameCard.types";
@@ -10,7 +10,7 @@ import type { PlayerDetailGamesSectionProps } from "./PlayerDetailGamesSection.t
 
 const RECENT_LIMIT = 6;
 
-function teamNames(game: GameWithTeamsAndRecordings, teamNo: number): string[] {
+function teamNames(game: PublicListedGame, teamNo: number): string[] {
   return (
     game.teams
       .find((team) => team.teamNo === teamNo)
@@ -18,38 +18,17 @@ function teamNames(game: GameWithTeamsAndRecordings, teamNo: number): string[] {
   );
 }
 
-function playerAppearsOnGame(game: GameWithTeamsAndRecordings, player: Player): boolean {
-  return game.teams.some((team) =>
-    team.players.some(
-      (member) => member.id === player.id || member.displayName === player.displayName,
-    ),
-  );
-}
-
-export function toPlayerDetailGameCards(
-  player: Player,
-  sessions: SessionListItem[],
-  games: GameWithTeamsAndRecordings[],
-): GameCardProps[] {
-  const cards: GameCardProps[] = [];
-  let offset = 0;
-
-  for (const session of sessions) {
-    const slice = games.slice(offset, offset + session.gameCount);
-    offset += session.gameCount;
-
-    for (const game of slice) {
-      if (game.gameNumber == null || !playerAppearsOnGame(game, player)) continue;
-      cards.push({
-        href: ROUTES.game(formatGameSlug(session.date, game.gameNumber)),
-        gameNumber: game.gameNumber,
-        matchupLabel: formatMatchup(teamNames(game, 1), teamNames(game, 2)),
-        recordingCount: game.recordings.length,
-      });
-    }
-  }
-
-  return cards.slice(0, RECENT_LIMIT);
+/** Cards for public games already filtered to this player. */
+export function toPlayerDetailGameCards(games: PublicListedGame[]): GameCardProps[] {
+  return games
+    .filter((game): game is PublicListedGame & { gameNumber: number } => game.gameNumber != null)
+    .map((game) => ({
+      href: ROUTES.game(formatGameSlug(game.sessionDate, game.gameNumber)),
+      gameNumber: game.gameNumber,
+      matchupLabel: formatMatchup(teamNames(game, 1), teamNames(game, 2)),
+      recordingCount: game.recordings.length,
+    }))
+    .slice(0, RECENT_LIMIT);
 }
 
 function PlayerDetailGamesSection({ className, games }: PlayerDetailGamesSectionProps) {

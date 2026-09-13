@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ROUTES } from "@/constants/routes";
 import { PAGE_SEO } from "@/constants/seo";
-import { fetchPublicGames } from "@/hooks/use-public-games/server";
 import { fetchPublicPlayers } from "@/hooks/use-public-players/server";
 import { fetchPublicSessions } from "@/hooks/use-public-sessions/server";
 import { PlayersGridSection, toPlayersGridCards } from "@/sections/players/grid/PlayersGridSection";
@@ -18,16 +17,15 @@ export const metadata: Metadata = {
 };
 
 export default async function PlayersPage() {
-  const [players, sessions, games] = await Promise.all([
+  const [players, sessions] = await Promise.all([
     fetchPublicPlayers(),
     fetchPublicSessions(),
-    fetchPublicGames(),
   ]);
 
   return (
     <>
       <PlayersHeroSection />
-      <PlayersGridSection players={toPlayersGridCards(players, sessions, games)} />
+      <PlayersGridSection players={toPlayersGridCards(players, sessions)} />
     </>
   );
 }

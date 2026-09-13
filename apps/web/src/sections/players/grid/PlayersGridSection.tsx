@@ -1,4 +1,4 @@
-import type { GameWithTeamsAndRecordings, Player, SessionListItem } from "@fe-template/mocks";
+import type { Player, SessionListItem } from "@fe-template/mocks";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
@@ -16,42 +16,13 @@ function playerInitials(displayName: string): string {
   return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase();
 }
 
-function publicFacingPlayerNames(
-  sessions: SessionListItem[],
-  games: GameWithTeamsAndRecordings[],
-): Set<string> {
-  const names = new Set<string>();
-
-  for (const session of sessions) {
-    for (const name of session.playerNames) {
-      names.add(name);
-    }
-  }
-
-  for (const game of games) {
-    for (const team of game.teams) {
-      for (const player of team.players) {
-        names.add(player.displayName);
-      }
-    }
-  }
-
-  return names;
-}
-
-/** Players who appear on at least one public session or public game. Draft-only players are omitted. */
+/** Players already limited to public-game appearances by `listPublicPlayers`. */
 export function toPlayersGridCards(
   players: Player[],
   sessions: SessionListItem[],
-  games: GameWithTeamsAndRecordings[],
 ): PlayerCardProps[] {
-  const publicNames = publicFacingPlayerNames(sessions, games);
-
   return players
-    .filter(
-      (player): player is Player & { slug: string } =>
-        Boolean(player.slug) && publicNames.has(player.displayName),
-    )
+    .filter((player): player is Player & { slug: string } => Boolean(player.slug))
     .sort((a, b) => a.displayName.localeCompare(b.displayName))
     .map((player) => ({
       href: ROUTES.player(player.slug),

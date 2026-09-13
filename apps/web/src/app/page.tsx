@@ -57,7 +57,7 @@ export default async function HomePage() {
         portraits={toHeroPortraits(players)}
       />
       <LatestSessionsSection sessions={toLatestSessionCards(sessions)} />
-      <RecentGamesSection games={toRecentGameCards(sessions, games)} />
+      <RecentGamesSection games={toRecentGameCards(games)} />
       <PlayersStripSection players={toPlayersStripCards(players, sessions)} />
     </>
   );

@@ -1,4 +1,4 @@
-import type { GameWithTeamsAndRecordings, Player, SessionListItem } from "@fe-template/mocks";
+import type { SessionListItem } from "@fe-template/mocks";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
@@ -9,51 +9,11 @@ import type { PlayerDetailSessionsSectionProps } from "./PlayerDetailSessionsSec
 
 const RECENT_LIMIT = 6;
 
-function playerAppearsOnGame(game: GameWithTeamsAndRecordings, player: Player): boolean {
-  return game.teams.some((team) =>
-    team.players.some(
-      (member) => member.id === player.id || member.displayName === player.displayName,
-    ),
-  );
-}
-
-function pairPublicGames(
-  sessions: SessionListItem[],
-  games: GameWithTeamsAndRecordings[],
-): Array<{ session: SessionListItem; game: GameWithTeamsAndRecordings }> {
-  const pairs: Array<{ session: SessionListItem; game: GameWithTeamsAndRecordings }> = [];
-  let offset = 0;
-
-  for (const session of sessions) {
-    const slice = games.slice(offset, offset + session.gameCount);
-    offset += session.gameCount;
-    for (const game of slice) {
-      pairs.push({ session, game });
-    }
-  }
-
-  return pairs;
-}
-
-export function toPlayerDetailSessionCards(
-  player: Player,
-  sessions: SessionListItem[],
-  games: GameWithTeamsAndRecordings[],
-): SessionCardProps[] {
-  const gameSessionSlugs = new Set(
-    pairPublicGames(sessions, games)
-      .filter(({ game }) => playerAppearsOnGame(game, player))
-      .map(({ session }) => session.slug)
-      .filter((slug): slug is string => Boolean(slug)),
-  );
-
+/** Cards for public sessions already filtered to this player's public games. */
+export function toPlayerDetailSessionCards(sessions: SessionListItem[]): SessionCardProps[] {
   return [...sessions]
     .sort((a, b) => b.date.localeCompare(a.date))
-    .filter((session): session is SessionListItem & { slug: string } => {
-      const slug = session.slug;
-      if (!slug) return false;
-      return session.playerNames.includes(player.displayName) || gameSessionSlugs.has(slug);
-    })
+    .filter((session): session is SessionListItem & { slug: string } => Boolean(session.slug))
     .slice(0, RECENT_LIMIT)
     .map((session) => ({
       href: ROUTES.session(session.slug),

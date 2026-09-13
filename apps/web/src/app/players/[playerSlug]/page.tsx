@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
 import { formatPageTitle, PAGE_SEO } from "@/constants/seo";
-import { fetchPublicGames } from "@/hooks/use-public-games/server";
+import { fetchPublicGamesForPlayer } from "@/hooks/use-public-games/server";
 import { fetchPublicPlayer } from "@/hooks/use-public-players/server";
-import { fetchPublicSessions } from "@/hooks/use-public-sessions/server";
+import { fetchPublicSessionsForPlayer } from "@/hooks/use-public-sessions/server";
 import {
   PlayerDetailGamesSection,
   toPlayerDetailGameCards,
@@ -47,15 +47,15 @@ export async function generateMetadata({ params }: PlayerDetailPageProps): Promi
 
 export default async function PlayerDetailPage({ params }: PlayerDetailPageProps) {
   const { playerSlug } = await params;
-  const [player, sessions, games] = await Promise.all([
-    fetchPublicPlayer(playerSlug),
-    fetchPublicSessions(),
-    fetchPublicGames(),
-  ]);
-
+  const player = await fetchPublicPlayer(playerSlug);
   if (!player) {
     notFound();
   }
+
+  const [sessions, games] = await Promise.all([
+    fetchPublicSessionsForPlayer(player),
+    fetchPublicGamesForPlayer(player),
+  ]);
 
   return (
     <>
@@ -63,8 +63,8 @@ export default async function PlayerDetailPage({ params }: PlayerDetailPageProps
         displayName={player.displayName}
         nickname={player.nickname ?? undefined}
       />
-      <PlayerDetailSessionsSection sessions={toPlayerDetailSessionCards(player, sessions, games)} />
-      <PlayerDetailGamesSection games={toPlayerDetailGameCards(player, sessions, games)} />
+      <PlayerDetailSessionsSection sessions={toPlayerDetailSessionCards(sessions)} />
+      <PlayerDetailGamesSection games={toPlayerDetailGameCards(games)} />
     </>
   );
 }
