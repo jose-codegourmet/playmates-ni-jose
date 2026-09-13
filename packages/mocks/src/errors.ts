@@ -3,6 +3,7 @@
  */
 
 export const ASSET_EXISTS = "ASSET_EXISTS" as const;
+export const GAME_HAS_RECORDINGS = "GAME_HAS_RECORDINGS" as const;
 export const MOCK_PROVIDER_ERROR = "MOCK_PROVIDER_ERROR" as const;
 
 export class MockDomainError extends Error {

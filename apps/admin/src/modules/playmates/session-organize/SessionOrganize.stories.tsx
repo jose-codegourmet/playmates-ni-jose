@@ -90,6 +90,42 @@ export const ReorderParts: Story = {
   ...DragAssign,
 };
 
+export const AddRemoveGames: Story = {
+  args: emptyOrganizeFixture,
+  render: function AddRemoveGamesStory(args) {
+    const [games, setGames] = useState(args.games);
+    const [recordings, setRecordings] = useState(args.recordings);
+
+    return (
+      <SessionOrganize
+        {...args}
+        games={games}
+        recordings={recordings}
+        onCreateGame={() => {
+          const nextNumber =
+            games.reduce((max, game) => Math.max(max, game.gameNumber ?? 0), 0) + 1;
+          setGames((current) => [
+            ...current,
+            { id: `story-game-${nextNumber}`, gameNumber: nextNumber, sortOrder: nextNumber },
+          ]);
+        }}
+        onRemoveGame={(gameId) => {
+          setGames((current) => current.filter((game) => game.id !== gameId));
+        }}
+        onAssignRecording={(recordingId, target) => {
+          setRecordings((current) =>
+            current.map((recording) =>
+              recording.id === recordingId
+                ? { ...recording, gameId: target.gameId, cameraSide: target.cameraSide }
+                : recording,
+            ),
+          );
+        }}
+      />
+    );
+  },
+};
+
 export const Dark: Story = {
   globals: { theme: "dark" },
   parameters: { backgrounds: { default: "dark" } },

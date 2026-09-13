@@ -2,6 +2,7 @@ export type { PlaymatesComponentMeta } from "@fe-template/config";
 export {
   ASSET_EXISTS,
   assetExistsError,
+  GAME_HAS_RECORDINGS,
   isMockDomainError,
   MOCK_PROVIDER_ERROR,
   MockDomainError,

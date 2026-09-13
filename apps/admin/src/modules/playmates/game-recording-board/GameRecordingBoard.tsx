@@ -18,7 +18,17 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Card, CardContent, CardHeader, Empty, EmptyHeader, EmptyTitle } from "@fe-template/ui";
+import {
+  Button,
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+} from "@fe-template/ui";
 
 import { CameraSideLane } from "../camera-side-lane/CameraSideLane";
 import { RecordingCard } from "../recording-card/RecordingCard";
@@ -185,6 +195,7 @@ function GameRecordingBoard({
   games,
   onAssignRecording,
   onReorderLane,
+  onRemoveGame,
 }: GameRecordingBoardProps) {
   const sensors = useSensors(
     useSensor(LanePointerSensor, {
@@ -297,7 +308,19 @@ function GameRecordingBoard({
                 <li key={game.id}>
                   <Card size="sm" className="gap-0 bg-background text-foreground">
                     <CardHeader className="border-b border-border px-(--card-spacing) py-2">
-                      <h3 className="font-heading text-sm font-medium">Game {game.gameNumber}</h3>
+                      <CardTitle className="text-sm">Game {game.gameNumber}</CardTitle>
+                      {onRemoveGame ? (
+                        <CardAction>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onRemoveGame(game.id)}
+                          >
+                            Remove game
+                          </Button>
+                        </CardAction>
+                      ) : null}
                     </CardHeader>
                     <CardContent className="grid gap-3 px-(--card-spacing) py-3 md:grid-cols-2">
                       <CameraSideLane
