@@ -3,12 +3,11 @@
 import { isMockDomainError } from "@fe-template/mocks";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-import { getPlaymatesRepos } from "@/lib/playmates";
 import {
   type SessionDetailsFormValues,
   sessionDetailsFormSchema,
 } from "@/app/(dashboard)/sessions/[id]/details/details-form/SessionDetailsForm.schema";
+import { getPlaymatesRepos } from "@/lib/playmates";
 import {
   type SessionFormValues,
   sessionFormSchema,
