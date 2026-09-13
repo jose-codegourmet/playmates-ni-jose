@@ -16,7 +16,17 @@ src/app/(dashboard)/sessions/
   ├── actions.ts
   ├── sessions-table/SessionsTable.tsx
   ├── new/page.tsx
-  └── [id]/page.tsx
+  └── [id]/
+      ├── layout.tsx
+      ├── page.tsx
+      ├── session-workspace-nav.tsx
+      ├── details/page.tsx
+      ├── players/page.tsx
+      ├── import/page.tsx
+      ├── organize/page.tsx
+      ├── matchups/page.tsx
+      ├── upload/page.tsx
+      └── publish/page.tsx
 
 Create-session form lives at `src/modules/playmates/session-form/` (schema, defaults, stories, meta).
 
