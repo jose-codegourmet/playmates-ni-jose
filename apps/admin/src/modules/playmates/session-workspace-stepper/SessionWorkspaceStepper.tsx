@@ -17,7 +17,7 @@ function SessionWorkspaceStepper({ current, completed, hrefFor }: SessionWorkspa
       aria-label="Session workspace steps"
       className="w-full bg-background text-foreground"
     >
-      <ol className="flex flex-wrap items-center gap-1">
+      <ol className="flex min-w-0 flex-wrap items-center gap-1">
         {SESSION_WORKSPACE_STEPS.map((step, index) => {
           const isCurrent = step.id === current;
           const isCompleted = completedSet.has(step.id);
@@ -28,8 +28,8 @@ function SessionWorkspaceStepper({ current, completed, hrefFor }: SessionWorkspa
                 href={hrefFor(step.id)}
                 aria-current={isCurrent ? "step" : undefined}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-md px-2 py-1.5 text-sm no-underline outline-none",
-                  "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                  "inline-flex min-h-10 items-center gap-2 rounded-md px-2 py-1.5 text-sm no-underline",
+                  "outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   isCurrent
                     ? "font-medium text-foreground"
                     : "text-muted-foreground hover:text-foreground",

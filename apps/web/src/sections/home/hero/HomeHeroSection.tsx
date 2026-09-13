@@ -20,7 +20,10 @@ function HomeHeroSection({
   const showCounts = sessionCount > 0 || gameCount > 0;
 
   return (
-    <section data-slot="home-hero-section" className={cn("bg-background", className)}>
+    <section
+      data-slot="home-hero-section"
+      className={cn("overflow-x-clip bg-background", className)}
+    >
       {portraits.length > 0 ? (
         <Hero228
           headline={[{ text: "Playmates " }, { text: "ni José", italic: true }]}

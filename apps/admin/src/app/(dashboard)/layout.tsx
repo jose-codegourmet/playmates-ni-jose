@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <AdminSidebar />
       <SidebarInset>
         <AdminHeader title={title} />
-        <div className="flex-1 p-4 md:p-6">{children}</div>
+        <div className="min-w-0 flex-1 overflow-x-clip p-4 md:p-6">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

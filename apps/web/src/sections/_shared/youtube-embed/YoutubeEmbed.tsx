@@ -29,7 +29,7 @@ export function YoutubeEmbed({ embedUrl, title }: YoutubeEmbedProps) {
           loading="lazy"
           referrerPolicy="strict-origin-when-cross-origin"
           src={src}
-          title={title}
+          title={title?.trim() || "YouTube recording"}
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center">

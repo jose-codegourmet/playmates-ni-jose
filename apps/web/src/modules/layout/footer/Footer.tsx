@@ -24,7 +24,10 @@ function Footer({ className }: FooterProps) {
 
   return (
     <FooterSection
-      className={cn("mt-auto min-w-0 overflow-x-clip [&_form]:hidden", className)}
+      className={cn(
+        "mt-auto min-w-0 overflow-x-clip [&_form]:hidden [&_nav_a]:inline-flex [&_nav_a]:min-h-10 [&_nav_a]:items-center",
+        className,
+      )}
       brandTitle={DEFAULT_SEO.siteName}
       brandDescription={DEFAULT_SEO.tagline}
       linksTitle="Browse"

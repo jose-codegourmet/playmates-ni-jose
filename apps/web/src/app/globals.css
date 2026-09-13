@@ -216,10 +216,18 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
-    @apply font-sans;
+    @apply overflow-x-clip font-sans;
+  }
+  body {
+    @apply overflow-x-clip bg-background text-foreground;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="count-up"] *,
+  [data-slot="split-text"] [data-slot="split-text-glyph"],
+  [data-slot="hero228"] * {
+    animation: none !important;
   }
 }

@@ -267,7 +267,7 @@ function GameRecordingBoard({
     >
       <div
         data-slot="game-recording-board"
-        className="grid gap-6 bg-background text-foreground lg:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]"
+        className="grid min-w-0 gap-6 overflow-x-clip bg-background text-foreground lg:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]"
       >
         <section
           aria-labelledby="game-recording-board-unassigned-heading"
@@ -307,8 +307,8 @@ function GameRecordingBoard({
               {games.map((game) => (
                 <li key={game.id}>
                   <Card size="sm" className="gap-0 bg-background text-foreground">
-                    <CardHeader className="border-b border-border px-(--card-spacing) py-2">
-                      <CardTitle className="text-sm">Game {game.gameNumber}</CardTitle>
+                    <CardHeader className="flex-wrap border-b border-border px-(--card-spacing) py-2">
+                      <CardTitle className="min-w-0 text-sm">Game {game.gameNumber}</CardTitle>
                       {onRemoveGame ? (
                         <CardAction>
                           <Button

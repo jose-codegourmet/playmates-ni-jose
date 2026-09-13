@@ -48,7 +48,7 @@ function ThemeToggle({ className }: { className?: string }) {
       type="button"
       variant="ghost"
       size="icon"
-      className={cn(className)}
+      className={cn("size-10", className)}
       onClick={cycleTheme}
       aria-label={`Theme: ${label}. Click to change.`}
       title={label}
@@ -63,7 +63,7 @@ function Logo({ className }: { className?: string }) {
   return (
     <Link
       href={ROUTES.home}
-      className={cn("inline-flex shrink-0 items-center gap-2", className)}
+      className={cn("inline-flex min-h-10 shrink-0 items-center gap-2", className)}
       aria-label={`${DEFAULT_SEO.siteName} home`}
     >
       <span className="font-display text-lg font-semibold tracking-tight">
@@ -87,7 +87,7 @@ function NavLinks({ className, onNavigate }: { className?: string; onNavigate?: 
             onClick={onNavigate}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground",
+              "inline-flex min-h-10 min-w-10 items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground",
               active ? "bg-muted text-foreground" : "text-foreground/80",
             )}
           >
@@ -127,7 +127,10 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
 
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger
-            className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "lg:hidden")}
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "icon" }),
+              "size-10 lg:hidden",
+            )}
             aria-label="Open menu"
           >
             <Menu className="size-5" />

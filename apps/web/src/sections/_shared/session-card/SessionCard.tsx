@@ -45,7 +45,7 @@ function SessionCard({
           <div className="relative aspect-video w-full bg-muted">
             <Image
               src={thumbnailUrl}
-              alt=""
+              alt={`${heading} session thumbnail`}
               fill
               sizes="(max-width: 640px) 100vw, 384px"
               className="object-cover"
