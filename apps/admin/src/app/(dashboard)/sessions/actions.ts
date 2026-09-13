@@ -6,11 +6,16 @@ import { redirect } from "next/navigation";
 
 import { getPlaymatesRepos } from "@/lib/playmates";
 import {
+  type SessionDetailsFormValues,
+  sessionDetailsFormSchema,
+} from "@/app/(dashboard)/sessions/[id]/details/details-form/SessionDetailsForm.schema";
+import {
   type SessionFormValues,
   sessionFormSchema,
 } from "@/modules/playmates/session-form/SessionForm.schema";
 
 export type CreateSessionResult = { success: false; error: string };
+export type UpdateSessionResult = { success: true } | { success: false; error: string };
 
 function optionalText(value: string | undefined): string | undefined {
   const trimmed = value?.trim() ?? "";
@@ -80,4 +85,51 @@ export async function createSession(data: SessionFormValues): Promise<CreateSess
   revalidatePath(`/sessions/${sessionId}`);
   revalidatePath("/dashboard");
   redirect(`/sessions/${sessionId}`);
+}
+
+export async function updateSession(
+  sessionId: string,
+  data: SessionDetailsFormValues,
+): Promise<UpdateSessionResult> {
+  const parsed = sessionDetailsFormSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid form data" };
+  }
+
+  const venueId = optionalText(parsed.data.venueId) ?? null;
+  const courtId = optionalText(parsed.data.courtId) ?? null;
+  const title = optionalText(parsed.data.title) ?? null;
+  const notes = optionalText(parsed.data.notes) ?? null;
+
+  const courtError = await assertCourtBelongsToVenue(venueId ?? undefined, courtId ?? undefined);
+  if (courtError) return courtError;
+
+  try {
+    const repos = getPlaymatesRepos();
+    const existing = await repos.sessions.getById(sessionId);
+    if (!existing) {
+      return { success: false, error: "Session not found" };
+    }
+
+    await repos.sessions.update(sessionId, {
+      sessionDate: parsed.data.sessionDate,
+      title,
+      venueId,
+      courtId,
+      notes,
+      visibility: parsed.data.visibility,
+      status: parsed.data.status,
+    });
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not update session." };
+  }
+
+  revalidatePath("/sessions");
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/details`);
+  revalidatePath("/dashboard");
+  return { success: true };
 }
