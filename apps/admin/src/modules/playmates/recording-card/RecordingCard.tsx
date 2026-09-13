@@ -12,6 +12,7 @@ import {
   NativeSelectOption,
 } from "@fe-template/ui";
 import { GripVerticalIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import { StatusBadge } from "../status-badge/StatusBadge";
 import type { RecordingCardProps } from "./RecordingCard.types";
@@ -140,25 +141,28 @@ function RecordingCard({
                     </NativeSelectOption>
                   ))}
                 </NativeSelect>
-                <Button
+                <button
                   type="button"
-                  size="sm"
-                  variant="outline"
+                  data-slot="apply-move"
                   aria-label="Apply move destination"
+                  className="inline-flex h-7 shrink-0 items-center rounded-[min(var(--radius-md),12px)] border border-border bg-background px-2.5 text-[0.8rem] font-medium"
                   onPointerDown={(event) => event.stopPropagation()}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    const select = event.currentTarget
-                      .closest("[data-slot='recording-card']")
-                      ?.querySelector<HTMLSelectElement>("[data-slot='native-select']");
-                    const next = select?.value;
-                    if (next && next !== droppableId) {
-                      onMoveTo(next);
+                  onClick={() => {
+                    const select = document.getElementById(`move-to-${id}`);
+                    const next = select instanceof HTMLSelectElement ? select.value : undefined;
+                    if (!next) {
+                      toast.error("Choose a Move to… destination first");
+                      return;
                     }
+                    if (next === droppableId) {
+                      toast.message("Already in that lane");
+                      return;
+                    }
+                    onMoveTo(next);
                   }}
                 >
                   Move
-                </Button>
+                </button>
               </div>
             </div>
           ) : null}
