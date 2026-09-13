@@ -9,11 +9,40 @@
  * Never persist video bytes — recordings store metadata only (`sizeBytes`, names).
  */
 
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-
 import { DEFAULT_FACEBOOK_HASHTAGS } from "./naming";
 import { assertSeedInvariants, createSeedState, type MockState } from "./seed";
+
+type NodeFs = typeof import("fs");
+type NodePath = typeof import("path");
+
+/**
+ * Load Node builtins without a static `node:fs` import so client bundles that
+ * pull `@fe-template/mocks` (naming helpers, types) do not request fs.
+ */
+function nodeIo(): { fs: NodeFs; path: NodePath } | null {
+  if (typeof process === "undefined" || typeof process.cwd !== "function") {
+    return null;
+  }
+  if (typeof window !== "undefined") {
+    return null;
+  }
+  const getter = (
+    process as NodeJS.Process & {
+      getBuiltinModule?: (id: string) => unknown;
+    }
+  ).getBuiltinModule;
+  if (typeof getter !== "function") {
+    return null;
+  }
+  try {
+    return {
+      fs: getter("fs") as NodeFs,
+      path: getter("path") as NodePath,
+    };
+  } catch {
+    return null;
+  }
+}
 
 type PlaymatesGlobal = typeof globalThis & {
   __playmatesMock?: MockState;
@@ -37,18 +66,18 @@ function g(): PlaymatesGlobal {
   return globalThis as PlaymatesGlobal;
 }
 
-function resolveStorePath(): string {
+function resolveStorePath(io: { fs: NodeFs; path: NodePath }): string {
   let dir = process.cwd();
   for (let i = 0; i < 10; i += 1) {
-    const packageJson = join(dir, "packages/mocks/package.json");
-    if (existsSync(packageJson)) {
-      return join(dir, "packages/mocks/.data/store.json");
+    const packageJson = io.path.join(dir, "packages/mocks/package.json");
+    if (io.fs.existsSync(packageJson)) {
+      return io.path.join(dir, "packages/mocks/.data/store.json");
     }
-    const parent = dirname(dir);
+    const parent = io.path.dirname(dir);
     if (parent === dir) break;
     dir = parent;
   }
-  return join(process.cwd(), "packages/mocks/.data/store.json");
+  return io.path.join(process.cwd(), "packages/mocks/.data/store.json");
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -93,23 +122,22 @@ function stripVideoBytes(value: unknown): unknown {
 }
 
 function hydrateFromDiskIfPresent(): MockState | null {
-  if (typeof process === "undefined" || typeof process.cwd !== "function") {
+  const io = nodeIo();
+  if (!io) return null;
+
+  const storePath = resolveStorePath(io);
+  if (!io.fs.existsSync(storePath)) {
     return null;
   }
 
-  const storePath = resolveStorePath();
-  if (!existsSync(storePath)) {
-    return null;
-  }
-
-  const mtimeMs = statSync(storePath).mtimeMs;
+  const mtimeMs = io.fs.statSync(storePath).mtimeMs;
   const globalRef = g();
   if (globalRef.__playmatesMock && globalRef.__playmatesMockStoreMtimeMs === mtimeMs) {
     return globalRef.__playmatesMock;
   }
 
   try {
-    const parsed: unknown = JSON.parse(readFileSync(storePath, "utf8"));
+    const parsed: unknown = JSON.parse(io.fs.readFileSync(storePath, "utf8"));
     if (!looksLikeMockState(parsed)) {
       return null;
     }
@@ -157,19 +185,18 @@ function ensureSettings(state: MockState): MockState {
  * Call after every mutation. Safe no-op when `fs` is unavailable.
  */
 export function persistState(): void {
-  if (typeof process === "undefined" || typeof process.cwd !== "function") {
-    return;
-  }
+  const io = nodeIo();
+  if (!io) return;
 
   const state = g().__playmatesMock;
   if (!state) return;
 
-  const storePath = resolveStorePath();
-  mkdirSync(dirname(storePath), { recursive: true });
+  const storePath = resolveStorePath(io);
+  io.fs.mkdirSync(io.path.dirname(storePath), { recursive: true });
   const serializable = stripVideoBytes(state);
-  writeFileSync(storePath, `${JSON.stringify(serializable, null, 2)}\n`, "utf8");
+  io.fs.writeFileSync(storePath, `${JSON.stringify(serializable, null, 2)}\n`, "utf8");
   try {
-    g().__playmatesMockStoreMtimeMs = statSync(storePath).mtimeMs;
+    g().__playmatesMockStoreMtimeMs = io.fs.statSync(storePath).mtimeMs;
   } catch {
     g().__playmatesMockStoreMtimeMs = Date.now();
   }
