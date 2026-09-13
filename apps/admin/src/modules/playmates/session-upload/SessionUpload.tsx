@@ -1,7 +1,20 @@
 "use client";
 
 import type { Provider } from "@fe-template/mocks";
-import { Alert, AlertDescription, AlertTitle, Button } from "@fe-template/ui";
+import {
+  Alert,
+  AlertDescription,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertTitle,
+  Button,
+} from "@fe-template/ui";
 import { InfoIcon } from "lucide-react";
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -50,7 +63,7 @@ function toastQueueResult(result: QueueUploadsResult) {
     return false;
   }
   if (result.queued === 0 && result.skippedExisting > 0) {
-    toast.message("Nothing queued. Provider assets already exist.");
+    toast.message("Nothing queued. Provider assets already exist. Use Replace… to start a new job.");
     return true;
   }
   if (result.queued === 0) {
@@ -78,6 +91,10 @@ function SessionUpload({
   const [liveJobs, setLiveJobs] = useState<SessionUploadJob[]>(jobs);
   const [liveAssets, setLiveAssets] = useState<SessionUploadAsset[]>(assets);
   const [queueing, setQueueing] = useState(false);
+  const [replaceTarget, setReplaceTarget] = useState<{
+    recordingId: string;
+    provider: Provider;
+  } | null>(null);
   const reselectInputRef = useRef<HTMLInputElement>(null);
   const live = Boolean(sessionId) && !onEnqueue && enableJobPolling;
   const shouldPoll = live && hasActiveUploadJobs(liveJobs);
@@ -194,6 +211,54 @@ function SessionUpload({
     });
   }
 
+  async function onReplace(recordingId: string, provider: Provider) {
+    setReplaceTarget({ recordingId, provider });
+  }
+
+  async function onConfirmReplace() {
+    if (!replaceTarget) return;
+    const target = replaceTarget;
+    setReplaceTarget(null);
+
+    if (onEnqueue) {
+      await queueProviders([target.provider]);
+      return;
+    }
+
+    await runMutation(async () => {
+      const result = await queueRecording({
+        recordingId: target.recordingId,
+        provider: target.provider,
+        replace: true,
+      });
+      if (!result.success) {
+        toast.error(result.error);
+        return false;
+      }
+      toast.success(
+        target.provider === "youtube"
+          ? "Replacing YouTube upload."
+          : "Replacing Drive upload.",
+      );
+      await refreshSnapshot();
+      return true;
+    });
+  }
+
+  async function onCopyError(errorCode: string | undefined, errorMessage: string | undefined) {
+    const text = [errorCode, errorMessage].filter(Boolean).join(" ");
+    if (!text) {
+      toast.error("No error details to copy.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Error copied.");
+    } catch {
+      toast.error("Could not copy error.");
+    }
+  }
+
   async function onCancelJob(jobId: string) {
     await runMutation(async () => {
       const result = await cancelJob(jobId);
@@ -304,6 +369,8 @@ function SessionUpload({
           onQueueRecording={onQueueRecording}
           onRetryJob={live ? onRetryJob : undefined}
           onCancelJob={live ? onCancelJob : undefined}
+          onReplace={onReplace}
+          onCopyError={onCopyError}
         />
       </div>
 
@@ -311,6 +378,36 @@ function SessionUpload({
         <h3 className="font-heading text-base font-medium">Queue</h3>
         <UploadQueue items={queueItems} />
       </div>
+
+      <AlertDialog
+        open={replaceTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setReplaceTarget(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Replace{" "}
+              {replaceTarget?.provider === "youtube" ? "YouTube" : "Drive"} upload?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This archives the current mock asset for this provider only and starts a new upload
+              job. The other provider is left unchanged.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                void onConfirmReplace();
+              }}
+            >
+              Replace
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

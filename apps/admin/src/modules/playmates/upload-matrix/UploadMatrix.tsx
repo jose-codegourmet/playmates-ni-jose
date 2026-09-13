@@ -8,30 +8,55 @@ import type { UploadMatrixProps, UploadMatrixRow } from "./UploadMatrix.types";
 const RETRYABLE: readonly UploadJobStatus[] = ["failed", "cancelled"];
 const CANCELLABLE: readonly UploadJobStatus[] = ["queued", "initiating", "uploading"];
 
-function cellAction(
+type CellAction = { label: string; onClick: () => void };
+
+function cellActions(
   cell: UploadProviderStatusProps,
   recordingId: string,
   provider: Provider,
   props: UploadMatrixProps,
-): { label: string; onClick: () => void } | null {
-  if (cell.status === "completed") return null;
+): CellAction[] {
+  const actions: CellAction[] = [];
+
+  if (cell.status === "completed") {
+    if (props.onReplace) {
+      actions.push({
+        label: "Replace…",
+        onClick: () => props.onReplace?.(recordingId, provider),
+      });
+    }
+    return actions;
+  }
 
   if (cell.jobId && CANCELLABLE.includes(cell.status) && props.onCancelJob) {
-    return { label: "Cancel", onClick: () => props.onCancelJob?.(cell.jobId as string) };
+    actions.push({
+      label: "Cancel",
+      onClick: () => props.onCancelJob?.(cell.jobId as string),
+    });
+  }
+
+  if (cell.status === "failed" && props.onCopyError) {
+    actions.push({
+      label: "Copy error",
+      onClick: () => props.onCopyError?.(cell.lastErrorCode, cell.errorMessage),
+    });
   }
 
   if (cell.jobId && RETRYABLE.includes(cell.status) && props.onRetryJob) {
-    return { label: "Retry", onClick: () => props.onRetryJob?.(cell.jobId as string) };
+    actions.push({
+      label: "Retry",
+      onClick: () => props.onRetryJob?.(cell.jobId as string),
+    });
   }
 
   if (!cell.jobId && props.onQueueRecording) {
-    return {
+    actions.push({
       label: provider === "youtube" ? "Queue YouTube" : "Queue Drive",
       onClick: () => props.onQueueRecording?.(recordingId, provider),
-    };
+    });
   }
 
-  return null;
+  return actions;
 }
 
 function ProviderCell({
@@ -45,15 +70,26 @@ function ProviderCell({
   provider: Provider;
   matrix: UploadMatrixProps;
 }) {
-  const action = cellAction(cell, recordingId, provider, matrix);
+  const actions = cellActions(cell, recordingId, provider, matrix);
 
   return (
     <div className="flex flex-col items-start gap-2">
       <UploadProviderStatus {...cell} />
-      {action ? (
-        <Button type="button" variant="outline" size="sm" disabled={matrix.busy} onClick={action.onClick}>
-          {action.label}
-        </Button>
+      {actions.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {actions.map((action) => (
+            <Button
+              key={action.label}
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={matrix.busy}
+              onClick={action.onClick}
+            >
+              {action.label}
+            </Button>
+          ))}
+        </div>
       ) : null}
     </div>
   );

@@ -3,6 +3,7 @@ import { getState, newId, nowIso, requireEntity } from "../store";
 import type { UploadJob, UploadJobStatus } from "../types";
 import {
   applyUploadSimulation,
+  archiveProviderAsset,
   assertCanEnqueue,
   findActiveJob,
   getJobView,
@@ -13,7 +14,7 @@ const CANCELLABLE: UploadJobStatus[] = ["queued", "initiating", "uploading"];
 
 export function createUploadRepository(): UploadRepository {
   return {
-    async enqueue(recordingId, provider) {
+    async enqueue(recordingId, provider, options) {
       applyUploadSimulation();
       const state = getState();
       const recording = requireEntity(
@@ -24,7 +25,11 @@ export function createUploadRepository(): UploadRepository {
       const existing = findActiveJob(recordingId, provider);
       if (existing) return existing;
 
-      assertCanEnqueue(recordingId, provider);
+      if (options?.replace) {
+        archiveProviderAsset(recordingId, provider);
+      } else {
+        assertCanEnqueue(recordingId, provider);
+      }
 
       const now = nowIso();
       const job: UploadJob = {

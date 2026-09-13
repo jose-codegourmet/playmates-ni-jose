@@ -13,6 +13,7 @@ export type SessionUploadJob = {
   provider: Provider;
   status: UploadJobStatus;
   progressPercent: number | null;
+  lastErrorCode: string | null;
   lastErrorMessage: string | null;
   updatedAt: string;
 };

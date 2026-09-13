@@ -52,6 +52,8 @@ const failureRows: UploadMatrixRow[] = [
       provider: "google_drive",
       status: "failed",
       errorMessage: "Drive quota exceeded. Retry after freeing space.",
+      lastErrorCode: "DRIVE_QUOTA",
+      jobId: "job-5",
     },
     youtube: { provider: "youtube", status: "completed" },
   },
@@ -65,6 +67,8 @@ const singleRow: UploadMatrixRow[] = [
       provider: "google_drive",
       status: "failed",
       errorMessage: "Drive quota exceeded. Retry after freeing space.",
+      lastErrorCode: "DRIVE_QUOTA",
+      jobId: "job-5",
     },
     youtube: { provider: "youtube", status: "completed" },
   },
@@ -79,6 +83,10 @@ const meta: Meta<typeof UploadMatrix> = {
   },
   args: {
     rows: fullMatrixRows,
+    onRetryJob: () => undefined,
+    onCancelJob: () => undefined,
+    onReplace: () => undefined,
+    onCopyError: () => undefined,
   } satisfies UploadMatrixProps,
   decorators: [
     (Story) => (

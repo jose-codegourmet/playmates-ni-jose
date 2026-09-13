@@ -91,8 +91,17 @@ export type RecordingRepository = {
   update(id: string, patch: Partial<Recording>): Promise<Recording>;
 };
 
+export type EnqueueUploadOptions = {
+  /** Archive the existing provider asset and start a new job (PNJ-073). */
+  replace?: boolean;
+};
+
 export type UploadRepository = {
-  enqueue(recordingId: string, provider: Provider): Promise<UploadJob>;
+  enqueue(
+    recordingId: string,
+    provider: Provider,
+    options?: EnqueueUploadOptions,
+  ): Promise<UploadJob>;
   retry(jobId: string): Promise<UploadJob>;
   cancel(jobId: string): Promise<UploadJob>;
   listBySession(sessionId: string): Promise<UploadJob[]>;
