@@ -45,7 +45,7 @@ function SessionWorkspaceHeader({
   return (
     <header
       data-slot="session-workspace-header"
-      className="flex w-full min-w-0 items-center gap-4 bg-background text-foreground"
+      className="flex w-full min-w-0 flex-col gap-3 overflow-x-clip bg-background text-foreground sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
     >
       <time className="shrink-0 text-sm text-muted-foreground" dateTime={date}>
         {displayDate}
@@ -60,7 +60,7 @@ function SessionWorkspaceHeader({
         {heading}
       </h1>
       <p className="min-w-0 truncate text-sm text-muted-foreground">{venueName}</p>
-      <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-2">
+      <div className="flex min-w-0 flex-wrap items-center gap-2 sm:ml-auto sm:justify-end">
         <StatusBadge kind="session" status={status} />
         <VisibilityBadge visibility={visibility} />
         <Badge variant={SAVE_STATE_VARIANT[saveState]} aria-live="polite">

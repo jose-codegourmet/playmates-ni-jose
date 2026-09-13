@@ -37,7 +37,7 @@ function GameDetailHeaderSection({
       <p className="mt-3">
         <Link
           href={sessionHref}
-          className="text-sm text-primary underline-offset-4 hover:underline"
+          className="inline-flex min-h-10 items-center text-sm text-primary underline-offset-4 hover:underline focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           Back to {sessionName}
         </Link>

@@ -43,10 +43,11 @@ export function AdminHeader({ title }: AdminHeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-border/60 bg-background/80 px-4 backdrop-blur md:px-6">
-      <SidebarTrigger />
-      <h1 className="hidden text-lg font-semibold tracking-tight sm:block">{title}</h1>
-      <div className="ml-auto" />
+    <header className="sticky top-0 z-20 flex h-16 min-w-0 shrink-0 items-center gap-2 overflow-x-clip border-b border-border/60 bg-background/80 px-3 backdrop-blur sm:gap-3 sm:px-4 md:px-6">
+      <SidebarTrigger className="shrink-0" />
+      <h1 className="min-w-0 flex-1 truncate text-base font-semibold tracking-tight sm:text-lg">
+        {title}
+      </h1>
       <Button
         type="button"
         variant="ghost"

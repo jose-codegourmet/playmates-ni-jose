@@ -148,10 +148,10 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
-    @apply font-sans;
+    @apply overflow-x-clip font-sans;
+  }
+  body {
+    @apply overflow-x-clip bg-background text-foreground;
   }
 }

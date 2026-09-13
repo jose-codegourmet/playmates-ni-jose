@@ -46,7 +46,7 @@ function PlayersStripSection({ className, players }: PlayersStripSectionProps) {
         <h2 className="font-display text-2xl font-semibold tracking-tight">Players</h2>
         <Link
           href={ROUTES.players}
-          className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          className="inline-flex min-h-10 items-center text-sm font-medium text-muted-foreground hover:text-foreground"
         >
           All players
         </Link>
@@ -61,7 +61,7 @@ function PlayersStripSection({ className, players }: PlayersStripSectionProps) {
           </EmptyHeader>
         </Empty>
       ) : (
-        <ul className="mt-6 flex list-none gap-4 overflow-x-auto p-0 pb-2">
+        <ul className="mt-6 flex max-w-full list-none gap-4 overflow-x-auto p-0 pb-2">
           {players.map((player) => (
             <li key={player.href} className="min-w-56 shrink-0">
               <PlayerCard {...player} />

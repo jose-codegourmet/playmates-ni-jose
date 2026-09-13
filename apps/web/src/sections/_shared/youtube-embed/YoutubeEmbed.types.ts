@@ -1,4 +1,4 @@
 export type YoutubeEmbedProps = {
   embedUrl?: string;
-  title: string;
+  title?: string;
 };

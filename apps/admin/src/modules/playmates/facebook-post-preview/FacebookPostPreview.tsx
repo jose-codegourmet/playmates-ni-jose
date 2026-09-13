@@ -40,7 +40,7 @@ export function FacebookPostPreview({ title, body, onChange, onCopy }: FacebookP
 
   return (
     <div className="flex w-full flex-col gap-3 bg-background text-foreground">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Label htmlFor={textareaId}>{title ?? "Facebook post"}</Label>
         <Button
           type="button"
@@ -48,8 +48,9 @@ export function FacebookPostPreview({ title, body, onChange, onCopy }: FacebookP
           size="sm"
           onClick={handleCopy}
           disabled={!clipboardAvailable}
+          aria-label="Copy Facebook post"
         >
-          Copy
+          Copy Facebook post
         </Button>
       </div>
       <Textarea

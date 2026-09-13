@@ -32,7 +32,7 @@ export default function RootLayout({
       className={`${manrope.variable} ${fraunces.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full">
+      <body className="min-h-full min-w-0 overflow-x-clip">
         <Providers>{children}</Providers>
       </body>
     </html>

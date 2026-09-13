@@ -41,7 +41,7 @@ export default function RootLayout({
       className={`${manrope.variable} ${fraunces.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full min-w-0 flex-col overflow-x-clip">
         <Providers>
           <Header />
           <main className="min-h-0 flex-1">{children}</main>
