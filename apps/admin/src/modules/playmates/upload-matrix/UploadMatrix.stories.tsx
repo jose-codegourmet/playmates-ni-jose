@@ -5,34 +5,48 @@ import type { UploadMatrixProps, UploadMatrixRow } from "./UploadMatrix.types";
 
 const fullMatrixRows: UploadMatrixRow[] = [
   {
+    recordingId: "rec-g1-a",
     recordingLabel: "G1 Side A",
-    drive: { provider: "google_drive", status: "uploading", progressPercent: 72 },
+    drive: { provider: "google_drive", status: "uploading", progressPercent: 72, jobId: "job-1" },
     youtube: { provider: "youtube", status: "queued" },
   },
   {
+    recordingId: "rec-g1-b",
     recordingLabel: "G1 Side B",
-    drive: { provider: "google_drive", status: "completed" },
-    youtube: { provider: "youtube", status: "processing", progressPercent: 40 },
+    drive: {
+      provider: "google_drive",
+      status: "completed",
+      assetUrl: "https://example.com/drive/drv-mock-g1b",
+    },
+    youtube: { provider: "youtube", status: "processing", progressPercent: 40, jobId: "job-2" },
   },
   {
+    recordingId: "rec-g2-a",
     recordingLabel: "G2 Side A",
-    drive: { provider: "google_drive", status: "initiating" },
-    youtube: { provider: "youtube", status: "cancelled" },
+    drive: { provider: "google_drive", status: "initiating", jobId: "job-3" },
+    youtube: { provider: "youtube", status: "cancelled", jobId: "job-4" },
   },
 ];
 
 const failureRows: UploadMatrixRow[] = [
   {
+    recordingId: "rec-g1-a",
     recordingLabel: "G1 Side A",
-    drive: { provider: "google_drive", status: "uploading", progressPercent: 72 },
+    drive: { provider: "google_drive", status: "uploading", progressPercent: 72, jobId: "job-1" },
     youtube: { provider: "youtube", status: "queued" },
   },
   {
+    recordingId: "rec-g1-b",
     recordingLabel: "G1 Side B",
-    drive: { provider: "google_drive", status: "completed" },
-    youtube: { provider: "youtube", status: "processing", progressPercent: 40 },
+    drive: {
+      provider: "google_drive",
+      status: "completed",
+      assetUrl: "https://example.com/drive/drv-mock-g1b",
+    },
+    youtube: { provider: "youtube", status: "processing", progressPercent: 40, jobId: "job-2" },
   },
   {
+    recordingId: "rec-g2-a",
     recordingLabel: "G2 Side A",
     drive: {
       provider: "google_drive",
@@ -45,6 +59,7 @@ const failureRows: UploadMatrixRow[] = [
 
 const singleRow: UploadMatrixRow[] = [
   {
+    recordingId: "rec-g2-a",
     recordingLabel: "G2 Side A",
     drive: {
       provider: "google_drive",

@@ -26,9 +26,11 @@ function UploadProviderStatus({
   status,
   progressPercent,
   errorMessage,
+  assetUrl,
 }: UploadProviderStatusProps) {
   const value = clampProgress(progressPercent);
   const failedMessage = status === "failed" ? errorMessage?.trim() || "Upload failed" : undefined;
+  const completedUrl = status === "completed" ? assetUrl?.trim() : undefined;
 
   return (
     <div className="flex min-w-0 flex-col gap-1.5 text-foreground">
@@ -41,6 +43,16 @@ function UploadProviderStatus({
           <ProgressLabel>{status === "processing" ? "Processing" : "Uploading"}</ProgressLabel>
           <ProgressValue />
         </Progress>
+      ) : null}
+      {completedUrl ? (
+        <a
+          href={completedUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="break-all text-sm text-primary underline-offset-4 hover:underline"
+        >
+          {completedUrl}
+        </a>
       ) : null}
       {failedMessage ? <p className="text-sm text-destructive">{failedMessage}</p> : null}
     </div>

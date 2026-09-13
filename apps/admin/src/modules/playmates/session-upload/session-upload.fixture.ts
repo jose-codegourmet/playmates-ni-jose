@@ -27,11 +27,11 @@ const sep9Recordings: SessionUploadRecording[] = [
 ];
 
 const completedAssets: SessionUploadAsset[] = [
-  { recordingId: "rec-g1-a", provider: "google_drive" },
-  { recordingId: "rec-g1-a", provider: "youtube" },
-  { recordingId: "rec-g1-b", provider: "google_drive" },
-  { recordingId: "rec-g1-b", provider: "youtube" },
-  { recordingId: "rec-g8-a", provider: "google_drive" },
+  { recordingId: "rec-g1-a", provider: "google_drive", url: "https://example.com/drive/drv-mock-g1a" },
+  { recordingId: "rec-g1-a", provider: "youtube", url: "https://www.youtube.com/watch?v=MOCK11111111" },
+  { recordingId: "rec-g1-b", provider: "google_drive", url: "https://example.com/drive/drv-mock-g1b" },
+  { recordingId: "rec-g1-b", provider: "youtube", url: "https://www.youtube.com/watch?v=MOCK22222222" },
+  { recordingId: "rec-g8-a", provider: "google_drive", url: "https://example.com/drive/drv-mock-g8a" },
 ];
 
 export const sep9CompletedFixture: SessionUploadProps = {
@@ -39,6 +39,7 @@ export const sep9CompletedFixture: SessionUploadProps = {
   recordings: sep9Recordings,
   jobs: [],
   assets: completedAssets,
+  enableJobPolling: false,
 };
 
 export const emptyUploadFixture: SessionUploadProps = {
@@ -46,6 +47,7 @@ export const emptyUploadFixture: SessionUploadProps = {
   recordings: [],
   jobs: [],
   assets: [],
+  enableJobPolling: false,
 };
 
 const incompleteJobs: SessionUploadJob[] = [
@@ -81,4 +83,5 @@ export const incompleteJobsFixture: SessionUploadProps = {
   recordings: [draftRecording],
   jobs: incompleteJobs,
   assets: [],
+  enableJobPolling: false,
 };

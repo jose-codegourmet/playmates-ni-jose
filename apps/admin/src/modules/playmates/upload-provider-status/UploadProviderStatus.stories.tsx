@@ -47,7 +47,9 @@ export const GoogleDriveProcessing: Story = {
 };
 
 export const GoogleDriveCompleted: Story = {
-  args: storyArgs("google_drive", "completed"),
+  args: storyArgs("google_drive", "completed", {
+    assetUrl: "https://example.com/drive/drv-mock-abcd1234",
+  }),
 };
 
 export const GoogleDriveFailed: Story = {
@@ -73,7 +75,9 @@ export const YoutubeProcessing: Story = {
 };
 
 export const YoutubeCompleted: Story = {
-  args: storyArgs("youtube", "completed"),
+  args: storyArgs("youtube", "completed", {
+    assetUrl: "https://www.youtube.com/watch?v=MOCKabcd1234",
+  }),
 };
 
 export const YoutubeFailed: Story = {

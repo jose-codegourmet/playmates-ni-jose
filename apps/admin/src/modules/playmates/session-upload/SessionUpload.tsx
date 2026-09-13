@@ -3,19 +3,39 @@
 import type { Provider } from "@fe-template/mocks";
 import { Alert, AlertDescription, AlertTitle, Button } from "@fe-template/ui";
 import { InfoIcon } from "lucide-react";
-import { type ChangeEvent, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { enqueueSessionUploads } from "@/app/(dashboard)/sessions/[id]/upload/actions";
+import {
+  cancelJob,
+  getJobs,
+  queueRecording,
+  queueSession,
+  retryJob,
+  type QueueUploadsResult,
+} from "@/app/(dashboard)/sessions/[id]/upload/actions";
 
 import { useSessionWorkspaceSave } from "../session-workspace-header/SessionWorkspaceSaveContext";
 import { UploadMatrix } from "../upload-matrix/UploadMatrix";
 import { UploadQueue } from "../upload-queue/UploadQueue";
-import { hasIncompleteJobs, toUploadMatrixRows, toUploadQueueItems } from "./map-upload";
-import type { SessionUploadProps, SessionUploadRecording } from "./SessionUpload.types";
+import {
+  hasActiveUploadJobs,
+  hasIncompleteJobs,
+  hasMissingUploads,
+  toUploadMatrixRows,
+  toUploadQueueItems,
+} from "./map-upload";
+import type {
+  SessionUploadAsset,
+  SessionUploadJob,
+  SessionUploadProps,
+  SessionUploadRecording,
+} from "./SessionUpload.types";
 
 const RESELECT_BANNER =
   "These files exist only in this browser tab. Refreshing requires reselecting files before a real upload.";
+
+const POLL_MS = 400;
 
 function filesMatchHint(file: File, recording: SessionUploadRecording): boolean {
   return (
@@ -24,22 +44,103 @@ function filesMatchHint(file: File, recording: SessionUploadRecording): boolean 
   );
 }
 
-function SessionUpload({ sessionId, recordings, jobs, assets, onEnqueue }: SessionUploadProps) {
+function toastQueueResult(result: QueueUploadsResult) {
+  if (!result.success) {
+    toast.error(result.error);
+    return false;
+  }
+  if (result.queued === 0 && result.skippedExisting > 0) {
+    toast.message("Nothing queued. Provider assets already exist.");
+    return true;
+  }
+  if (result.queued === 0) {
+    toast.message("Nothing to queue.");
+    return true;
+  }
+  toast.success(
+    result.skippedExisting > 0
+      ? `Queued ${result.queued} job(s). Skipped ${result.skippedExisting} existing asset(s).`
+      : `Queued ${result.queued} job(s).`,
+  );
+  return true;
+}
+
+function SessionUpload({
+  sessionId,
+  recordings,
+  jobs,
+  assets,
+  onEnqueue,
+  enableJobPolling = true,
+}: SessionUploadProps) {
   const { beginSave, endSave } = useSessionWorkspaceSave();
   const [fileByRecordingId, setFileByRecordingId] = useState<Map<string, File>>(() => new Map());
+  const [liveJobs, setLiveJobs] = useState<SessionUploadJob[]>(jobs);
+  const [liveAssets, setLiveAssets] = useState<SessionUploadAsset[]>(assets);
   const [queueing, setQueueing] = useState(false);
   const reselectInputRef = useRef<HTMLInputElement>(null);
+  const live = Boolean(sessionId) && !onEnqueue && enableJobPolling;
+  const shouldPoll = live && hasActiveUploadJobs(liveJobs);
+
+  useEffect(() => {
+    setLiveJobs(jobs);
+    setLiveAssets(assets);
+  }, [jobs, assets]);
+
+  useEffect(() => {
+    if (!shouldPoll) return;
+
+    let cancelled = false;
+
+    async function poll() {
+      const snapshot = await getJobs(sessionId);
+      if (cancelled) return;
+      setLiveJobs(snapshot.jobs);
+      setLiveAssets(snapshot.assets);
+    }
+
+    const intervalId = window.setInterval(() => {
+      void poll();
+    }, POLL_MS);
+    void poll();
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, [shouldPoll, sessionId]);
 
   const matrixRows = useMemo(
-    () => toUploadMatrixRows(recordings, jobs, assets),
-    [recordings, jobs, assets],
+    () => toUploadMatrixRows(recordings, liveJobs, liveAssets),
+    [recordings, liveJobs, liveAssets],
   );
   const queueItems = useMemo(
-    () => toUploadQueueItems(recordings, jobs, assets),
-    [recordings, jobs, assets],
+    () => toUploadQueueItems(recordings, liveJobs, liveAssets),
+    [recordings, liveJobs, liveAssets],
   );
 
-  const showReselectBanner = fileByRecordingId.size === 0 && hasIncompleteJobs(jobs);
+  const showReselectBanner = fileByRecordingId.size === 0 && hasIncompleteJobs(liveJobs);
+  const canQueueMissing = recordings.length > 0 && !queueing && hasMissingUploads(recordings, liveJobs, liveAssets);
+  const canQueue = recordings.length > 0 && !queueing;
+
+  async function runMutation(work: () => Promise<boolean>) {
+    setQueueing(true);
+    beginSave();
+    try {
+      const ok = await work();
+      endSave(ok);
+    } catch {
+      endSave(false);
+    } finally {
+      setQueueing(false);
+    }
+  }
+
+  async function refreshSnapshot() {
+    const snapshot = await getJobs(sessionId);
+    setLiveJobs(snapshot.jobs);
+    setLiveAssets(snapshot.assets);
+  }
 
   async function queueProviders(providers: Provider[]) {
     if (onEnqueue) {
@@ -58,31 +159,52 @@ function SessionUpload({ sessionId, recordings, jobs, assets, onEnqueue }: Sessi
       return;
     }
 
-    setQueueing(true);
-    beginSave();
-    const result = await enqueueSessionUploads(sessionId, providers);
-    setQueueing(false);
+    await runMutation(async () => {
+      const result = await queueSession({ sessionId, providers });
+      const ok = toastQueueResult(result);
+      if (ok) await refreshSnapshot();
+      return ok;
+    });
+  }
 
-    if (!result.success) {
-      endSave(false);
-      toast.error(result.error);
+  async function onQueueRecording(recordingId: string, provider: Provider) {
+    if (onEnqueue) {
+      await queueProviders([provider]);
       return;
     }
 
-    endSave(true);
-    if (result.queued === 0 && result.skippedExisting > 0) {
-      toast.message("Nothing queued. Provider assets already exist.");
-      return;
-    }
-    if (result.queued === 0) {
-      toast.message("Nothing to queue.");
-      return;
-    }
-    toast.success(
-      result.skippedExisting > 0
-        ? `Queued ${result.queued} job(s). Skipped ${result.skippedExisting} existing asset(s).`
-        : `Queued ${result.queued} job(s).`,
-    );
+    await runMutation(async () => {
+      const result = await queueRecording({ recordingId, provider });
+      const ok = toastQueueResult(result);
+      if (ok) await refreshSnapshot();
+      return ok;
+    });
+  }
+
+  async function onRetryJob(jobId: string) {
+    await runMutation(async () => {
+      const result = await retryJob(jobId);
+      if (!result.success) {
+        toast.error(result.error);
+        return false;
+      }
+      toast.success("Retry queued.");
+      await refreshSnapshot();
+      return true;
+    });
+  }
+
+  async function onCancelJob(jobId: string) {
+    await runMutation(async () => {
+      const result = await cancelJob(jobId);
+      if (!result.success) {
+        toast.error(result.error);
+        return false;
+      }
+      toast.success("Upload cancelled.");
+      await refreshSnapshot();
+      return true;
+    });
   }
 
   function onReselectFiles(event: ChangeEvent<HTMLInputElement>) {
@@ -101,8 +223,6 @@ function SessionUpload({ sessionId, recordings, jobs, assets, onEnqueue }: Sessi
       return next;
     });
   }
-
-  const canQueue = recordings.length > 0 && !queueing;
 
   return (
     <div className="space-y-6" data-slot="session-upload">
@@ -157,6 +277,7 @@ function SessionUpload({ sessionId, recordings, jobs, assets, onEnqueue }: Sessi
         </Button>
         <Button
           type="button"
+          variant="outline"
           disabled={!canQueue}
           onClick={() => {
             void queueProviders(["google_drive", "youtube"]);
@@ -164,11 +285,26 @@ function SessionUpload({ sessionId, recordings, jobs, assets, onEnqueue }: Sessi
         >
           Queue both
         </Button>
+        <Button
+          type="button"
+          disabled={!canQueueMissing}
+          onClick={() => {
+            void queueProviders(["google_drive", "youtube"]);
+          }}
+        >
+          Queue all missing
+        </Button>
       </div>
 
       <div className="space-y-2">
         <h3 className="font-heading text-base font-medium">Matrix</h3>
-        <UploadMatrix rows={matrixRows} />
+        <UploadMatrix
+          rows={matrixRows}
+          busy={queueing}
+          onQueueRecording={onQueueRecording}
+          onRetryJob={live ? onRetryJob : undefined}
+          onCancelJob={live ? onCancelJob : undefined}
+        />
       </div>
 
       <div className="space-y-2">

@@ -5,4 +5,6 @@ export type UploadProviderStatusProps = {
   status: UploadJobStatus;
   progressPercent?: number;
   errorMessage?: string;
+  jobId?: string;
+  assetUrl?: string;
 };

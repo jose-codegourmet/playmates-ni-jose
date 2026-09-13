@@ -11,9 +11,20 @@ import type {
 
 const PROVIDERS = ["google_drive", "youtube"] as const satisfies readonly Provider[];
 
+const ACTIVE_UPLOAD_STATUSES: readonly UploadJobStatus[] = [
+  "queued",
+  "initiating",
+  "uploading",
+  "processing",
+];
+
 export function recordingLabel(recording: SessionUploadRecording): string {
   const display = recording.displayName?.trim();
   return display || recording.originalFilename;
+}
+
+export function isActiveUploadStatus(status: UploadJobStatus): boolean {
+  return ACTIVE_UPLOAD_STATUSES.includes(status);
 }
 
 export function isIncompleteUploadStatus(status: UploadJobStatus): boolean {
@@ -24,7 +35,11 @@ export function hasIncompleteJobs(jobs: SessionUploadJob[]): boolean {
   return jobs.some((job) => isIncompleteUploadStatus(job.status));
 }
 
-function latestJob(
+export function hasActiveUploadJobs(jobs: SessionUploadJob[]): boolean {
+  return jobs.some((job) => isActiveUploadStatus(job.status));
+}
+
+export function latestJob(
   jobs: SessionUploadJob[],
   recordingId: string,
   provider: Provider,
@@ -34,8 +49,43 @@ function latestJob(
     .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))[0];
 }
 
-function hasAsset(assets: SessionUploadAsset[], recordingId: string, provider: Provider): boolean {
-  return assets.some((asset) => asset.recordingId === recordingId && asset.provider === provider);
+export function findAsset(
+  assets: SessionUploadAsset[],
+  recordingId: string,
+  provider: Provider,
+): SessionUploadAsset | undefined {
+  return assets.find((asset) => asset.recordingId === recordingId && asset.provider === provider);
+}
+
+export function isProviderMissing(
+  recordingId: string,
+  provider: Provider,
+  jobs: SessionUploadJob[],
+  assets: SessionUploadAsset[],
+): boolean {
+  if (findAsset(assets, recordingId, provider)) return false;
+  const job = latestJob(jobs, recordingId, provider);
+  if (!job) return true;
+  if (isActiveUploadStatus(job.status)) return false;
+  return job.status !== "completed";
+}
+
+export function missingProvidersForRecording(
+  recordingId: string,
+  jobs: SessionUploadJob[],
+  assets: SessionUploadAsset[],
+): Provider[] {
+  return PROVIDERS.filter((provider) => isProviderMissing(recordingId, provider, jobs, assets));
+}
+
+export function hasMissingUploads(
+  recordings: SessionUploadRecording[],
+  jobs: SessionUploadJob[],
+  assets: SessionUploadAsset[],
+): boolean {
+  return recordings.some(
+    (recording) => missingProvidersForRecording(recording.id, jobs, assets).length > 0,
+  );
 }
 
 export function toProviderStatus(
@@ -45,17 +95,25 @@ export function toProviderStatus(
   assets: SessionUploadAsset[],
 ): UploadProviderStatusProps {
   const job = latestJob(jobs, recordingId, provider);
+  const asset = findAsset(assets, recordingId, provider);
   if (job) {
     return {
       provider,
       status: job.status,
       progressPercent: job.progressPercent ?? undefined,
       errorMessage: job.lastErrorMessage ?? undefined,
+      jobId: job.id,
+      assetUrl: asset?.url ?? undefined,
     };
   }
 
-  if (hasAsset(assets, recordingId, provider)) {
-    return { provider, status: "completed", progressPercent: 100 };
+  if (asset) {
+    return {
+      provider,
+      status: "completed",
+      progressPercent: 100,
+      assetUrl: asset.url ?? undefined,
+    };
   }
 
   return { provider, status: "queued" };
@@ -74,6 +132,7 @@ function rowForRecording(
   usedLabels.add(label);
 
   return {
+    recordingId: recording.id,
     recordingLabel: label,
     drive: toProviderStatus("google_drive", recording.id, jobs, assets),
     youtube: toProviderStatus("youtube", recording.id, jobs, assets),
