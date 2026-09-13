@@ -6,6 +6,7 @@ import {
   type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
+  type PointerSensorOptions,
   useDroppable,
   useSensor,
   useSensors,
@@ -19,6 +20,38 @@ import type { RecordingMoveTarget } from "../recording-card/RecordingCard.types"
 
 import { gameSideDroppableId, parseDroppableId, UNASSIGNED_DROPPABLE_ID } from "./droppable-ids";
 import type { GameRecordingBoardProps } from "./GameRecordingBoard.types";
+
+function isMoveControlTarget(target: EventTarget | null): boolean {
+  let node = target instanceof Element ? target : null;
+  while (node) {
+    const slot = node.getAttribute("data-slot");
+    if (
+      slot === "native-select" ||
+      slot === "native-select-wrapper" ||
+      node.tagName === "SELECT" ||
+      node.tagName === "OPTION" ||
+      node.tagName === "LABEL"
+    ) {
+      return true;
+    }
+    node = node.parentElement;
+  }
+  return false;
+}
+
+class LanePointerSensor extends PointerSensor {
+  static activators = [
+    {
+      eventName: "onPointerDown" as const,
+      handler: ({ nativeEvent }: { nativeEvent: PointerEvent }) => {
+        if (!nativeEvent.isPrimary || nativeEvent.button !== 0) {
+          return false;
+        }
+        return !isMoveControlTarget(nativeEvent.target);
+      },
+    },
+  ];
+}
 
 function laneCollisionDetection(...args: Parameters<typeof closestCenter>) {
   const [input] = args;
@@ -80,7 +113,9 @@ function UnassignedColumn({
 
 function GameRecordingBoard({ unassigned, games, onAssignRecording }: GameRecordingBoardProps) {
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(LanePointerSensor, {
+      activationConstraint: { distance: 6 },
+    } satisfies PointerSensorOptions),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 

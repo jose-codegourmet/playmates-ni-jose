@@ -71,7 +71,6 @@ function RecordingCard({
 
   return (
     <Card
-      ref={setNodeRef}
       size="sm"
       tabIndex={0}
       data-slot="recording-card"
@@ -84,6 +83,7 @@ function RecordingCard({
       }}
     >
       <Button
+        ref={setNodeRef}
         type="button"
         variant="ghost"
         size="icon-xs"
@@ -110,7 +110,11 @@ function RecordingCard({
             <StatusBadge kind="recording" status={recordingStatusForSide(cameraSide)} />
           </div>
           {moveTargets && moveTargets.length > 0 && onMoveTo ? (
-            <label htmlFor={`move-to-${id}`} className="flex min-w-0 flex-col gap-1">
+            <label
+              htmlFor={`move-to-${id}`}
+              className="flex min-w-0 flex-col gap-1"
+              onPointerDown={(event) => event.stopPropagation()}
+            >
               <span className="text-xs text-muted-foreground">Move to…</span>
               <NativeSelect
                 id={`move-to-${id}`}
@@ -118,6 +122,7 @@ function RecordingCard({
                 className="w-full max-w-full"
                 aria-label="Move to"
                 value={droppableId}
+                onPointerDown={(event) => event.stopPropagation()}
                 onChange={(event) => {
                   const next = event.target.value;
                   if (next !== droppableId) {
