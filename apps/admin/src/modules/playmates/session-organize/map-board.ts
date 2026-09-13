@@ -1,3 +1,5 @@
+import { formatRecordingDisplayName } from "@fe-template/mocks";
+
 import type {
   GameRecordingBoardGame,
   GameRecordingBoardProps,
@@ -5,6 +7,29 @@ import type {
 import type { RecordingCardProps } from "../recording-card/RecordingCard.types";
 
 import type { SessionOrganizeGame, SessionOrganizeRecording } from "./SessionOrganize.types";
+
+export function labelLaneCards(
+  cards: RecordingCardProps[],
+  gameNumber: number,
+  side: "A" | "B",
+): RecordingCardProps[] {
+  const partCount = cards.length;
+  return cards.map((card, index) => {
+    const partNumber = index + 1;
+    return {
+      ...card,
+      partNumber,
+      partCount,
+      cameraSide: side,
+      displayName: formatRecordingDisplayName({
+        gameNumber,
+        side,
+        partNumber,
+        partCount,
+      }),
+    };
+  });
+}
 
 function isUnassignedLane(recording: SessionOrganizeRecording): boolean {
   return recording.gameId == null || recording.cameraSide === "UNASSIGNED";
@@ -22,6 +47,7 @@ function toCard(
     durationSeconds: recording.durationSeconds ?? undefined,
     cameraSide: recording.cameraSide,
     partNumber: recording.partNumber,
+    partCount: 1,
     gameLabel: gameNumber == null ? undefined : `Game ${gameNumber}`,
   };
 }
@@ -52,5 +78,18 @@ export function toGameRecordingBoardProps(
     }
   }
 
-  return { unassigned, games: boardGames };
+  return applyBoardPartLabels({ unassigned, games: boardGames });
+}
+
+export function applyBoardPartLabels(board: GameRecordingBoardProps): GameRecordingBoardProps {
+  return {
+    unassigned: board.unassigned.map((card) => ({ ...card, partCount: 1 })),
+    games: board.games.map((game) => ({
+      ...game,
+      sides: {
+        A: labelLaneCards(game.sides.A, game.gameNumber, "A"),
+        B: labelLaneCards(game.sides.B, game.gameNumber, "B"),
+      },
+    })),
+  };
 }

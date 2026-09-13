@@ -12,16 +12,18 @@ const sideARecordings: RecordingCardProps[] = [
     durationSeconds: 612,
     cameraSide: "A",
     partNumber: 1,
+    partCount: 2,
     gameLabel: "Game 1",
   },
   {
     id: "rec-g1-a-2",
     originalFilename: "IMG_1002.mov",
-    displayName: "Game 1 - Side A - Part 1",
+    displayName: "Game 1 - Side A - Part 2",
     sizeBytes: 201_326_592,
     durationSeconds: 598,
     cameraSide: "A",
-    partNumber: 1,
+    partNumber: 2,
+    partCount: 2,
     gameLabel: "Game 1",
   },
 ];
@@ -34,6 +36,7 @@ const sideBRecordings: RecordingCardProps[] = [
     durationSeconds: 540,
     cameraSide: "B",
     partNumber: 1,
+    partCount: 3,
     gameLabel: "Game 4",
   },
   {
@@ -44,6 +47,7 @@ const sideBRecordings: RecordingCardProps[] = [
     durationSeconds: 548,
     cameraSide: "B",
     partNumber: 2,
+    partCount: 3,
     gameLabel: "Game 4",
   },
   {
@@ -51,7 +55,8 @@ const sideBRecordings: RecordingCardProps[] = [
     originalFilename: "IMG_2003.mov",
     sizeBytes: 92_274_688,
     cameraSide: "B",
-    partNumber: 1,
+    partNumber: 3,
+    partCount: 3,
     gameLabel: "Game 4",
   },
 ];

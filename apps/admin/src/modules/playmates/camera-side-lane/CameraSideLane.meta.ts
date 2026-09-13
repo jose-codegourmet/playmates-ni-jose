@@ -8,7 +8,8 @@ export default {
   description:
     "Vertical Side A / Side B column that lists recording cards or an empty drop-target prompt.",
   sectionCategory: "workflow",
-  purpose: "Hold recordings assigned to one camera side and accept dnd-kit drops from other lanes.",
+  purpose:
+    "Hold recordings assigned to one camera side, accept drops from other lanes, and support in-lane part reorder.",
   bestFor: ["organize board", "game recording workspace", "camera side assignment"],
   tone: ["utilitarian", "archive"],
   contentDensity: "high",
@@ -23,7 +24,7 @@ export default {
     supportsDarkMode: true,
   },
   tags: ["recording", "camera", "lane", "organize", "admin"],
-  dependencies: ["@fe-template/ui", "@dnd-kit/core"],
+  dependencies: ["@fe-template/ui", "@dnd-kit/core", "@dnd-kit/sortable"],
   registryDependencies: ["card", "empty", "recording-card"],
   a11y: { keyboardNav: true, reducedMotion: true },
   preview: { layout: "padded", capture: { themes: ["light", "dark"] } },

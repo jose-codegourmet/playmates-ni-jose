@@ -3,8 +3,11 @@ import { useState } from "react";
 
 import type { RecordingCardProps } from "../recording-card/RecordingCard.types";
 
+import { applyBoardPartLabels } from "../session-organize/map-board";
+
 import { mvpBoardFixture } from "./board.fixture";
 import type { RecordingAssignTarget } from "./droppable-ids";
+import { UNASSIGNED_DROPPABLE_ID } from "./droppable-ids";
 import { GameRecordingBoard } from "./GameRecordingBoard";
 import type { GameRecordingBoardGame, GameRecordingBoardProps } from "./GameRecordingBoard.types";
 
@@ -44,7 +47,7 @@ function rebuildBoard(
     }
   }
 
-  return { unassigned, games: nextGames };
+  return applyBoardPartLabels({ unassigned, games: nextGames });
 }
 
 const meta: Meta<typeof GameRecordingBoard> = {
@@ -93,14 +96,49 @@ export const DragAssign: Story = {
       });
     }
 
+    function handleReorder(droppableId: string, recordingIds: string[]) {
+      setBoard((current) => {
+        const next: GameRecordingBoardProps = {
+          unassigned: [...current.unassigned],
+          games: current.games.map((game) => ({
+            ...game,
+            sides: { A: [...game.sides.A], B: [...game.sides.B] },
+          })),
+        };
+        const cardsById = new Map(
+          flattenBoard(current).map(({ card }) => [card.id, card] as const),
+        );
+        const ordered = recordingIds
+          .map((id) => cardsById.get(id))
+          .filter((card): card is RecordingCardProps => card !== undefined);
+        if (droppableId === UNASSIGNED_DROPPABLE_ID) {
+          next.unassigned = ordered;
+        } else {
+          const match = /^game:(.+):([AB])$/.exec(droppableId);
+          if (match) {
+            const game = next.games.find((row) => row.id === match[1]);
+            if (game) {
+              game.sides[match[2] as "A" | "B"] = ordered;
+            }
+          }
+        }
+        return applyBoardPartLabels(next);
+      });
+    }
+
     return (
       <GameRecordingBoard
         unassigned={board.unassigned}
         games={board.games}
         onAssignRecording={handleAssign}
+        onReorderLane={handleReorder}
       />
     );
   },
+};
+
+export const ReorderParts: Story = {
+  ...DragAssign,
 };
 
 export const Dark: Story = {
