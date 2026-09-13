@@ -26,6 +26,7 @@ import {
 } from "../game-recording-board/droppable-ids";
 import { GameRecordingBoard } from "../game-recording-board/GameRecordingBoard";
 
+import { useSessionWorkspaceSave } from "../session-workspace-header/SessionWorkspaceSaveContext";
 import { toGameRecordingBoardProps } from "./map-board";
 import type { SessionOrganizeProps } from "./SessionOrganize.types";
 
@@ -41,10 +42,43 @@ function SessionOrganize({
   const board = toGameRecordingBoardProps(recordings, games);
   const [pending, setPending] = useState(false);
   const [blockedGame, setBlockedGame] = useState<{ id: string; gameNumber: number } | null>(null);
+  const { beginSave, endSave } = useSessionWorkspaceSave();
+
+  async function flickerSave(work: () => Promise<void>): Promise<void> {
+    beginSave();
+    try {
+      await work();
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 280);
+      });
+      endSave(true);
+    } catch {
+      endSave(false);
+    }
+  }
+
+  async function persistOrganize<T extends { success: boolean; error?: string }>(
+    action: () => Promise<T>,
+  ): Promise<boolean> {
+    beginSave();
+    const result = await action();
+    if (!result.success) {
+      endSave(false);
+      toast.error(result.error ?? "Could not save organize changes.");
+      return false;
+    }
+    await new Promise<void>((resolve) => {
+      window.setTimeout(resolve, 280);
+    });
+    endSave(true);
+    return true;
+  }
 
   async function handleAssign(recordingId: string, target: RecordingAssignTarget) {
     if (onAssignRecording) {
-      await onAssignRecording(recordingId, target);
+      await flickerSave(async () => {
+        await onAssignRecording(recordingId, target);
+      });
       return;
     }
 
@@ -53,10 +87,7 @@ function SessionOrganize({
       return;
     }
 
-    const result = await assignRecording(sessionId, recordingId, target);
-    if (!result.success) {
-      toast.error(result.error);
-    }
+    await persistOrganize(() => assignRecording(sessionId, recordingId, target));
   }
 
   async function handleReorder(droppableId: string, recordingIds: string[]) {
@@ -66,7 +97,9 @@ function SessionOrganize({
     }
 
     if (onReorderLane) {
-      await onReorderLane(target, recordingIds);
+      await flickerSave(async () => {
+        await onReorderLane(target, recordingIds);
+      });
       return;
     }
 
@@ -75,15 +108,9 @@ function SessionOrganize({
       return;
     }
 
-    const result = await reorderLaneRecordings(
-      sessionId,
-      target.gameId,
-      target.cameraSide,
-      recordingIds,
+    await persistOrganize(() =>
+      reorderLaneRecordings(sessionId, target.gameId, target.cameraSide, recordingIds),
     );
-    if (!result.success) {
-      toast.error(result.error);
-    }
   }
 
   async function handleCreateGame() {
@@ -92,7 +119,9 @@ function SessionOrganize({
     }
 
     if (onCreateGame) {
-      await onCreateGame();
+      await flickerSave(async () => {
+        await onCreateGame();
+      });
       return;
     }
 
@@ -102,11 +131,8 @@ function SessionOrganize({
     }
 
     setPending(true);
-    const result = await createSessionGame(sessionId);
+    await persistOrganize(() => createSessionGame(sessionId));
     setPending(false);
-    if (!result.success) {
-      toast.error(result.error);
-    }
   }
 
   async function handleRemoveGame(gameId: string) {
@@ -121,7 +147,9 @@ function SessionOrganize({
     }
 
     if (onRemoveGame) {
-      await onRemoveGame(gameId);
+      await flickerSave(async () => {
+        await onRemoveGame(gameId);
+      });
       return;
     }
 
@@ -131,11 +159,8 @@ function SessionOrganize({
     }
 
     setPending(true);
-    const result = await deleteSessionGame(sessionId, gameId);
+    await persistOrganize(() => deleteSessionGame(sessionId, gameId));
     setPending(false);
-    if (!result.success) {
-      toast.error(result.error);
-    }
   }
 
   return (

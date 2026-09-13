@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
+import { SessionWorkspaceHeader } from "../session-workspace-header/SessionWorkspaceHeader";
+import { SessionWorkspaceSaveProvider } from "../session-workspace-header/SessionWorkspaceSaveContext";
 import { SessionOrganize } from "./SessionOrganize";
 import {
   buildSep9OrganizeFixture,
@@ -122,6 +124,76 @@ export const AddRemoveGames: Story = {
           );
         }}
       />
+    );
+  },
+};
+
+export const PersistAndSaveFlicker: Story = {
+  args: unassignedSideOrganizeFixture,
+  render: function PersistAndSaveFlickerStory(args) {
+    const [games, setGames] = useState(args.games);
+    const [recordings, setRecordings] = useState(args.recordings);
+    const [status, setStatus] = useState<"draft" | "organizing">("draft");
+
+    return (
+      <SessionWorkspaceSaveProvider>
+        <div className="space-y-4">
+          <SessionWorkspaceHeader
+            date="2026-09-13"
+            title="New draft session"
+            venueName=""
+            status={status}
+            visibility="private"
+            saveState="saved"
+          />
+          <SessionOrganize
+            {...args}
+            games={games}
+            recordings={recordings}
+            onCreateGame={() => {
+              const nextNumber =
+                games.reduce((max, game) => Math.max(max, game.gameNumber ?? 0), 0) + 1;
+              setGames((current) => [
+                ...current,
+                { id: `story-game-${nextNumber}`, gameNumber: nextNumber, sortOrder: nextNumber },
+              ]);
+              setStatus("organizing");
+            }}
+            onRemoveGame={(gameId) => {
+              setGames((current) => current.filter((game) => game.id !== gameId));
+              setStatus("organizing");
+            }}
+            onAssignRecording={(recordingId, target) => {
+              setRecordings((current) =>
+                current.map((recording) =>
+                  recording.id === recordingId
+                    ? { ...recording, gameId: target.gameId, cameraSide: target.cameraSide }
+                    : recording,
+                ),
+              );
+              setStatus("organizing");
+            }}
+            onReorderLane={(target, recordingIds) => {
+              setRecordings((current) =>
+                current.map((recording) => {
+                  const index = recordingIds.indexOf(recording.id);
+                  if (index < 0) {
+                    return recording;
+                  }
+                  return {
+                    ...recording,
+                    gameId: target.gameId,
+                    cameraSide: target.cameraSide,
+                    sortOrder: index,
+                    partNumber: index + 1,
+                  };
+                }),
+              );
+              setStatus("organizing");
+            }}
+          />
+        </div>
+      </SessionWorkspaceSaveProvider>
     );
   },
 };

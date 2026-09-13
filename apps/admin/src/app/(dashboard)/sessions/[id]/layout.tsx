@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { getPlaymatesRepos } from "@/lib/playmates";
 import { SessionWorkspaceHeader } from "@/modules/playmates/session-workspace-header/SessionWorkspaceHeader";
+import { SessionWorkspaceSaveProvider } from "@/modules/playmates/session-workspace-header/SessionWorkspaceSaveContext";
 
 import { SessionWorkspaceNav } from "./session-workspace-nav";
 
@@ -20,17 +21,19 @@ export default async function SessionWorkspaceLayout({
   if (!detail) notFound();
 
   return (
-    <div className="space-y-6">
-      <SessionWorkspaceHeader
-        date={detail.session.sessionDate}
-        title={detail.session.title ?? ""}
-        venueName={detail.venue?.name ?? ""}
-        status={detail.session.status}
-        visibility={detail.session.visibility}
-        saveState="saved"
-      />
-      <SessionWorkspaceNav sessionId={id} />
-      {children}
-    </div>
+    <SessionWorkspaceSaveProvider>
+      <div className="space-y-6">
+        <SessionWorkspaceHeader
+          date={detail.session.sessionDate}
+          title={detail.session.title ?? ""}
+          venueName={detail.venue?.name ?? ""}
+          status={detail.session.status}
+          visibility={detail.session.visibility}
+          saveState="saved"
+        />
+        <SessionWorkspaceNav sessionId={id} />
+        {children}
+      </div>
+    </SessionWorkspaceSaveProvider>
   );
 }

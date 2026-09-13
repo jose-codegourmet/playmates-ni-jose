@@ -221,6 +221,21 @@ export async function importSessionRecordings(
   }
 }
 
+async function bumpDraftSessionToOrganizing(sessionId: string): Promise<void> {
+  const repos = getPlaymatesRepos();
+  const detail = await repos.sessions.getById(sessionId);
+  if (detail?.session.status === "draft") {
+    await repos.sessions.update(sessionId, { status: "organizing" });
+  }
+}
+
+function revalidateOrganize(sessionId: string): void {
+  revalidatePath("/sessions");
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/organize`);
+  revalidatePath("/dashboard");
+}
+
 export type AssignRecordingResult = { success: true } | { success: false; error: string };
 
 export async function assignRecording(
@@ -259,6 +274,8 @@ export async function assignRecording(
     if (patch.gameId && (patch.cameraSide === "A" || patch.cameraSide === "B")) {
       await repos.recordings.normalizeParts(patch.gameId, patch.cameraSide);
     }
+
+    await bumpDraftSessionToOrganizing(sessionId);
   } catch (error) {
     if (isMockDomainError(error)) {
       return { success: false, error: error.message };
@@ -266,8 +283,7 @@ export async function assignRecording(
     return { success: false, error: "Could not assign recording." };
   }
 
-  revalidatePath(`/sessions/${sessionId}`);
-  revalidatePath(`/sessions/${sessionId}/organize`);
+  revalidateOrganize(sessionId);
   return { success: true };
 }
 
@@ -303,6 +319,8 @@ export async function reorderLaneRecordings(
     if (gameId && (cameraSide === "A" || cameraSide === "B")) {
       await repos.recordings.normalizeParts(gameId, cameraSide);
     }
+
+    await bumpDraftSessionToOrganizing(sessionId);
   } catch (error) {
     if (isMockDomainError(error)) {
       return { success: false, error: error.message };
@@ -310,8 +328,7 @@ export async function reorderLaneRecordings(
     return { success: false, error: "Could not reorder recordings." };
   }
 
-  revalidatePath(`/sessions/${sessionId}`);
-  revalidatePath(`/sessions/${sessionId}/organize`);
+  revalidateOrganize(sessionId);
   return { success: true };
 }
 
@@ -326,6 +343,7 @@ export async function createSessionGame(sessionId: string): Promise<CreateSessio
     }
 
     await repos.games.create(sessionId);
+    await bumpDraftSessionToOrganizing(sessionId);
   } catch (error) {
     if (isMockDomainError(error)) {
       return { success: false, error: error.message };
@@ -333,8 +351,7 @@ export async function createSessionGame(sessionId: string): Promise<CreateSessio
     return { success: false, error: "Could not create game." };
   }
 
-  revalidatePath(`/sessions/${sessionId}`);
-  revalidatePath(`/sessions/${sessionId}/organize`);
+  revalidateOrganize(sessionId);
   return { success: true };
 }
 
@@ -357,6 +374,7 @@ export async function deleteSessionGame(
     }
 
     await repos.games.delete(gameId);
+    await bumpDraftSessionToOrganizing(sessionId);
   } catch (error) {
     if (isMockDomainError(error)) {
       return { success: false, error: error.message };
@@ -364,7 +382,6 @@ export async function deleteSessionGame(
     return { success: false, error: "Could not remove game." };
   }
 
-  revalidatePath(`/sessions/${sessionId}`);
-  revalidatePath(`/sessions/${sessionId}/organize`);
+  revalidateOrganize(sessionId);
   return { success: true };
 }

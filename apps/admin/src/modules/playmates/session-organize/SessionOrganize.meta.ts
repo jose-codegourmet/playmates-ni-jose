@@ -3,13 +3,13 @@ import type { PlaymatesComponentMeta } from "@fe-template/mocks";
 export default {
   name: "session-organize",
   displayName: "Session Organize",
-  version: "0.1.0",
+  version: "0.1.1",
   addedAt: "2026-09-13",
   description:
-    "Session workspace Organize step: maps recordings onto GameRecordingBoard, persists assigns, reorders parts, and adds or removes empty games.",
+    "Session workspace Organize step: persists assigns and lane reorders, bumps a draft session to organizing, marks assigned recordings organized, and flickers header save state.",
   sectionCategory: "workflow",
   purpose:
-    "Assign recordings to game/camera lanes, reorder multi-part clips, create empty games, and remove games that have no recordings.",
+    "Assign recordings to game/camera lanes, persist organize mutations with status bumps, reorder multi-part clips, and add or remove empty games.",
   bestFor: ["session workspace organize step"],
   tone: ["utilitarian", "archive"],
   contentDensity: "high",
