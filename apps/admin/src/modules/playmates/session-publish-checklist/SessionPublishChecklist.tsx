@@ -61,6 +61,7 @@ function ProviderState({ label, status }: { label: string; status: UploadJobStat
 function SessionPublishChecklist({
   games,
   onPublishGame,
+  onUnpublishGame,
   onPublishAll,
 }: SessionPublishChecklistProps) {
   return (
@@ -114,7 +115,17 @@ function SessionPublishChecklist({
                       </Alert>
                     ) : null}
                   </CardContent>
-                  <CardFooter className="justify-end">
+                  <CardFooter className="justify-end gap-2">
+                    {game.visibility === "public" && onUnpublishGame ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onUnpublishGame(game.id)}
+                      >
+                        Unpublish game
+                      </Button>
+                    ) : null}
                     <Button type="button" size="sm" onClick={() => onPublishGame(game.id)}>
                       Publish game
                     </Button>

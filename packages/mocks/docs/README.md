@@ -23,7 +23,7 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 | Entry | Path | Exports |
 |---|---|---|
-| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012), including `PlaymatesSettings`. `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). `MockState.settings` holds Facebook Group URL and default hashtags (PNJ-059). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). In-memory `getPlaymatesRepos`, `getState`, and `resetState` (PNJ-015). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016), including `DEFAULT_FACEBOOK_HASHTAGS`. Time-based upload simulator (`getJobView`, `simulatedDurationMs`) and `MockDomainError` / `ASSET_EXISTS` (PNJ-017). Public-site accessors from `src/public.ts` (PNJ-018): `listPublicSessions`, `getPublicSession`, `getPublicGame`, `listPublicPlayers`, `getPublicPlayer`, `listPublicVenues`, `getPublicVenue`. |
+| `.` | `src/index.ts` | `PlaymatesComponentMeta` (re-export). Domain types from `src/types.ts` (PNJ-012), including `PlaymatesSettings`. `createSeedState` / `assertSeedInvariants` / `MockState` from `src/seed.ts` (PNJ-013). `MockState.settings` holds Facebook Group URL and default hashtags (PNJ-059). Async repository interfaces and `ImportFileMeta` from `src/repositories/types.ts` (PNJ-014). In-memory `getPlaymatesRepos`, `getState`, `persistState`, and `resetState` (PNJ-015 / PNJ-074). Naming / slug / title / Facebook body helpers from `src/naming.ts` (PNJ-016), including `DEFAULT_FACEBOOK_HASHTAGS`. Time-based upload simulator (`getJobView`, `simulatedDurationMs`) and `MockDomainError` / `ASSET_EXISTS` (PNJ-017). Public-site accessors from `src/public.ts` (PNJ-018): `listPublicSessions`, `getPublicSession`, `getPublicGame`, `listPublicPlayers`, `getPublicPlayer`, `listPublicVenues`, `getPublicVenue`. |
 
 ## Major dependencies
 
@@ -68,6 +68,12 @@ Keep `PlaymatesRepos` and the public helpers (`listPublicSessions`, `getPublicSe
 - `cancel` is allowed from `queued|initiating|uploading`.
 
 The simulator **does not read `File` bytes**. Do not add a server-side `sourceHandlePresent` map. Admin import UI keeps `File` objects in React state; after refresh that handle is gone. Prototype upload actions still run the simulator, but the UI must show a reselect banner (PNJ-063 / PNJ-072).
+
+## Shared `store.json` (PNJ-074)
+
+`apps/web` and `apps/admin` are separate Node processes. They do **not** share `globalThis.__playmatesMock`. Every mock write calls `persistState()` → `packages/mocks/.data/store.json`. `getState()` reloads that file when it exists (mtime-aware). Gitignore `packages/mocks/.data/`. Recordings persist metadata only — never video bytes.
+
+Delete `store.json` (or call `resetState()`) to return both apps to the hardcoded seed.
 
 `packages/db` Prisma schema stays PawPair until the owner migrates it. This package must not start that migration.
 

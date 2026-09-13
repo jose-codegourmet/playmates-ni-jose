@@ -17,8 +17,9 @@ export type SessionReviewPublishProps = {
   sessionVisibility: Visibility;
   games: SessionReviewPublishGame[];
   onPublishGame?: (gameId: string) => Promise<void> | void;
+  onUnpublishGame?: (gameId: string) => Promise<void> | void;
   onPublishAll?: () => Promise<void> | void;
-  onPublishSession?: () => Promise<void> | void;
+  onPublishSession?: (options: { alsoPublishGames: boolean }) => Promise<void> | void;
   onUnpublishSession?: () => Promise<void> | void;
   onSetSessionVisibility?: (visibility: Visibility) => Promise<void> | void;
   onSetGameVisibility?: (gameId: string, visibility: Visibility) => Promise<void> | void;

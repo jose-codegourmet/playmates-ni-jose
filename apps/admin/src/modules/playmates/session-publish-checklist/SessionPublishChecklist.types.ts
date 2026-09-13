@@ -12,5 +12,6 @@ export type SessionPublishChecklistGame = {
 export type SessionPublishChecklistProps = {
   games: SessionPublishChecklistGame[];
   onPublishGame: (gameId: string) => void;
+  onUnpublishGame?: (gameId: string) => void;
   onPublishAll: () => void;
 };

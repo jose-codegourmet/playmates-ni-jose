@@ -1,5 +1,5 @@
 import type { UploadRepository } from "../repositories/types";
-import { getState, newId, nowIso, requireEntity } from "../store";
+import { getState, newId, nowIso, persistState, requireEntity } from "../store";
 import type { UploadJob, UploadJobStatus } from "../types";
 import {
   applyUploadSimulation,
@@ -50,7 +50,9 @@ export function createUploadRepository(): UploadRepository {
         updatedAt: now,
       };
       state.uploadJobs.push(job);
-      return getJobView(job);
+      const view = getJobView(job);
+      persistState();
+      return view;
     },
 
     async retry(jobId) {
@@ -74,7 +76,9 @@ export function createUploadRepository(): UploadRepository {
       job.startedAt = now;
       job.completedAt = null;
       job.updatedAt = now;
-      return getJobView(job);
+      const view = getJobView(job);
+      persistState();
+      return view;
     },
 
     async cancel(jobId) {
@@ -90,6 +94,7 @@ export function createUploadRepository(): UploadRepository {
       }
       job.status = "cancelled";
       job.updatedAt = nowIso();
+      persistState();
       return job;
     },
 

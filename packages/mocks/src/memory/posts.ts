@@ -1,6 +1,6 @@
 import { formatFacebookBody, formatSessionDisplayDate } from "../naming";
 import type { PostDraftRepository } from "../repositories/types";
-import { getState, newId, nowIso, requireEntity } from "../store";
+import { getState, newId, nowIso, persistState, requireEntity } from "../store";
 import type { PostDraft } from "../types";
 
 function teamNames(gameId: string, teamNo: number): string[] {
@@ -70,6 +70,7 @@ export function createPostDraftRepository(): PostDraftRepository {
         existing.body = body;
         existing.version += 1;
         existing.updatedAt = now;
+        persistState();
         return existing;
       }
       const draft: PostDraft = {
@@ -83,6 +84,7 @@ export function createPostDraftRepository(): PostDraftRepository {
         updatedAt: now,
       };
       state.postDrafts.push(draft);
+      persistState();
       return draft;
     },
 
@@ -95,6 +97,7 @@ export function createPostDraftRepository(): PostDraftRepository {
       );
       draft.body = body;
       draft.updatedAt = nowIso();
+      persistState();
       return draft;
     },
 
@@ -106,6 +109,7 @@ export function createPostDraftRepository(): PostDraftRepository {
         id,
       );
       draft.updatedAt = nowIso();
+      persistState();
       return draft;
     },
   };

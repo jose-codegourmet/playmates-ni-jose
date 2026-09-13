@@ -1,6 +1,6 @@
 import { formatSessionFolderName } from "../naming";
 import type { SessionRepository } from "../repositories/types";
-import { getState, newId, nowIso, requireEntity, uniqueSlug } from "../store";
+import { getState, newId, nowIso, persistState, requireEntity, uniqueSlug } from "../store";
 import type { GameWithTeamsAndRecordings, Session, SessionDetail, SessionListItem } from "../types";
 import { assertCourtMatchesVenue } from "./helpers";
 
@@ -126,6 +126,7 @@ export function createSessionRepository(): SessionRepository {
         updatedAt: now,
       };
       state.sessions.push(session);
+      persistState();
       return session;
     },
 
@@ -144,6 +145,7 @@ export function createSessionRepository(): SessionRepository {
         createdAt: session.createdAt,
         updatedAt: nowIso(),
       });
+      persistState();
       return session;
     },
 
@@ -161,6 +163,7 @@ export function createSessionRepository(): SessionRepository {
         seen.add(playerId);
         state.sessionPlayers.push({ sessionId: id, playerId });
       }
+      persistState();
     },
   };
 }

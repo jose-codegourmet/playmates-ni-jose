@@ -27,12 +27,20 @@ function SessionReviewPublishPlayground(props: SessionReviewPublishProps) {
             current.map((game) => (game.id === gameId ? { ...game, visibility: "public" } : game)),
           );
         }}
+        onUnpublishGame={(gameId) => {
+          setGames((current) =>
+            current.map((game) => (game.id === gameId ? { ...game, visibility: "private" } : game)),
+          );
+        }}
         onPublishAll={() => {
           setGames((current) => current.map((game) => ({ ...game, visibility: "public" })));
         }}
-        onPublishSession={() => {
+        onPublishSession={(options) => {
           setSessionStatus("published");
           setSessionVisibility("public");
+          if (options.alsoPublishGames) {
+            setGames((current) => current.map((game) => ({ ...game, visibility: "public" })));
+          }
         }}
         onUnpublishSession={() => {
           setSessionStatus("ready");

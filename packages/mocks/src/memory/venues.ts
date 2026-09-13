@@ -1,6 +1,6 @@
 import { slugify } from "../naming";
 import type { VenueRepository } from "../repositories/types";
-import { getState, newId, nowIso, requireEntity, uniqueSlug } from "../store";
+import { getState, newId, nowIso, persistState, requireEntity, uniqueSlug } from "../store";
 import type { Court, Venue } from "../types";
 
 export function createVenueRepository(): VenueRepository {
@@ -37,6 +37,7 @@ export function createVenueRepository(): VenueRepository {
         updatedAt: now,
       };
       state.venues.push(venue);
+      persistState();
       return venue;
     },
 
@@ -52,6 +53,7 @@ export function createVenueRepository(): VenueRepository {
         createdAt: venue.createdAt,
         updatedAt: nowIso(),
       });
+      persistState();
       return venue;
     },
 
@@ -64,6 +66,7 @@ export function createVenueRepository(): VenueRepository {
       );
       venue.isArchived = true;
       venue.updatedAt = nowIso();
+      persistState();
       return venue;
     },
 
@@ -94,6 +97,7 @@ export function createVenueRepository(): VenueRepository {
         isArchived: false,
       };
       state.courts.push(court);
+      persistState();
       return court;
     },
 
@@ -105,6 +109,7 @@ export function createVenueRepository(): VenueRepository {
         courtId,
       );
       court.isArchived = true;
+      persistState();
       return court;
     },
   };

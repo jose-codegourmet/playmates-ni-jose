@@ -1,6 +1,6 @@
 import { slugify } from "../naming";
 import type { PlayerRepository } from "../repositories/types";
-import { getState, newId, nowIso, requireEntity, uniqueSlug } from "../store";
+import { getState, newId, nowIso, persistState, requireEntity, uniqueSlug } from "../store";
 import type { Player } from "../types";
 
 export function createPlayerRepository(): PlayerRepository {
@@ -39,6 +39,7 @@ export function createPlayerRepository(): PlayerRepository {
         updatedAt: now,
       };
       state.players.push(player);
+      persistState();
       return player;
     },
 
@@ -54,6 +55,7 @@ export function createPlayerRepository(): PlayerRepository {
         createdAt: player.createdAt,
         updatedAt: nowIso(),
       });
+      persistState();
       return player;
     },
 
@@ -66,6 +68,7 @@ export function createPlayerRepository(): PlayerRepository {
       );
       player.isArchived = true;
       player.updatedAt = nowIso();
+      persistState();
       return player;
     },
   };
