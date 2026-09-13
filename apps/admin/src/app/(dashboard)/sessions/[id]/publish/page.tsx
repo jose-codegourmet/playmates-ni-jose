@@ -45,8 +45,10 @@ export default async function SessionPublishPage({ params }: SessionPublishPageP
       <div>
         <h2 className="font-heading text-xl font-medium">Review & Publish</h2>
         <p className="text-sm text-muted-foreground">
-          Check provider assets and Facebook drafts, then publish a game or the whole session. A
-          missing YouTube or Drive file is a warning, not a blocker.
+          Check provider assets and Facebook drafts, then publish a game or the whole session.
+          Publishing a session does not publish games unless “Also publish all games” is checked. A
+          missing YouTube or Drive file warns first; confirm still publishes. Admin and the public
+          site do not share memory — mock writes go to packages/mocks/.data/store.json.
         </p>
       </div>
       <SessionReviewPublish

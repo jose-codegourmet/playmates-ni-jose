@@ -1,12 +1,21 @@
 "use client";
 
-import type { Visibility } from "@fe-template/mocks";
+import type { UploadJobStatus, Visibility } from "@fe-template/mocks";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   Button,
   Card,
   CardContent,
   CardHeader,
   CardTitle,
+  Checkbox,
   NativeSelect,
   NativeSelectOption,
 } from "@fe-template/ui";
@@ -19,6 +28,7 @@ import {
   publishWorkspaceSession,
   setGamePublishVisibility,
   setSessionPublishVisibility,
+  unpublishSessionGame,
   unpublishWorkspaceSession,
 } from "@/app/(dashboard)/sessions/[id]/publish/actions";
 
@@ -34,12 +44,33 @@ import type {
 
 type ActionResult = { success: boolean; error?: string };
 
+type PendingPublish =
+  | { kind: "game"; gameId: string; games: SessionReviewPublishGame[] }
+  | { kind: "all"; games: SessionReviewPublishGame[] }
+  | { kind: "session"; games: SessionReviewPublishGame[] };
+
+function hasProviderAsset(status: UploadJobStatus | null): boolean {
+  return status === "completed";
+}
+
+function gameLacksProviderAsset(game: SessionReviewPublishGame): boolean {
+  return !hasProviderAsset(game.youtubeStatus) || !hasProviderAsset(game.driveStatus);
+}
+
+function missingAssetLabel(game: SessionReviewPublishGame): string {
+  const missing: string[] = [];
+  if (!hasProviderAsset(game.youtubeStatus)) missing.push("YouTube");
+  if (!hasProviderAsset(game.driveStatus)) missing.push("Google Drive");
+  return `Game ${game.gameNumber} (${missing.join(" and ")})`;
+}
+
 function SessionReviewPublish({
   sessionId,
   sessionStatus,
   sessionVisibility,
   games,
   onPublishGame,
+  onUnpublishGame,
   onPublishAll,
   onPublishSession,
   onUnpublishSession,
@@ -48,6 +79,8 @@ function SessionReviewPublish({
 }: SessionReviewPublishProps) {
   const [localGames, setLocalGames] = useState(games);
   const [localVisibility, setLocalVisibility] = useState(sessionVisibility);
+  const [alsoPublishGames, setAlsoPublishGames] = useState(true);
+  const [pendingPublish, setPendingPublish] = useState<PendingPublish | null>(null);
   const { beginSave, endSave } = useSessionWorkspaceSave();
 
   useEffect(() => {
@@ -86,7 +119,7 @@ function SessionReviewPublish({
     return true;
   }
 
-  async function handlePublishGame(gameId: string) {
+  async function runPublishGame(gameId: string) {
     if (onPublishGame) {
       await flickerSave(async () => {
         await onPublishGame(gameId);
@@ -104,7 +137,25 @@ function SessionReviewPublish({
     if (ok) toast.success("Game published");
   }
 
-  async function handlePublishAll() {
+  async function handleUnpublishGame(gameId: string) {
+    if (onUnpublishGame) {
+      await flickerSave(async () => {
+        await onUnpublishGame(gameId);
+      });
+      toast.success("Game unpublished");
+      return;
+    }
+
+    if (!sessionId) {
+      toast.error("Missing session id for unpublish");
+      return;
+    }
+
+    const ok = await persistResult(() => unpublishSessionGame(sessionId, gameId));
+    if (ok) toast.success("Game unpublished");
+  }
+
+  async function runPublishAll() {
     if (onPublishAll) {
       await flickerSave(async () => {
         await onPublishAll();
@@ -122,17 +173,65 @@ function SessionReviewPublish({
     if (ok) toast.success("All games published");
   }
 
-  async function handlePublishSession() {
+  async function runPublishSession() {
     if (onPublishSession) {
       await flickerSave(async () => {
-        await onPublishSession();
+        await onPublishSession({ alsoPublishGames });
       });
-      toast.success("Session published");
+      toast.success(
+        alsoPublishGames ? "Session and games published" : "Session published",
+      );
       return;
     }
 
-    const ok = await persistResult(() => publishWorkspaceSession(sessionId));
-    if (ok) toast.success("Session published");
+    const ok = await persistResult(() =>
+      publishWorkspaceSession(sessionId, { alsoPublishGames }),
+    );
+    if (ok) {
+      toast.success(alsoPublishGames ? "Session and games published" : "Session published");
+    }
+  }
+
+  function requestPublishGame(gameId: string) {
+    const game = localGames.find((row) => row.id === gameId);
+    if (game && gameLacksProviderAsset(game)) {
+      setPendingPublish({ kind: "game", gameId, games: [game] });
+      return;
+    }
+    void runPublishGame(gameId);
+  }
+
+  function requestPublishAll() {
+    const incomplete = localGames.filter(gameLacksProviderAsset);
+    if (incomplete.length > 0) {
+      setPendingPublish({ kind: "all", games: incomplete });
+      return;
+    }
+    void runPublishAll();
+  }
+
+  function requestPublishSession() {
+    const selected = alsoPublishGames ? localGames.filter(gameLacksProviderAsset) : [];
+    if (selected.length > 0) {
+      setPendingPublish({ kind: "session", games: selected });
+      return;
+    }
+    void runPublishSession();
+  }
+
+  async function confirmPendingPublish() {
+    const pending = pendingPublish;
+    setPendingPublish(null);
+    if (!pending) return;
+    if (pending.kind === "game") {
+      await runPublishGame(pending.gameId);
+      return;
+    }
+    if (pending.kind === "all") {
+      await runPublishAll();
+      return;
+    }
+    await runPublishSession();
   }
 
   async function handleUnpublishSession() {
@@ -178,6 +277,8 @@ function SessionReviewPublish({
     if (!ok) setLocalGames(games);
   }
 
+  const warningGames = pendingPublish?.games ?? [];
+
   return (
     <div className="space-y-8" data-slot="session-review-publish">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -199,7 +300,17 @@ function SessionReviewPublish({
             </NativeSelect>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 text-sm text-foreground">
+            <Checkbox
+              id="also-publish-games"
+              checked={alsoPublishGames}
+              onCheckedChange={(next) => {
+                setAlsoPublishGames(next === true);
+              }}
+            />
+            <label htmlFor="also-publish-games">Also publish all games</label>
+          </div>
           <Button
             type="button"
             variant="outline"
@@ -208,7 +319,7 @@ function SessionReviewPublish({
           >
             Unpublish session
           </Button>
-          <Button type="button" size="sm" onClick={() => void handlePublishSession()}>
+          <Button type="button" size="sm" onClick={() => void requestPublishSession()}>
             Publish session
           </Button>
         </div>
@@ -217,10 +328,13 @@ function SessionReviewPublish({
       <SessionPublishChecklist
         games={toChecklistGames(localGames)}
         onPublishGame={(gameId) => {
-          void handlePublishGame(gameId);
+          requestPublishGame(gameId);
+        }}
+        onUnpublishGame={(gameId) => {
+          void handleUnpublishGame(gameId);
         }}
         onPublishAll={() => {
-          void handlePublishAll();
+          requestPublishAll();
         }}
       />
 
@@ -273,6 +387,36 @@ function SessionReviewPublish({
           </ul>
         )}
       </div>
+
+      <AlertDialog
+        open={pendingPublish !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingPublish(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Publish without every provider asset?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {warningGames.length === 1 && warningGames[0]
+                ? `${missingAssetLabel(warningGames[0])} is missing. Publishing continues anyway.`
+                : `These games are missing a YouTube or Google Drive asset: ${warningGames
+                    .map(missingAssetLabel)
+                    .join("; ")}. Publishing continues anyway.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                void confirmPendingPublish();
+              }}
+            >
+              Publish anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

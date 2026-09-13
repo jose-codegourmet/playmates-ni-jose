@@ -1,7 +1,7 @@
 import { GAME_HAS_RECORDINGS, MockDomainError } from "../errors";
 import { formatGameSlug } from "../naming";
 import type { GameRepository } from "../repositories/types";
-import { getState, newId, nowIso, requireEntity } from "../store";
+import { getState, newId, nowIso, persistState, requireEntity } from "../store";
 import type { Game, GameTeam } from "../types";
 
 function ensureEmptyTeams(gameId: string): void {
@@ -69,6 +69,7 @@ export function createGameRepository(): GameRepository {
       };
       state.games.push(game);
       ensureEmptyTeams(game.id);
+      persistState();
       return game;
     },
 
@@ -93,6 +94,7 @@ export function createGameRepository(): GameRepository {
       state.gameTeams = state.gameTeams.filter((team) => team.gameId !== id);
       state.postDrafts = state.postDrafts.filter((draft) => draft.gameId !== id);
       state.games = state.games.filter((row) => row.id !== id);
+      persistState();
     },
 
     async reorder(sessionId, gameIds) {
@@ -104,6 +106,7 @@ export function createGameRepository(): GameRepository {
         game.sortOrder = index + 1;
         game.updatedAt = now;
       });
+      persistState();
     },
 
     async setTeams(gameId, teams) {
@@ -137,6 +140,7 @@ export function createGameRepository(): GameRepository {
 
       const game = state.games.find((row) => row.id === gameId);
       if (game) game.updatedAt = nowIso();
+      persistState();
     },
 
     async update(id, patch) {
@@ -152,6 +156,7 @@ export function createGameRepository(): GameRepository {
         createdAt: game.createdAt,
         updatedAt: nowIso(),
       });
+      persistState();
       return game;
     },
   };

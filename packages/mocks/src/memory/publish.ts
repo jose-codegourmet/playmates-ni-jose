@@ -1,5 +1,5 @@
 import type { PublishRepository } from "../repositories/types";
-import { getState, nowIso, requireEntity } from "../store";
+import { getState, nowIso, persistState, requireEntity } from "../store";
 
 export function createPublishRepository(): PublishRepository {
   return {
@@ -15,6 +15,7 @@ export function createPublishRepository(): PublishRepository {
       session.visibility = "public";
       session.publishedAt = now;
       session.updatedAt = now;
+      persistState();
       return session;
     },
 
@@ -25,10 +26,10 @@ export function createPublishRepository(): PublishRepository {
         "Session",
         id,
       );
-      session.status = "ready";
+      // Clear visibility only — keep publishedAt for audit (PNJ-074).
       session.visibility = "private";
-      session.publishedAt = null;
       session.updatedAt = nowIso();
+      persistState();
       return session;
     },
 
@@ -44,6 +45,7 @@ export function createPublishRepository(): PublishRepository {
       game.visibility = "public";
       game.publishedAt = now;
       game.updatedAt = now;
+      persistState();
       return game;
     },
 
@@ -54,10 +56,10 @@ export function createPublishRepository(): PublishRepository {
         "Game",
         id,
       );
-      game.status = "ready";
+      // Clear visibility only — keep publishedAt for audit (PNJ-074).
       game.visibility = "private";
-      game.publishedAt = null;
       game.updatedAt = nowIso();
+      persistState();
       return game;
     },
   };

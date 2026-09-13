@@ -12,7 +12,7 @@
  */
 
 import { assetExistsError, MOCK_PROVIDER_ERROR } from "./errors";
-import { getState, newId } from "./store";
+import { getState, newId, persistState } from "./store";
 import type { Provider, ProviderAsset, Recording, UploadJob, UploadJobStatus } from "./types";
 
 const ACTIVE: UploadJobStatus[] = ["queued", "initiating", "uploading", "processing"];
@@ -89,6 +89,7 @@ export function archiveProviderAsset(recordingId: string, provider: Provider): v
   state.providerAssets = state.providerAssets.filter(
     (asset) => !(asset.recordingId === recordingId && asset.provider === provider),
   );
+  persistState();
 }
 
 function createProviderAsset(job: UploadJob, recording: Recording, now: string): ProviderAsset {
@@ -206,8 +207,14 @@ export function getJobView(job: UploadJob, nowMs: number = Date.now()): UploadJo
 
 /** Advance every job in the singleton (safe to call on each repo read). */
 export function applyUploadSimulation(nowMs: number = Date.now()): void {
-  for (const job of getState().uploadJobs) {
+  const jobs = getState().uploadJobs;
+  const before = jobs.map((job) => `${job.status}:${job.updatedAt}:${job.progressPercent}`).join("|");
+  for (const job of jobs) {
     getJobView(job, nowMs);
+  }
+  const after = jobs.map((job) => `${job.status}:${job.updatedAt}:${job.progressPercent}`).join("|");
+  if (before !== after) {
+    persistState();
   }
 }
 

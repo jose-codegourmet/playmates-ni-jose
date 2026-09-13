@@ -14,6 +14,9 @@ storybook-static/
 *.log
 coverage/
 
+# PNJ-074 — shared mock store between admin and web (no video bytes)
+packages/mocks/.data/
+
 __pycache__/
 *.py[cod]
 .superpowers/

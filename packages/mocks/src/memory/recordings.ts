@@ -1,6 +1,6 @@
 import { formatRecordingDisplayName } from "../naming";
 import type { RecordingRepository } from "../repositories/types";
-import { getState, newId, nowIso, requireEntity } from "../store";
+import { getState, newId, nowIso, persistState, requireEntity } from "../store";
 import type { CameraSide, Recording } from "../types";
 
 function isAssignedSide(cameraSide: CameraSide): cameraSide is "A" | "B" {
@@ -83,6 +83,7 @@ export function createRecordingRepository(): RecordingRepository {
         state.recordings.push(recording);
         return recording;
       });
+      persistState();
       return created;
     },
 
@@ -131,11 +132,13 @@ export function createRecordingRepository(): RecordingRepository {
       ) {
         normalizePartsSync(recording.gameId, recording.cameraSide);
       }
+      persistState();
       return recording;
     },
 
     async normalizeParts(gameId, cameraSide) {
       normalizePartsSync(gameId, cameraSide);
+      persistState();
     },
 
     async reorderInLane(gameId, cameraSide, recordingIds) {
@@ -152,6 +155,7 @@ export function createRecordingRepository(): RecordingRepository {
       if (gameId && isAssignedSide(cameraSide)) {
         normalizePartsSync(gameId, cameraSide);
       }
+      persistState();
     },
 
     async update(id, patch) {
@@ -167,6 +171,7 @@ export function createRecordingRepository(): RecordingRepository {
         createdAt: recording.createdAt,
         updatedAt: nowIso(),
       });
+      persistState();
       return recording;
     },
   };

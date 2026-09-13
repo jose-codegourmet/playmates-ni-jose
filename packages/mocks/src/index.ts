@@ -51,7 +51,7 @@ export type {
 } from "./repositories/types";
 export type { MockState } from "./seed";
 export { assertSeedInvariants, createSeedState, SEED_IDS } from "./seed";
-export { getState, resetState } from "./store";
+export { getState, persistState, resetState } from "./store";
 export type {
   CameraSide,
   Court,

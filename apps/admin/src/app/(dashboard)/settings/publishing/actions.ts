@@ -1,6 +1,6 @@
 "use server";
 
-import { getState } from "@fe-template/mocks";
+import { getState, persistState } from "@fe-template/mocks";
 import { revalidatePath } from "next/cache";
 
 import {
@@ -23,6 +23,7 @@ export async function savePublishingSettings(
   const state = getState();
   state.settings.facebookGroupUrl = parsed.data.facebookGroupUrl.trim();
   state.settings.defaultHashtags = parsed.data.defaultHashtags.trim();
+  persistState();
   revalidatePath("/settings/publishing");
 
   return { success: true, message: "Publishing settings saved." };
