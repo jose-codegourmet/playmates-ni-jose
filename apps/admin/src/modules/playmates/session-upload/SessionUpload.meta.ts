@@ -6,7 +6,7 @@ export default {
   version: "0.1.0",
   addedAt: "2026-09-13",
   description:
-    "Session workspace Upload step: matrix and queue from mock jobs/assets, per-row and bulk queue, 400ms job polling, and a reselect banner when File handles are gone.",
+    "Session workspace Upload step: matrix and queue from mock jobs/assets, per-row and bulk queue, 400ms job polling, independent retry/cancel/replace, and a reselect banner when File handles are gone.",
   sectionCategory: "workflow",
   purpose: "Queue mock Drive and YouTube jobs, poll progress, and show completed ProviderAsset URLs.",
   bestFor: ["session workspace upload step"],
@@ -24,7 +24,7 @@ export default {
   },
   tags: ["session", "upload", "drive", "youtube", "admin", "workspace"],
   dependencies: ["@fe-template/ui", "sonner", "lucide-react"],
-  registryDependencies: ["alert", "button", "upload-matrix", "upload-queue"],
+  registryDependencies: ["alert", "alert-dialog", "button", "upload-matrix", "upload-queue"],
   a11y: { keyboardNav: true, reducedMotion: true },
   preview: { layout: "padded", capture: { themes: ["light", "dark"] } },
 } satisfies PlaymatesComponentMeta;

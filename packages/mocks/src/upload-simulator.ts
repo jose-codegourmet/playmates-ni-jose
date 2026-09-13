@@ -32,9 +32,20 @@ export function simulatedDurationMs(sizeBytes: number | null | undefined): numbe
   return MIN_DURATION_MS + (n % (span + 1));
 }
 
-export function shouldForceFail(recording: Recording, provider: Provider): boolean {
+/**
+ * First YouTube attempt fails when the filename contains `FAIL` or notes are
+ * `force-fail-youtube`. Drive is never force-failed. Retry succeeds when
+ * `attemptCount > 1`.
+ */
+export function shouldForceFail(
+  recording: Recording,
+  provider: Provider,
+  attemptCount = 1,
+): boolean {
+  if (attemptCount > 1) return false;
+  if (provider !== "youtube") return false;
   if (recording.originalFilename.includes("FAIL")) return true;
-  return recording.notes === "force-fail-youtube" && provider === "youtube";
+  return recording.notes === "force-fail-youtube";
 }
 
 function mockHex8(seed: string): string {
@@ -70,6 +81,14 @@ export function assertCanEnqueue(recordingId: string, provider: Provider): void 
   if (completed && asset) {
     throw assetExistsError(recordingId, provider);
   }
+}
+
+/** Mock archive: drop the prior asset so a replace job can create a new one. */
+export function archiveProviderAsset(recordingId: string, provider: Provider): void {
+  const state = getState();
+  state.providerAssets = state.providerAssets.filter(
+    (asset) => !(asset.recordingId === recordingId && asset.provider === provider),
+  );
 }
 
 function createProviderAsset(job: UploadJob, recording: Recording, now: string): ProviderAsset {
@@ -145,7 +164,7 @@ export function getJobView(job: UploadJob, nowMs: number = Date.now()): UploadJo
   const startedMs = Date.parse(job.startedAt);
   const elapsed = Math.max(0, nowMs - startedMs);
   const duration = simulatedDurationMs(recording.sizeBytes ?? job.totalBytes);
-  const forceFail = shouldForceFail(recording, job.provider);
+  const forceFail = shouldForceFail(recording, job.provider, job.attemptCount);
   const now = new Date(nowMs).toISOString();
 
   if (elapsed < INITIATING_MS) {

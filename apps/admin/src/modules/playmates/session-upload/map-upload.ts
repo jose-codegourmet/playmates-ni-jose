@@ -102,6 +102,7 @@ export function toProviderStatus(
       status: job.status,
       progressPercent: job.progressPercent ?? undefined,
       errorMessage: job.lastErrorMessage ?? undefined,
+      lastErrorCode: job.lastErrorCode ?? undefined,
       jobId: job.id,
       assetUrl: asset?.url ?? undefined,
     };

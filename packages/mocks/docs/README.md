@@ -61,9 +61,9 @@ Keep `PlaymatesRepos` and the public helpers (`listPublicSessions`, `getPublicSe
 
 `src/upload-simulator.ts` advances jobs from `startedAt` + elapsed time. There is **no** `setInterval`. Repo methods call `applyUploadSimulation()` so a refetch after ~6s can complete Drive and YouTube independently.
 
-- `enqueue(recordingId, provider)` returns an active job for that pair; throws `MockDomainError` with `code: "ASSET_EXISTS"` when a completed job **and** `ProviderAsset` already exist. Actions will later require `replace: true`.
+- `enqueue(recordingId, provider, options?)` returns an active job for that pair; throws `MockDomainError` with `code: "ASSET_EXISTS"` when a completed job **and** `ProviderAsset` already exist unless `options.replace` is true. Replace archives the mock asset (deletes it) for that recording+provider only, then starts a new job. Drive and YouTube stay independent.
 - Duration is 2500–6000 ms from `sizeBytes`. After the upload window, the job sits in `processing` for 400 ms, then completes and writes a `ProviderAsset`. YouTube `embedUrl` is `https://www.youtube.com/embed/MOCK{8hex}`.
-- Force-fail: `originalFilename` contains `FAIL`, or `notes === "force-fail-youtube"` on the **youtube** provider. Seed includes one such recording on the **draft** session only (`SEED_IDS.recordings.draftForceFailYoutube`).
+- Force-fail YouTube only: `originalFilename` contains `FAIL`, or `notes === "force-fail-youtube"`. The first attempt fails; **`attemptCount > 1` succeeds**. Drive is never force-failed. Seed includes one such recording on the **draft** session only (`SEED_IDS.recordings.draftForceFailYoutube`).
 - `retry` is allowed from `failed|cancelled` only; increments `attemptCount` and clears errors. Providers are independent — retrying YouTube does not reset Drive.
 - `cancel` is allowed from `queued|initiating|uploading`.
 

@@ -37,6 +37,7 @@ export {
   listPublicVenues,
 } from "./public";
 export type {
+  EnqueueUploadOptions,
   GameRepository,
   ImportFileMeta,
   PlayerRepository,
@@ -86,6 +87,7 @@ export type {
 } from "./types";
 export {
   applyUploadSimulation,
+  archiveProviderAsset,
   assertCanEnqueue,
   findActiveJob,
   getJobView,

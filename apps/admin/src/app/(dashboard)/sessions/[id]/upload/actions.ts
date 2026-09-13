@@ -26,6 +26,7 @@ export type UploadJobDto = {
   provider: Provider;
   status: UploadJob["status"];
   progressPercent: number | null;
+  lastErrorCode: string | null;
   lastErrorMessage: string | null;
   updatedAt: string;
 };
@@ -61,6 +62,7 @@ function toJobDto(job: UploadJob): UploadJobDto {
     provider: job.provider,
     status: job.status,
     progressPercent: job.progressPercent,
+    lastErrorCode: job.lastErrorCode,
     lastErrorMessage: job.lastErrorMessage,
     updatedAt: job.updatedAt,
   };
@@ -107,9 +109,13 @@ async function syncSessionUploadStatus(sessionId: string): Promise<boolean> {
   return true;
 }
 
-async function enqueueOne(recordingId: string, provider: Provider): Promise<"queued" | "skipped"> {
+async function enqueueOne(
+  recordingId: string,
+  provider: Provider,
+  options?: { replace?: boolean },
+): Promise<"queued" | "skipped"> {
   try {
-    await getPlaymatesRepos().uploads.enqueue(recordingId, provider);
+    await getPlaymatesRepos().uploads.enqueue(recordingId, provider, options);
     return "queued";
   } catch (error) {
     if (isMockDomainError(error) && error.code === ASSET_EXISTS) {
@@ -128,6 +134,7 @@ function failMessage(error: unknown, fallback: string): string {
 export async function queueRecording(input: {
   recordingId: string;
   provider: Provider;
+  replace?: boolean;
 }): Promise<QueueUploadsResult> {
   // Replace this action body with resumable upload later — see ROADMAP/11.
   applyUploadSimulation();
@@ -138,7 +145,9 @@ export async function queueRecording(input: {
   }
 
   try {
-    const outcome = await enqueueOne(input.recordingId, input.provider);
+    const outcome = await enqueueOne(input.recordingId, input.provider, {
+      replace: input.replace,
+    });
     const queued = outcome === "queued" ? 1 : 0;
     const skippedExisting = outcome === "skipped" ? 1 : 0;
     await syncSessionUploadStatus(sessionId);

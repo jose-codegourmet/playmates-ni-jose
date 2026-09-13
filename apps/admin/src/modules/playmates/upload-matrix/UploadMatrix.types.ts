@@ -15,4 +15,6 @@ export type UploadMatrixProps = {
   onQueueRecording?: (recordingId: string, provider: Provider) => void;
   onRetryJob?: (jobId: string) => void;
   onCancelJob?: (jobId: string) => void;
+  onReplace?: (recordingId: string, provider: Provider) => void;
+  onCopyError?: (errorCode: string | undefined, errorMessage: string | undefined) => void;
 };
