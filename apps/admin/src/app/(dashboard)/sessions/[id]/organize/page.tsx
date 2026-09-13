@@ -24,7 +24,7 @@ export default async function SessionOrganizePage({ params }: SessionOrganizePag
         <h2 className="font-heading text-xl font-medium">Organize</h2>
         <p className="text-sm text-muted-foreground">
           Drag a recording onto a Side A or Side B lane, reorder parts within a lane, or use Move
-          to… on the card.
+          to… on the card. Add empty games here; remove a game only after its recordings are moved.
         </p>
       </div>
       <SessionOrganize

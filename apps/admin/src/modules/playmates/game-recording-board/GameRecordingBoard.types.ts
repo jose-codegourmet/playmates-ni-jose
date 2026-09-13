@@ -16,4 +16,5 @@ export type GameRecordingBoardProps = {
   games: GameRecordingBoardGame[];
   onAssignRecording?: (recordingId: string, target: RecordingAssignTarget) => void;
   onReorderLane?: (droppableId: string, recordingIds: string[]) => void;
+  onRemoveGame?: (gameId: string) => void;
 };

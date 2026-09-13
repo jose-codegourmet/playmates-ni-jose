@@ -314,3 +314,57 @@ export async function reorderLaneRecordings(
   revalidatePath(`/sessions/${sessionId}/organize`);
   return { success: true };
 }
+
+export type CreateSessionGameResult = { success: true } | { success: false; error: string };
+
+export async function createSessionGame(sessionId: string): Promise<CreateSessionGameResult> {
+  try {
+    const repos = getPlaymatesRepos();
+    const session = await repos.sessions.getById(sessionId);
+    if (!session) {
+      return { success: false, error: "Session not found" };
+    }
+
+    await repos.games.create(sessionId);
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not create game." };
+  }
+
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/organize`);
+  return { success: true };
+}
+
+export type DeleteSessionGameResult = { success: true } | { success: false; error: string };
+
+export async function deleteSessionGame(
+  sessionId: string,
+  gameId: string,
+): Promise<DeleteSessionGameResult> {
+  try {
+    const repos = getPlaymatesRepos();
+    const session = await repos.sessions.getById(sessionId);
+    if (!session) {
+      return { success: false, error: "Session not found" };
+    }
+
+    const games = await repos.games.listBySession(sessionId);
+    if (!games.some((game) => game.id === gameId)) {
+      return { success: false, error: "Game not found in this session" };
+    }
+
+    await repos.games.delete(gameId);
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not remove game." };
+  }
+
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/organize`);
+  return { success: true };
+}

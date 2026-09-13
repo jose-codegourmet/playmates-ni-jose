@@ -1,3 +1,4 @@
+import { GAME_HAS_RECORDINGS, MockDomainError } from "../errors";
 import { formatGameSlug } from "../naming";
 import type { GameRepository } from "../repositories/types";
 import { getState, newId, nowIso, requireEntity } from "../store";
@@ -69,6 +70,29 @@ export function createGameRepository(): GameRepository {
       state.games.push(game);
       ensureEmptyTeams(game.id);
       return game;
+    },
+
+    async delete(id) {
+      const state = getState();
+      requireEntity(
+        state.games.find((row) => row.id === id),
+        "Game",
+        id,
+      );
+      const assigned = state.recordings.some((row) => row.gameId === id);
+      if (assigned) {
+        throw new MockDomainError(
+          GAME_HAS_RECORDINGS,
+          "Move recordings first before removing this game.",
+        );
+      }
+      const teamIds = new Set(
+        state.gameTeams.filter((team) => team.gameId === id).map((team) => team.id),
+      );
+      state.gameTeamPlayers = state.gameTeamPlayers.filter((row) => !teamIds.has(row.gameTeamId));
+      state.gameTeams = state.gameTeams.filter((team) => team.gameId !== id);
+      state.postDrafts = state.postDrafts.filter((draft) => draft.gameId !== id);
+      state.games = state.games.filter((row) => row.id !== id);
     },
 
     async reorder(sessionId, gameIds) {

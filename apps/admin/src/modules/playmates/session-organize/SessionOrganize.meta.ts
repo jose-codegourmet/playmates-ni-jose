@@ -6,10 +6,10 @@ export default {
   version: "0.1.0",
   addedAt: "2026-09-13",
   description:
-    "Session workspace Organize step: maps session recordings and games onto GameRecordingBoard, persists assigns, and reorders parts.",
+    "Session workspace Organize step: maps recordings onto GameRecordingBoard, persists assigns, reorders parts, and adds or removes empty games.",
   sectionCategory: "workflow",
   purpose:
-    "Assign recordings to game/camera lanes and reorder multi-part clips so display names stay in sync.",
+    "Assign recordings to game/camera lanes, reorder multi-part clips, create empty games, and remove games that have no recordings.",
   bestFor: ["session workspace organize step"],
   tone: ["utilitarian", "archive"],
   contentDensity: "high",
@@ -25,7 +25,7 @@ export default {
   },
   tags: ["session", "organize", "recording", "board", "admin", "workspace"],
   dependencies: ["@fe-template/ui", "@dnd-kit/core", "@dnd-kit/sortable"],
-  registryDependencies: ["button", "game-recording-board"],
+  registryDependencies: ["alert-dialog", "button", "game-recording-board"],
   a11y: { keyboardNav: true, reducedMotion: true },
   preview: { layout: "fullscreen", capture: { themes: ["light", "dark"] } },
 } satisfies PlaymatesComponentMeta;

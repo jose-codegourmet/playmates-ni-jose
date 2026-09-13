@@ -132,6 +132,21 @@ export const DragAssign: Story = {
         games={board.games}
         onAssignRecording={handleAssign}
         onReorderLane={handleReorder}
+        onRemoveGame={(gameId) => {
+          setBoard((current) => {
+            const target = current.games.find((game) => game.id === gameId);
+            const occupied = Boolean(
+              target && (target.sides.A.length > 0 || target.sides.B.length > 0),
+            );
+            if (occupied) {
+              return current;
+            }
+            return {
+              unassigned: current.unassigned,
+              games: current.games.filter((game) => game.id !== gameId),
+            };
+          });
+        }}
       />
     );
   },

@@ -35,4 +35,6 @@ export type SessionOrganizeProps = {
     target: SessionOrganizeAssignTarget,
     recordingIds: string[],
   ) => void | Promise<void>;
+  onCreateGame?: () => void | Promise<void>;
+  onRemoveGame?: (gameId: string) => void | Promise<void>;
 };

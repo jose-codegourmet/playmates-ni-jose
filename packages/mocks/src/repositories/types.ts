@@ -69,6 +69,7 @@ export type GameRepository = {
   getById(id: string): Promise<Game | null>;
   getBySlug(slug: string): Promise<Game | null>;
   create(sessionId: string, input?: { gameNumber?: number }): Promise<Game>;
+  delete(id: string): Promise<void>;
   reorder(sessionId: string, gameIds: string[]): Promise<void>;
   setTeams(gameId: string, teams: { teamNo: 1 | 2; playerIds: string[] }[]): Promise<void>;
   update(id: string, patch: Partial<Game>): Promise<Game>;
