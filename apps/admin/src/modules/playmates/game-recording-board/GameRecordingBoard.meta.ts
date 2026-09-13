@@ -6,11 +6,11 @@ export default {
   version: "0.1.0",
   addedAt: "2026-09-12",
   description:
-    "Presentational organize board: unassigned recordings beside a game workspace of Side A and Side B lanes.",
+    "Organize board with dnd-kit: unassigned recordings beside Side A / Side B lanes. Cards drag onto lanes.",
   sectionCategory: "workflow",
   purpose:
-    "Let an admin scan unassigned files and per-game camera sides without drag-and-drop or a two-file rule.",
-  bestFor: ["session organize step", "recording assignment preview"],
+    "Let an admin assign recordings to a game and camera side by drag-and-drop or Move to… without a two-file rule.",
+  bestFor: ["session organize step", "recording assignment"],
   tone: ["utilitarian", "archive"],
   contentDensity: "high",
   visualWeight: "high",
@@ -24,7 +24,7 @@ export default {
     supportsDarkMode: true,
   },
   tags: ["recording", "organize", "game", "board", "admin"],
-  dependencies: ["@fe-template/ui"],
+  dependencies: ["@fe-template/ui", "@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
   registryDependencies: ["card", "empty", "recording-card", "camera-side-lane"],
   a11y: { keyboardNav: true, reducedMotion: true },
   preview: { layout: "fullscreen", capture: { themes: ["light", "dark"] } },

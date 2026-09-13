@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
+import { OrganizeDndProvider } from "../game-recording-board/OrganizeDndProvider";
+
 import { RecordingCard } from "./RecordingCard";
 import type { RecordingCardProps } from "./RecordingCard.types";
 
@@ -22,9 +24,11 @@ const meta: Meta<typeof RecordingCard> = {
   args: unassignedArgs,
   decorators: [
     (Story) => (
-      <div className="w-[28rem] max-w-full bg-background text-foreground">
-        <Story />
-      </div>
+      <OrganizeDndProvider>
+        <div className="w-[28rem] max-w-full bg-background text-foreground">
+          <Story />
+        </div>
+      </OrganizeDndProvider>
     ),
   ],
 };
@@ -33,6 +37,19 @@ export default meta;
 type Story = StoryObj<typeof RecordingCard>;
 
 export const Unassigned: Story = {};
+
+export const MoveToSelect: Story = {
+  args: {
+    ...unassignedArgs,
+    droppableId: "unassigned",
+    moveTargets: [
+      { value: "unassigned", label: "Unassigned" },
+      { value: "game:g1:A", label: "Game 1 · Side A" },
+      { value: "game:g2:B", label: "Game 2 · Side B" },
+    ],
+    onMoveTo: () => undefined,
+  },
+};
 
 export const SideBPart2: Story = {
   args: {

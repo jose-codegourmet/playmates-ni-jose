@@ -220,3 +220,45 @@ export async function importSessionRecordings(
     return { success: false, error: "Could not import recordings." };
   }
 }
+
+export type AssignRecordingResult = { success: true } | { success: false; error: string };
+
+export async function assignRecording(
+  sessionId: string,
+  recordingId: string,
+  patch: { gameId: string | null; cameraSide: "A" | "B" | "UNASSIGNED" },
+): Promise<AssignRecordingResult> {
+  try {
+    const repos = getPlaymatesRepos();
+    const session = await repos.sessions.getById(sessionId);
+    if (!session) {
+      return { success: false, error: "Session not found" };
+    }
+
+    const recordings = await repos.recordings.listBySession(sessionId);
+    if (!recordings.some((row) => row.id === recordingId)) {
+      return { success: false, error: "Recording not found in this session" };
+    }
+
+    if (patch.gameId) {
+      const games = await repos.games.listBySession(sessionId);
+      if (!games.some((game) => game.id === patch.gameId)) {
+        return { success: false, error: "Game not found in this session" };
+      }
+    }
+
+    await repos.recordings.assign(recordingId, {
+      gameId: patch.gameId,
+      cameraSide: patch.cameraSide,
+    });
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not assign recording." };
+  }
+
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/organize`);
+  return { success: true };
+}

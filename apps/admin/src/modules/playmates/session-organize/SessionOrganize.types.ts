@@ -18,7 +18,17 @@ export type SessionOrganizeGame = {
   sortOrder: number;
 };
 
+export type SessionOrganizeAssignTarget = {
+  gameId: string | null;
+  cameraSide: CameraSide;
+};
+
 export type SessionOrganizeProps = {
+  sessionId?: string;
   recordings: SessionOrganizeRecording[];
   games: SessionOrganizeGame[];
+  onAssignRecording?: (
+    recordingId: string,
+    target: SessionOrganizeAssignTarget,
+  ) => void | Promise<void>;
 };

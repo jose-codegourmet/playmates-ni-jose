@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
+import { OrganizeDndProvider } from "../game-recording-board/OrganizeDndProvider";
 import type { RecordingCardProps } from "../recording-card/RecordingCard.types";
 import { CameraSideLane } from "./CameraSideLane";
 
@@ -64,13 +65,16 @@ const meta: Meta<typeof CameraSideLane> = {
   },
   args: {
     side: "A",
+    droppableId: "game:story:A",
     recordings: [],
   },
   decorators: [
     (Story) => (
-      <div className="w-[28rem] max-w-full bg-background text-foreground">
-        <Story />
-      </div>
+      <OrganizeDndProvider>
+        <div className="w-[28rem] max-w-full bg-background text-foreground">
+          <Story />
+        </div>
+      </OrganizeDndProvider>
     ),
   ],
 };

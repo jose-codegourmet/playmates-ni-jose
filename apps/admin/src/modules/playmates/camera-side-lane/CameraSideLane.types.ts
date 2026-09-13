@@ -1,9 +1,14 @@
-import type { RecordingCardProps } from "../recording-card/RecordingCard.types";
+import type {
+  RecordingCardProps,
+  RecordingMoveTarget,
+} from "../recording-card/RecordingCard.types";
 
 export type CameraSideLaneSide = "A" | "B";
 
 export type CameraSideLaneProps = {
   side: CameraSideLaneSide;
   recordings: RecordingCardProps[];
-  onDropRecording?: (id: string) => void;
+  droppableId: string;
+  moveTargets?: RecordingMoveTarget[];
+  onMoveRecording?: (recordingId: string, droppableId: string) => void;
 };
