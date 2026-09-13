@@ -1,3 +1,5 @@
+"use client";
+
 import { formatSessionDisplayDate } from "@fe-template/mocks";
 import { Badge } from "@fe-template/ui";
 
@@ -6,6 +8,7 @@ import type {
   SessionWorkspaceHeaderProps,
   SessionWorkspaceSaveState,
 } from "./SessionWorkspaceHeader.types";
+import { useOptionalSessionWorkspaceSave } from "./SessionWorkspaceSaveContext";
 
 const SAVE_STATE_LABEL = {
   saved: "Saved",
@@ -32,8 +35,10 @@ function SessionWorkspaceHeader({
   venueName,
   status,
   visibility,
-  saveState,
+  saveState: saveStateProp,
 }: SessionWorkspaceHeaderProps) {
+  const saveContext = useOptionalSessionWorkspaceSave();
+  const saveState = saveContext?.saveState ?? saveStateProp;
   const displayDate = formatSessionDisplayDate(date);
   const heading = untitledTitle(title) ? "Untitled session" : title.trim();
 

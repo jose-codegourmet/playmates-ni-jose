@@ -47,6 +47,17 @@ export const PublishingUploadingSaving: Story = {
   },
 };
 
+export const OrganizingSaved: Story = {
+  args: {
+    date: "2026-09-09",
+    title: "Tuesday night games",
+    venueName: "The Tent, Marikina",
+    status: "organizing",
+    visibility: "private",
+    saveState: "saved",
+  },
+};
+
 export const ErrorSave: Story = {
   args: {
     date: "2026-09-09",

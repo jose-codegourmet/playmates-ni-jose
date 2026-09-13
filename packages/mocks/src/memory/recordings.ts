@@ -101,12 +101,17 @@ export function createRecordingRepository(): RecordingRepository {
         recording.partNumber = patch.partNumber;
       }
       if (patch.gameId && isAssignedSide(patch.cameraSide)) {
-        recording.status = recording.status === "imported" ? "organized" : recording.status;
+        if (recording.status === "imported") {
+          recording.status = "organized";
+        }
         const siblings = recordingsInLane(patch.gameId, patch.cameraSide).filter(
           (row) => row.id !== recording.id,
         );
         recording.sortOrder = siblings.reduce((max, row) => Math.max(max, row.sortOrder), -1) + 1;
       } else {
+        if (recording.status === "organized") {
+          recording.status = "imported";
+        }
         recording.displayName = null;
         recording.partNumber = 1;
         const siblings = recordingsInLane(null, "UNASSIGNED").filter(

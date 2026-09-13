@@ -3,13 +3,13 @@ import type { PlaymatesComponentMeta } from "@fe-template/mocks";
 export default {
   name: "session-workspace-header",
   displayName: "Session Workspace Header",
-  version: "0.1.0",
+  version: "0.1.1",
   addedAt: "2026-09-12",
   description:
-    "Desktop-first admin header for a session workspace: date, title, venue, status, visibility, and save state.",
+    "Desktop-first admin header for a session workspace: date, title, venue, status, visibility, and client save-state flicker (saving → saved).",
   sectionCategory: "workflow",
   purpose:
-    "Show the current session identity and save/publish state while an admin works a session.",
+    "Show the current session identity and live save state while an admin organizes a session.",
   bestFor: ["session workspace chrome", "admin session editor"],
   tone: ["utilitarian", "archive"],
   contentDensity: "medium",
