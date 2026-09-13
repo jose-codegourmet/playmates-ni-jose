@@ -41,7 +41,13 @@ function PublishingSettingsForm({ settings }: PublishingSettingsFormProps) {
   }, [form, settings]);
 
   async function onSubmit(values: PublishingSettingsFormValues) {
-    const result = await savePublishingSettings(values);
+    let result: Awaited<ReturnType<typeof savePublishingSettings>>;
+    try {
+      result = await savePublishingSettings(values);
+    } catch {
+      toast.error("Could not save publishing settings.");
+      return;
+    }
     if (!result.success) {
       toast.error(result.error);
       return;

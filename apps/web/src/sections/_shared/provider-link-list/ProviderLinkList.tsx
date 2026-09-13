@@ -1,4 +1,5 @@
 import type { Provider } from "@fe-template/mocks";
+import { Empty, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 import type { ProviderLinkAsset, ProviderLinkListProps } from "./ProviderLinkList.types";
 
 const PROVIDER_GROUPS: { provider: Provider; heading: string }[] = [
@@ -27,7 +28,13 @@ export function ProviderLinkList({ assets }: ProviderLinkListProps) {
   })).filter((group) => group.links.length > 0);
 
   if (groups.length === 0) {
-    return <p className="text-sm text-muted-foreground">No public links yet</p>;
+    return (
+      <Empty className="min-h-0 border p-4">
+        <EmptyHeader>
+          <EmptyTitle className="font-normal text-muted-foreground">No public links yet</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
   }
 
   return (

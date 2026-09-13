@@ -1,5 +1,5 @@
 import type { SessionListItem } from "@fe-template/mocks";
-import { Empty, EmptyHeader, EmptyTitle } from "@fe-template/ui";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 import { SessionCard } from "@/sections/_shared/session-card/SessionCard";
@@ -31,6 +31,9 @@ function SessionsGridSection({ className, sessions }: SessionsGridSectionProps) 
         <Empty className="border">
           <EmptyHeader>
             <EmptyTitle>No published sessions match</EmptyTitle>
+            <EmptyDescription>
+              Try another venue or date filter, or browse all published sessions.
+            </EmptyDescription>
           </EmptyHeader>
         </Empty>
       ) : (

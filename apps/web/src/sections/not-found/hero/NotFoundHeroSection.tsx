@@ -17,14 +17,22 @@ function NotFoundHeroSection({ className }: NotFoundHeroSectionProps) {
         This page is not in the Playmates archive.
       </h1>
       <p className="mt-4 max-w-md text-base leading-relaxed md:text-lg">
-        The link may have moved. Head back to the home page to keep browsing sessions.
+        The link may have moved. Head home or browse published sessions.
       </p>
-      <Link
-        href={ROUTES.home}
-        className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-brand-coral px-5 text-sm font-medium text-white hover:bg-brand-coral/90"
-      >
-        Return home
-      </Link>
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <Link
+          href={ROUTES.home}
+          className="inline-flex h-10 items-center justify-center rounded-full bg-brand-coral px-5 text-sm font-medium text-white hover:bg-brand-coral/90"
+        >
+          Home
+        </Link>
+        <Link
+          href={ROUTES.sessions}
+          className="inline-flex h-10 items-center justify-center rounded-full border border-current px-5 text-sm font-medium hover:bg-muted"
+        >
+          Sessions
+        </Link>
+      </div>
     </section>
   );
 }

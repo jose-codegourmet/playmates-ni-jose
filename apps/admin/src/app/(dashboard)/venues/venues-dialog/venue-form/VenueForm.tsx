@@ -33,7 +33,13 @@ function VenueForm({ venue, onSuccess }: VenueFormProps) {
   }, [form, venue]);
 
   async function onSubmit(values: VenueFormValues) {
-    const result = venue ? await updateVenue(venue.id, values) : await createVenue(values);
+    let result: Awaited<ReturnType<typeof createVenue>>;
+    try {
+      result = venue ? await updateVenue(venue.id, values) : await createVenue(values);
+    } catch {
+      toast.error("Could not save venue.");
+      return;
+    }
 
     if (!result.success) {
       toast.error(result.error);

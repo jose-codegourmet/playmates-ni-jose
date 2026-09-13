@@ -64,7 +64,14 @@ function PlayersTable({ players }: PlayersTableProps) {
   async function confirmArchive() {
     if (!archiveTarget) return;
     setIsArchiving(true);
-    const result = await archivePlayer(archiveTarget.id);
+    let result: Awaited<ReturnType<typeof archivePlayer>>;
+    try {
+      result = await archivePlayer(archiveTarget.id);
+    } catch {
+      setIsArchiving(false);
+      toast.error("Could not archive player.");
+      return;
+    }
     setIsArchiving(false);
 
     if (!result.success) {

@@ -27,7 +27,13 @@ function AddCourtForm({ venueId, onSuccess }: AddCourtFormProps) {
   });
 
   async function onSubmit(values: AddCourtFormValues) {
-    const result = await addCourt(venueId, values);
+    let result: Awaited<ReturnType<typeof addCourt>>;
+    try {
+      result = await addCourt(venueId, values);
+    } catch {
+      toast.error("Could not add court.");
+      return;
+    }
 
     if (!result.success) {
       toast.error(result.error);

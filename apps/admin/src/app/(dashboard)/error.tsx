@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@fe-template/ui";
-import { AlertTriangleIcon, PawPrintIcon } from "lucide-react";
+import { AlertTriangleIcon, CircleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 
@@ -23,7 +23,7 @@ export default function DashboardError({
           <AlertTriangleIcon className="size-7" />
         </div>
         <div className="absolute right-0 bottom-0 flex size-16 rotate-[10deg] items-center justify-center rounded-3xl bg-accent text-accent-foreground shadow-sm">
-          <PawPrintIcon className="size-7" />
+          <CircleAlertIcon className="size-7" />
         </div>
       </div>
       <p className="text-sm font-medium tracking-wide text-primary uppercase">Error</p>

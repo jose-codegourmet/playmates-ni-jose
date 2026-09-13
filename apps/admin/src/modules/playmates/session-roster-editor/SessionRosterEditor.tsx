@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Checkbox } from "@fe-template/ui";
+import { Button, Checkbox, Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@fe-template/ui";
 import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -27,7 +27,14 @@ function SessionRosterEditor({
 
   async function persist(nextSelected: string[]) {
     setSaving(true);
-    const result = await setSessionRoster(sessionId, [...preservedPlayerIds, ...nextSelected]);
+    let result: Awaited<ReturnType<typeof setSessionRoster>>;
+    try {
+      result = await setSessionRoster(sessionId, [...preservedPlayerIds, ...nextSelected]);
+    } catch {
+      setSaving(false);
+      toast.error("Could not save roster.");
+      return false;
+    }
     setSaving(false);
 
     if (!result.success) {
@@ -54,9 +61,12 @@ function SessionRosterEditor({
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">Game pickers use this roster.</p>
       {players.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          No active players yet. Add one to start the roster.
-        </p>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyTitle>No active players</EmptyTitle>
+            <EmptyDescription>Add one to start the roster.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <fieldset className="space-y-2 rounded-lg border border-input p-3">
           <legend className="sr-only">Session roster</legend>

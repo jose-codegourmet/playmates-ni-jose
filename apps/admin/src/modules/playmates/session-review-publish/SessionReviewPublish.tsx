@@ -16,6 +16,9 @@ import {
   CardHeader,
   CardTitle,
   Checkbox,
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
   Input,
   Label,
   NativeSelect,
@@ -263,7 +266,14 @@ function SessionReviewPublish({
 
   async function persistResult(action: () => Promise<ActionResult>): Promise<boolean> {
     beginSave();
-    const result = await action();
+    let result: ActionResult;
+    try {
+      result = await action();
+    } catch {
+      endSave(false);
+      toast.error("Could not update publish state.");
+      return false;
+    }
     if (!result.success) {
       endSave(false);
       toast.error(result.error ?? "Could not update publish state.");
@@ -510,7 +520,13 @@ function SessionReviewPublish({
           ) : null}
         </div>
         {localGames.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No games to preview yet.</p>
+          <Empty className="min-h-0 border p-4">
+            <EmptyHeader>
+              <EmptyTitle className="font-normal text-muted-foreground">
+                No games to preview yet
+              </EmptyTitle>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <ul className="flex flex-col gap-4">
             {localGames.map((game: SessionReviewPublishGame) => (

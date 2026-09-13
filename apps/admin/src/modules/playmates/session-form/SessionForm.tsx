@@ -3,6 +3,10 @@
 import {
   Button,
   Checkbox,
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
   Form,
   FormControl,
   FormField,
@@ -40,9 +44,13 @@ function SessionForm({ venues, courts, players, defaultValues }: SessionFormProp
   const courtDisabled = venueId === "";
 
   async function onSubmit(values: SessionFormValues) {
-    const result = await createSession(values);
-    if (result?.success === false) {
-      toast.error(result.error);
+    try {
+      const result = await createSession(values);
+      if (result?.success === false) {
+        toast.error(result.error);
+      }
+    } catch {
+      toast.error("Could not create session.");
     }
   }
 
@@ -150,7 +158,12 @@ function SessionForm({ venues, courts, players, defaultValues }: SessionFormProp
               <FormLabel>Roster</FormLabel>
               <FormControl>
                 {players.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No active players to add.</p>
+                  <Empty className="min-h-0 border p-4">
+                    <EmptyHeader>
+                      <EmptyTitle>No active players</EmptyTitle>
+                      <EmptyDescription>Add players first to include a roster.</EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 ) : (
                   <fieldset className="space-y-2 rounded-lg border border-input p-3">
                     <legend className="sr-only">Participating players</legend>

@@ -33,7 +33,13 @@ function PlayerForm({ player, onSuccess }: PlayerFormProps) {
   }, [form, player]);
 
   async function onSubmit(values: PlayerFormValues) {
-    const result = player ? await updatePlayer(player.id, values) : await createPlayer(values);
+    let result: Awaited<ReturnType<typeof createPlayer>>;
+    try {
+      result = player ? await updatePlayer(player.id, values) : await createPlayer(values);
+    } catch {
+      toast.error("Could not save player.");
+      return;
+    }
 
     if (!result.success) {
       toast.error(result.error);

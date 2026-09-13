@@ -7,6 +7,9 @@ import {
   CardContent,
   CardHeader,
   cn,
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
   NativeSelect,
   NativeSelectOption,
 } from "@fe-template/ui";
@@ -88,7 +91,11 @@ function TeamZone({
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-3 px-(--card-spacing) py-3">
         {isEmpty ? (
-          <p className="text-sm text-muted-foreground">No players yet</p>
+          <Empty className="min-h-0 p-0">
+            <EmptyHeader>
+              <EmptyTitle className="font-normal text-muted-foreground">No players yet</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <ul className="flex flex-wrap gap-2">
             {playerIds.map((playerId) => {

@@ -61,7 +61,14 @@ function SessionOrganize({
     action: () => Promise<T>,
   ): Promise<boolean> {
     beginSave();
-    const result = await action();
+    let result: T;
+    try {
+      result = await action();
+    } catch {
+      endSave(false);
+      toast.error("Could not save organize changes.");
+      return false;
+    }
     if (!result.success) {
       endSave(false);
       toast.error(result.error ?? "Could not save organize changes.");
