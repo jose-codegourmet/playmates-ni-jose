@@ -53,7 +53,8 @@ Purpose, routes, features, and commands for the admin portal.
 | `/dashboard` | `src/app/(dashboard)/dashboard/page.tsx` | Playmates dashboard widgets |
 | `/sessions` | `src/app/(dashboard)/sessions/page.tsx` | Sessions list (admin sees private) |
 | `/sessions/new` | `src/app/(dashboard)/sessions/new/page.tsx` | Create draft session |
-| `/sessions/[id]` | `src/app/(dashboard)/sessions/[id]/page.tsx` | Session workspace stub |
+| `/sessions/[id]` | `src/app/(dashboard)/sessions/[id]/page.tsx` | Redirects to Details |
+| `/sessions/[id]/details` … `/publish` | `src/app/(dashboard)/sessions/[id]/*/page.tsx` | Session workspace steps |
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players CRUD (mock repos) |
 | `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues CRUD (mock repos) |
 | `/venues/[id]` | `src/app/(dashboard)/venues/[id]/page.tsx` | Venue courts (add / archive) |
