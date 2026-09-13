@@ -34,6 +34,8 @@ pnpm --filter web storybook      # start Storybook on port 6006
 pnpm --filter web build-storybook # build static Storybook
 ```
 
+`apps/web/.storybook/main.ts` aliases `@/atoms` → `src/components/jabkit` so installed JabKit blocks resolve in Vite the same way Next.js does. Do not rewrite files under `src/components/jabkit/`.
+
 ---
 
 ## `apps/admin` testing setup
