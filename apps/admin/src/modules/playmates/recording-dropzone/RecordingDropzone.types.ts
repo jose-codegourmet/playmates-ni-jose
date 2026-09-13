@@ -13,6 +13,11 @@ export type RecordingDropzoneProps = {
   /** Alternative parent-owned preview; takes precedence over `filesMeta`. */
   children?: ReactNode;
   onFiles: (files: File[]) => void;
+  /**
+   * When true (default), only video mime / video extensions are emitted.
+   * Import sets this false so the parent can reject non-video files with row errors.
+   */
+  restrictToVideo?: boolean;
   /** Override internal drag-over state (used by Storybook). */
   dragActive?: boolean;
   disabled?: boolean;

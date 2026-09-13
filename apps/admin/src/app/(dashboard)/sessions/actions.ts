@@ -1,6 +1,6 @@
 "use server";
 
-import { isMockDomainError } from "@fe-template/mocks";
+import { type ImportFileMeta, isMockDomainError } from "@fe-template/mocks";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -164,4 +164,59 @@ export async function setSessionRoster(
   revalidatePath("/dashboard");
   revalidatePath("/players");
   return { success: true };
+}
+
+export type ImportSessionRecordingsResult =
+  | { success: true; recordings: ImportSessionRecordingDto[] }
+  | { success: false; error: string };
+
+export type ImportSessionRecordingDto = {
+  id: string;
+  sessionId: string;
+  originalFilename: string;
+  mimeType: string | null;
+  sizeBytes: number | null;
+  localLastModifiedAt: string | null;
+  gameId: string | null;
+  cameraSide: "A" | "B" | "UNASSIGNED";
+};
+
+export async function importSessionRecordings(
+  sessionId: string,
+  files: ImportFileMeta[],
+): Promise<ImportSessionRecordingsResult> {
+  if (files.length === 0) {
+    return { success: false, error: "No files to import" };
+  }
+
+  try {
+    const repos = getPlaymatesRepos();
+    const existing = await repos.sessions.getById(sessionId);
+    if (!existing) {
+      return { success: false, error: "Session not found" };
+    }
+
+    const created = await repos.recordings.createMany(sessionId, files);
+    const recordings = created.map((row) => ({
+      id: row.id,
+      sessionId: row.sessionId,
+      originalFilename: row.originalFilename,
+      mimeType: row.mimeType,
+      sizeBytes: row.sizeBytes,
+      localLastModifiedAt: row.localLastModifiedAt,
+      gameId: row.gameId,
+      cameraSide: row.cameraSide,
+    }));
+
+    revalidatePath("/sessions");
+    revalidatePath(`/sessions/${sessionId}`);
+    revalidatePath(`/sessions/${sessionId}/import`);
+    revalidatePath("/dashboard");
+    return { success: true, recordings };
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not import recordings." };
+  }
 }
