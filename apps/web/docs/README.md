@@ -1,25 +1,27 @@
-# `apps/web` — Public Marketing Site
+# `apps/web` — Public Playmates archive
 
-Purpose, routes, shared packages, and commands for the public marketing site.
+Purpose, routes, shared packages, and commands for the public site.
 
 ---
 
 ## Purpose
 
-`apps/web` is the public-facing PawPair marketing site. It showcases the fictional pet social discovery app through a home page, about page, blog, pricing, contact, and component showcase. It has no authentication and renders demo content served by internal API routes.
+`apps/web` is the public Playmates ni José archive. Visitors browse published sessions, games, players, and venues. It has no authentication. Pages are Server Components that read `@fe-template/mocks` through `src/lib/playmates.ts`.
 
 - **Primary users**: Public visitors
 - **Port**: 9000
 - **Filter**: `web`
 
+Prisma (`@fe-template/db`) still contains leftover PawPair models. **It does not have Playmates models.** Do not query Prisma from this app. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../../ROADMAP/11-handoff-to-real-data.md).
+
 ---
 
 ## Main responsibilities
 
-- Display marketing content via page sections.
-- Serve blog posts, pricing plans, and testimonials through API routes.
-- Provide SEO-friendly pages with Next.js App Router.
-- Showcase shared UI primitives on `/showcase`.
+- Compose thin `page.tsx` shells from `src/sections/`.
+- List and detail published sessions, games, players, and venues.
+- Emit `/sitemap.xml` and `/robots.txt` for public slugs only.
+- Brand chrome (header, footer) and a Playmates `not-found` page.
 
 ---
 
@@ -28,9 +30,9 @@ Purpose, routes, shared packages, and commands for the public marketing site.
 | Layer | Choice |
 |---|---|
 | Framework | Next.js 16 App Router |
-| UI | React 19, `@fe-template/ui`, Tailwind CSS 4 |
-| State | Redux Toolkit (theme), TanStack Query (server state) |
-| Data | Internal API routes + Prisma via `@fe-template/db` |
+| UI | React 19, `@fe-template/ui`, JabKit blocks in `src/components/jabkit/`, Tailwind CSS 4 |
+| State | Redux Toolkit (theme), TanStack Query (unused for public lists today) |
+| Data | `@fe-template/mocks` via `src/lib/playmates.ts` (in-memory + `packages/mocks/.data/store.json`) |
 | Auth | None |
 | Styling | Tailwind CSS 4, `next/font` (Fraunces, Manrope) |
 
@@ -38,34 +40,28 @@ Purpose, routes, shared packages, and commands for the public marketing site.
 
 ## Routes and entry points
 
+The eight public visitor routes:
+
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/app/page.tsx` | Home page |
-| `/about` | `src/app/about/page.tsx` | About page |
-| `/blog` | `src/app/blog/page.tsx` | Blog listing |
-| `/blog/grid` | `src/app/blog/grid/page.tsx` | Blog grid view |
-| `/blog/[slug]` | `src/app/blog/[slug]/page.tsx` | Blog post detail |
-| `/contact` | `src/app/contact/page.tsx` | Contact page |
-| `/pricing` | `src/app/pricing/page.tsx` | Pricing page |
-| `/showcase` | `src/app/showcase/page.tsx` | Component showcase |
-| `/otp` | `src/app/otp/page.tsx` | OTP UI demo (no real auth) |
-| `/careers` | `src/app/careers/page.tsx` | Company stub |
-| `/partners` | `src/app/partners/page.tsx` | Company stub |
-| `/press` | `src/app/press/page.tsx` | Company stub |
-| `/resources/community-guide` | `src/app/resources/community-guide/page.tsx` | Resource stub |
-| `/resources/first-meet-checklist` | `src/app/resources/first-meet-checklist/page.tsx` | Resource stub |
-| `/help` | `src/app/help/page.tsx` | Help center stub |
-| `/status` | `src/app/status/page.tsx` | Status stub |
-| `/legal/privacy` | `src/app/legal/privacy/page.tsx` | Legal stub |
-| `/legal/terms` | `src/app/legal/terms/page.tsx` | Legal stub |
-| `/legal/community-guidelines` | `src/app/legal/community-guidelines/page.tsx` | Legal stub |
-| `/legal/cookies` | `src/app/legal/cookies/page.tsx` | Legal stub |
-| `/legal/accessibility` | `src/app/legal/accessibility/page.tsx` | Legal stub |
-| `/sign-in` | `src/app/sign-in/page.tsx` | Auth CTA stub (no auth) |
-| `/create-profile` | `src/app/create-profile/page.tsx` | Auth CTA stub (no auth) |
-| `/api/blog` | `src/app/api/blog/route.ts` | Blog posts JSON |
-| `/api/pricing` | `src/app/api/pricing/route.ts` | Pricing plans JSON |
-| `/api/testimonials` | `src/app/api/testimonials/route.ts` | Testimonials JSON |
+| `/` | `src/app/page.tsx` | Archive home: hero, latest sessions, recent games, players strip |
+| `/sessions` | `src/app/sessions/page.tsx` | Sessions index (filters + grid) |
+| `/sessions/[sessionSlug]` | `src/app/sessions/[sessionSlug]/page.tsx` | Session detail |
+| `/games/[gameSlug]` | `src/app/games/[gameSlug]/page.tsx` | Game detail (YouTube embed, recordings, links) |
+| `/players` | `src/app/players/page.tsx` | Players index |
+| `/players/[playerSlug]` | `src/app/players/[playerSlug]/page.tsx` | Player detail |
+| `/venues` | `src/app/venues/page.tsx` | Venues index |
+| `/venues/[venueSlug]` | `src/app/venues/[venueSlug]/page.tsx` | Venue detail |
+
+Also:
+
+| Route | File | Purpose |
+|---|---|---|
+| `/sitemap.xml` | `src/app/sitemap.ts` | Public slugs only |
+| `/robots.txt` | `src/app/robots.ts` | Crawl rules (`allow: /`) |
+| `not-found` | `src/app/not-found.tsx` | Playmates 404 (Home + Sessions) |
+
+Canonical map: [`docs/template/PAGES.md`](../../../docs/template/PAGES.md).
 
 ---
 
@@ -73,30 +69,29 @@ Purpose, routes, shared packages, and commands for the public marketing site.
 
 | Directory | Purpose |
 |---|---|
-| `src/app/` | Next.js routes and API routes |
+| `src/app/` | Next.js routes (no `api/` in this prototype) |
 | `src/sections/` | Page sections, one folder per page |
+| `src/components/jabkit/` | Installed JabKit source only |
 | `src/modules/layout/` | Header, footer, navigation |
 | `src/modules/providers/` | Redux, TanStack Query, next-themes providers |
-| `src/hooks/` | React Query hooks (`use-blog-posts`, `use-pricing-plans`, `use-testimonials`) |
+| `src/hooks/` | Public fetchers (`use-public-*`) |
+| `src/lib/playmates.ts` | Adapter over `@fe-template/mocks` |
 | `src/constants/` | `routes.ts`, `seo.ts`, `navigation.ts` |
-| `src/types/` | Marketing-domain types (blog, pricing, pets, testimonials) |
 | `src/store/` | Redux store and theme slice |
-| `src/lib/` | Utility helpers and mock data |
-| `public/images/` | Brand, hero, product, feature, pet, blog, and illustration assets |
+| `public/images/` | Brand and marketing image assets |
 
 ---
 
 ## Shared packages consumed
 
-- `@fe-template/ui` — all shared UI primitives.
-- `@fe-template/db` — Prisma client, used only in API routes.
+- `@fe-template/ui` — shared UI primitives.
+- `@fe-template/mocks` — Playmates prototype data. See [`packages/mocks/docs/README.md`](../../../packages/mocks/docs/README.md).
 
 ---
 
 ## External services
 
-- **Prisma / Supabase Postgres** — API routes query the shared database.
-- No Supabase Auth, no email service, no third-party APIs.
+None in the prototype. Public visibility filtering happens in `@fe-template/mocks` (`src/public.ts`). Shared mock state with admin lives in `packages/mocks/.data/store.json`.
 
 ---
 
@@ -104,11 +99,7 @@ Purpose, routes, shared packages, and commands for the public marketing site.
 
 | Variable | Purpose | Required? |
 |---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Scaffolding only; not used in source | No |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Scaffolding only; not used in source | No |
-| `NEXT_PUBLIC_SITE_URL` | API origin for SSR self-fetch (falls back to `http://localhost:9000`) | Recommended |
-
-Note: `NEXT_PUBLIC_SITE_URL` is used in `src/hooks/use-*/server.ts` but is not in `apps/web/.env.example`.
+| `NEXT_PUBLIC_SITE_URL` | Absolute origin for sitemap / metadata (falls back to `http://localhost:9000`) | Recommended |
 
 ---
 
@@ -139,6 +130,6 @@ Note: `NEXT_PUBLIC_SITE_URL` is used in `src/hooks/use-*/server.ts` but is not i
 |---|---|
 | New page | `apps/web/docs/patterns.md`, `docs/template/PAGES.md` |
 | New section | `apps/web/docs/patterns.md`, `docs/template/COMPONENTS.md` |
-| New API route | `apps/web/docs/architecture.md`, `docs/api-and-data-fetching.md` |
+| Public data / mocks | `packages/mocks/docs/README.md`, `ROADMAP/11-handoff-to-real-data.md` |
 | Styling | `docs/styling-and-design-system.md` |
 | State | `docs/state-management.md` |

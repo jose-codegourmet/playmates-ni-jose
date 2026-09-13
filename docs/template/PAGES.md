@@ -1,41 +1,33 @@
 # Pages
 
-All marketing pages live under `apps/web/src/app/` and compose section components only — no large inline JSX in `page.tsx`. Sections live under `apps/web/src/sections/`.
+Public archive pages live under `apps/web/src/app/` and compose section components only — no large inline JSX in `page.tsx`. Sections live under `apps/web/src/sections/`.
 
-Admin routes live under `apps/admin/src/app/` and follow a different pattern (Server Components querying Prisma) — see [Admin Route Map](#admin-route-map).
+Admin routes live under `apps/admin/src/app/`. There is **no** `/admin` URL prefix — the admin app **is** the admin origin. Playmates mutations go through Server Actions that call `@fe-template/mocks` (`apps/admin/src/lib/playmates.ts`). Prisma in `@fe-template/db` is still PawPair leftover (profile/auth only) — **it does not have Playmates models.**
 
-Content direction: [`docs/about-example-site/aboustwebsite.md`](../about-example-site/aboustwebsite.md)
+See [`packages/mocks/docs/README.md`](../../packages/mocks/docs/README.md) and [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 
 ---
 
-## Route Map — `apps/web`
+## Route Map — `apps/web` (8 public routes)
 
 | Route | File | Page |
 | --- | --- | --- |
-| `/` | `app/page.tsx` | Home |
-| `/about` | `app/about/page.tsx` | About |
-| `/contact` | `app/contact/page.tsx` | Contact |
-| `/pricing` | `app/pricing/page.tsx` | Pricing |
-| `/blog` | `app/blog/page.tsx` | Blog list (editorial) |
-| `/blog/grid` | `app/blog/grid/page.tsx` | Blog grid |
-| `/blog/[slug]` | `app/blog/[slug]/page.tsx` | Blog post |
-| `/otp` | `app/otp/page.tsx` | OTP verification demo |
-| `/careers` | `app/careers/page.tsx` | Company stub |
-| `/partners` | `app/partners/page.tsx` | Company stub |
-| `/press` | `app/press/page.tsx` | Company stub |
-| `/resources/community-guide` | `app/resources/community-guide/page.tsx` | Resource stub |
-| `/resources/first-meet-checklist` | `app/resources/first-meet-checklist/page.tsx` | Resource stub |
-| `/help` | `app/help/page.tsx` | Help center stub |
-| `/status` | `app/status/page.tsx` | Status stub |
-| `/legal/privacy` | `app/legal/privacy/page.tsx` | Legal stub |
-| `/legal/terms` | `app/legal/terms/page.tsx` | Legal stub |
-| `/legal/community-guidelines` | `app/legal/community-guidelines/page.tsx` | Legal stub |
-| `/legal/cookies` | `app/legal/cookies/page.tsx` | Legal stub |
-| `/legal/accessibility` | `app/legal/accessibility/page.tsx` | Legal stub |
-| `/sign-in` | `app/sign-in/page.tsx` | Auth CTA stub (no auth) |
-| `/create-profile` | `app/create-profile/page.tsx` | Auth CTA stub (no auth) |
-| `/showcase` | `app/showcase/page.tsx` | Component showcase |
-| `not-found` | `app/not-found.tsx` | Branded 404 |
+| `/` | `app/page.tsx` | Archive home |
+| `/sessions` | `app/sessions/page.tsx` | Sessions index |
+| `/sessions/[sessionSlug]` | `app/sessions/[sessionSlug]/page.tsx` | Session detail |
+| `/games/[gameSlug]` | `app/games/[gameSlug]/page.tsx` | Game detail |
+| `/players` | `app/players/page.tsx` | Players index |
+| `/players/[playerSlug]` | `app/players/[playerSlug]/page.tsx` | Player detail |
+| `/venues` | `app/venues/page.tsx` | Venues index |
+| `/venues/[venueSlug]` | `app/venues/[venueSlug]/page.tsx` | Venue detail |
+
+Also present (not visitor IA routes):
+
+| Route | File | Page |
+| --- | --- | --- |
+| `/sitemap.xml` | `app/sitemap.ts` | Public slugs only |
+| `/robots.txt` | `app/robots.ts` | Crawl rules |
+| `not-found` | `app/not-found.tsx` | Playmates 404 (Home + Sessions) |
 
 Routes and SEO metadata are centralised in:
 
@@ -48,30 +40,26 @@ src/constants/seo.ts
 
 ## Page Composition Rule
 
-`page.tsx` files import and render section components in order. No business logic, no large JSX blocks:
+`page.tsx` files import and render section components in order. Fetch Playmates data in the page (or a `use-public-*` server helper) and pass serializable props. No Prisma.
 
 ```tsx
-// app/about/page.tsx
-import { AboutHeroSection } from "@/sections/about/hero/AboutHeroSection";
-import { OriginStorySection } from "@/sections/about/origin-story/OriginStorySection";
-// ...
+// app/sessions/page.tsx
+import { SessionsFiltersSection } from "@/sections/sessions/filters/SessionsFiltersSection";
+import { SessionsGridSection } from "@/sections/sessions/grid/SessionsGridSection";
+import { SessionsHeroSection } from "@/sections/sessions/hero/SessionsHeroSection";
 
-export default function AboutPage() {
+export default function SessionsPage() {
   return (
     <>
-      <AboutHeroSection />
-      <OriginStorySection />
-      {/* ...remaining sections */}
+      <SessionsHeroSection />
+      <SessionsFiltersSection />
+      <SessionsGridSection />
     </>
   );
 }
 ```
 
-Sections build on primitives from `@fe-template/ui`:
-
-```tsx
-import { Badge, buttonVariants, ScrollReveal } from "@fe-template/ui";
-```
+Visual/marketing blocks may come from JabKit (`@/components/jabkit/...`). Form/table primitives stay on `@fe-template/ui`.
 
 ---
 
@@ -80,64 +68,56 @@ import { Badge, buttonVariants, ScrollReveal } from "@fe-template/ui";
 ### Home — `src/sections/home/`
 
 ```text
-announcement/
 hero/
-social-proof/
-how-it-works/
-compatibility-features/
-product-preview/
-safety/
-use-cases/
-testimonials/
-pricing-preview/
-blog-preview/
-final-cta/
+latest-sessions/
+recent-games/
+players-strip/
 ```
 
-### About — `src/sections/about/`
+### Sessions — `src/sections/sessions/`
 
 ```text
 hero/
-origin-story/
-mission-vision/
-values/
-team/
-community-commitment/
-final-cta/
-```
-
-### Pricing — `src/sections/pricing/`
-
-```text
-hero/
-plans/
-comparison/
-faq/
-final-cta/
-```
-
-### Contact — `src/sections/contact/`
-
-```text
-hero/
-contact-form/        ← form: includes .schema.ts + .defaults.ts
-contact-options/
-faq-preview/
-final-cta/
-```
-
-### Blog — `src/sections/blog/`
-
-```text
-hero/
-featured-article/
-article-list/        ← used on /blog
-article-grid/        ← used on /blog/grid
-article-header/      ← used on /blog/[slug]
-article-body/        ← used on /blog/[slug]
 filters/
-related-posts/       ← used on /blog/[slug]
-newsletter/          ← form: includes .schema.ts + .defaults.ts
+grid/
+```
+
+### Game detail — `src/sections/game-detail/`
+
+```text
+header/
+recordings/
+links/
+pager/
+```
+
+### Players — `src/sections/players/`
+
+```text
+hero/
+grid/
+```
+
+### Player detail — `src/sections/player-detail/`
+
+```text
+header/
+sessions/
+games/
+```
+
+### Venues — `src/sections/venues/`
+
+```text
+hero/
+grid/
+```
+
+### Venue detail — `src/sections/venue-detail/`
+
+```text
+header/
+session-history/
 ```
 
 ### Not Found — `src/sections/not-found/`
@@ -146,11 +126,17 @@ newsletter/          ← form: includes .schema.ts + .defaults.ts
 hero/
 ```
 
-### Shared
+### Shared — `src/sections/_shared/`
 
 ```text
-src/sections/_shared/SectionImage.tsx
-src/sections/otp/OtpVerifySection.tsx   ← single-file section, no folder
+game-card/
+matchup-label/
+player-card/
+provider-link-list/
+session-card/
+status-badge/
+venue-card/
+youtube-embed/
 ```
 
 ---
@@ -162,9 +148,8 @@ src/sections/otp/OtpVerifySection.tsx   ← single-file section, no folder
 3. Each section: `.tsx` + `.stories.tsx` (add `.schema.ts` + `.defaults.ts` only if it is a form)
 4. Register the route in `src/constants/routes.ts`
 5. Add SEO metadata in `src/constants/seo.ts`
-6. Copy content from [`docs/about-example-site/aboustwebsite.md`](../about-example-site/aboustwebsite.md)
-7. Use images from [`image-guide.md`](../about-example-site/image-guide.md)
-8. Commit with Conventional Commits
+6. Read public data from `@fe-template/mocks` via `src/lib/playmates.ts` — not Prisma
+7. Commit with Conventional Commits
 
 ---
 
@@ -184,7 +169,7 @@ Header, footer, and sidebar live in `src/modules/layout/`; the provider tree liv
 
 ## Admin Route Map
 
-Admin pages are async Server Components that query Prisma directly; mutations go through Server Actions in the co-located `actions.ts`. Everything under `(dashboard)` is gated by `apps/admin/middleware.ts` (Supabase session required). `/` is not the dashboard: `app/page.tsx` redirects to `/dashboard`.
+Admin pages are Server Components. Playmates reads/writes go through `@fe-template/mocks` (`getPlaymatesRepos`). Mutations live in co-located `actions.ts`. Everything under `(dashboard)` is gated by `apps/admin/middleware.ts` (Supabase session, or `MOCK_AUTH=true`). `/` is not the dashboard: `app/page.tsx` redirects to `/dashboard`.
 
 | Route | File | Page |
 | --- | --- | --- |
@@ -192,19 +177,32 @@ Admin pages are async Server Components that query Prisma directly; mutations go
 | `/login` | `app/login/page.tsx` | Supabase email/password sign-in (outside the shell) |
 | `/signup` | `app/signup/page.tsx` | Public self-signup |
 | `/otp` | `app/otp/page.tsx` | OTP confirmation |
-| `/dashboard` | `app/(dashboard)/dashboard/page.tsx` | Dashboard — stat cards + charts |
-| `/users` | `app/(dashboard)/users/page.tsx` | Users table with email search |
-| `/users/[id]` | `app/(dashboard)/users/[id]/page.tsx` | User detail; role change via `role-select.tsx` |
-| `/pets` | `app/(dashboard)/pets/page.tsx` | Pet profiles with owner |
-| `/posts` | `app/(dashboard)/posts/page.tsx` | Posts list with published badge |
-| `/posts/new` | `app/(dashboard)/posts/new/page.tsx` | Create post |
-| `/posts/[id]` | `app/(dashboard)/posts/[id]/page.tsx` | Edit post |
-| `/testimonials` | `app/(dashboard)/testimonials/page.tsx` | Testimonials with publish toggle |
-| `/contacts` | `app/(dashboard)/contacts/page.tsx` | Contact inbox with status actions |
-| `/pricing-plans` | `app/(dashboard)/pricing-plans/page.tsx` | Pricing plan CRUD |
+| `/dashboard` | `app/(dashboard)/dashboard/page.tsx` | Latest sessions, uploads, failed jobs, Facebook queue |
+| `/sessions` | `app/(dashboard)/sessions/page.tsx` | Sessions list |
+| `/sessions/new` | `app/(dashboard)/sessions/new/page.tsx` | Create draft session |
+| `/players` | `app/(dashboard)/players/page.tsx` | Players list, create/edit, archive |
+| `/venues` | `app/(dashboard)/venues/page.tsx` | Venues list, create/edit, archive |
+| `/venues/[id]` | `app/(dashboard)/venues/[id]/page.tsx` | Venue courts |
+| `/settings` | `app/(dashboard)/settings/page.tsx` | Settings index |
+| `/settings/google` | `app/(dashboard)/settings/google/page.tsx` | Google OAuth placeholder (disabled) |
+| `/settings/publishing` | `app/(dashboard)/settings/publishing/page.tsx` | Facebook Group URL + default hashtags |
 | `/profile` | `app/(dashboard)/profile/page.tsx` | Signed-in admin profile |
-| `POST /api/images` | `app/api/images/route.ts` | Upload to Supabase Storage (`admin-uploads`) |
 
-Route-local client components (tables, forms, toggles) sit next to the page that uses them — `posts/posts-table.tsx`, `posts/post-form/PostForm.tsx`, `contacts/contacts-list.tsx`, and so on. The admin shell (sidebar + header) is `app/(dashboard)/layout.tsx` composing `src/modules/layout/`.
+---
 
-Setup and auth details: [`apps/admin/README.md`](../../apps/admin/README.md).
+## Admin session workspace paths
+
+`/sessions/[id]` redirects to `/sessions/[id]/details`. The stepper is `[id]/layout.tsx` + `session-workspace-nav.tsx`.
+
+| Route | File | Step |
+| --- | --- | --- |
+| `/sessions/[id]` | `app/(dashboard)/sessions/[id]/page.tsx` | Redirect → details |
+| `/sessions/[id]/details` | `app/(dashboard)/sessions/[id]/details/page.tsx` | Date, venue, notes |
+| `/sessions/[id]/players` | `app/(dashboard)/sessions/[id]/players/page.tsx` | Roster |
+| `/sessions/[id]/import` | `app/(dashboard)/sessions/[id]/import/page.tsx` | Import recording metadata |
+| `/sessions/[id]/organize` | `app/(dashboard)/sessions/[id]/organize/page.tsx` | Games + recordings |
+| `/sessions/[id]/matchups` | `app/(dashboard)/sessions/[id]/matchups/page.tsx` | Team 1 / Team 2 |
+| `/sessions/[id]/upload` | `app/(dashboard)/sessions/[id]/upload/page.tsx` | Mock Drive / YouTube jobs |
+| `/sessions/[id]/publish` | `app/(dashboard)/sessions/[id]/publish/page.tsx` | Review, Facebook drafts, publish |
+
+Setup and auth details: [`apps/admin/README.md`](../../apps/admin/README.md). Prototype data: [`packages/mocks/docs/README.md`](../../packages/mocks/docs/README.md).
