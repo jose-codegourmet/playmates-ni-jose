@@ -1,5 +1,7 @@
 import type { RecordingCardProps } from "../recording-card/RecordingCard.types";
 
+import type { RecordingAssignTarget } from "./droppable-ids";
+
 export type GameRecordingBoardGame = {
   id: string;
   gameNumber: number;
@@ -12,4 +14,5 @@ export type GameRecordingBoardGame = {
 export type GameRecordingBoardProps = {
   unassigned: RecordingCardProps[];
   games: GameRecordingBoardGame[];
+  onAssignRecording?: (recordingId: string, target: RecordingAssignTarget) => void;
 };

@@ -8,8 +8,7 @@ export default {
   description:
     "Vertical Side A / Side B column that lists recording cards or an empty drop-target prompt.",
   sectionCategory: "workflow",
-  purpose:
-    "Hold recordings assigned to one camera side on the Organize board before native drop wiring lands.",
+  purpose: "Hold recordings assigned to one camera side and accept dnd-kit drops from other lanes.",
   bestFor: ["organize board", "game recording workspace", "camera side assignment"],
   tone: ["utilitarian", "archive"],
   contentDensity: "high",
@@ -24,8 +23,8 @@ export default {
     supportsDarkMode: true,
   },
   tags: ["recording", "camera", "lane", "organize", "admin"],
-  dependencies: ["@fe-template/ui"],
+  dependencies: ["@fe-template/ui", "@dnd-kit/core"],
   registryDependencies: ["card", "empty", "recording-card"],
-  a11y: { keyboardNav: false, reducedMotion: true },
+  a11y: { keyboardNav: true, reducedMotion: true },
   preview: { layout: "padded", capture: { themes: ["light", "dark"] } },
 } satisfies PlaymatesComponentMeta;

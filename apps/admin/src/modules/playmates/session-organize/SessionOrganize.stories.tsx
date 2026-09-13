@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 
 import { SessionOrganize } from "./SessionOrganize";
 import {
@@ -37,6 +38,28 @@ export const EmptySession: Story = {
 
 export const UnassignedSideBucket: Story = {
   args: unassignedSideOrganizeFixture,
+};
+
+export const DragAssign: Story = {
+  render: function DragAssignStory(args) {
+    const [recordings, setRecordings] = useState(args.recordings);
+
+    return (
+      <SessionOrganize
+        {...args}
+        recordings={recordings}
+        onAssignRecording={(recordingId, target) => {
+          setRecordings((current) =>
+            current.map((recording) =>
+              recording.id === recordingId
+                ? { ...recording, gameId: target.gameId, cameraSide: target.cameraSide }
+                : recording,
+            ),
+          );
+        }}
+      />
+    );
+  },
 };
 
 export const Dark: Story = {

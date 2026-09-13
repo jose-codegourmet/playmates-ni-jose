@@ -23,10 +23,11 @@ export default async function SessionOrganizePage({ params }: SessionOrganizePag
       <div>
         <h2 className="font-heading text-xl font-medium">Organize</h2>
         <p className="text-sm text-muted-foreground">
-          Assign recordings to games and camera sides. Drag-and-drop ships in a later ticket.
+          Drag a recording onto a Side A or Side B lane, or use Move to… on the card.
         </p>
       </div>
       <SessionOrganize
+        sessionId={detail.session.id}
         recordings={recordings.map((recording) => ({
           id: recording.id,
           originalFilename: recording.originalFilename,
