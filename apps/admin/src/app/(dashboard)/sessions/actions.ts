@@ -132,3 +132,36 @@ export async function updateSession(
   revalidatePath("/dashboard");
   return { success: true };
 }
+
+export type SetSessionRosterResult = { success: true } | { success: false; error: string };
+
+export async function setSessionRoster(
+  sessionId: string,
+  playerIds: string[],
+): Promise<SetSessionRosterResult> {
+  try {
+    const repos = getPlaymatesRepos();
+    const existing = await repos.sessions.getById(sessionId);
+    if (!existing) {
+      return { success: false, error: "Session not found" };
+    }
+
+    const allowed = new Set((await repos.players.list()).map((player) => player.id));
+    const archivedOnRoster = new Set(existing.players.filter((p) => p.isArchived).map((p) => p.id));
+    const nextIds = playerIds.filter((id) => allowed.has(id) || archivedOnRoster.has(id));
+
+    await repos.sessions.setRoster(sessionId, nextIds);
+  } catch (error) {
+    if (isMockDomainError(error)) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Could not update roster." };
+  }
+
+  revalidatePath("/sessions");
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/players`);
+  revalidatePath("/dashboard");
+  revalidatePath("/players");
+  return { success: true };
+}

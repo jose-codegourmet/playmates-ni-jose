@@ -10,7 +10,7 @@ import {
 import type { PlayersDialogProps } from "./PlayersDialog.types";
 import { PlayerForm } from "./player-form/PlayerForm";
 
-function PlayersDialog({ open, onOpenChange, player }: PlayersDialogProps) {
+function PlayersDialog({ open, onOpenChange, player, onCreated }: PlayersDialogProps) {
   const isEdit = Boolean(player);
 
   return (
@@ -27,7 +27,10 @@ function PlayersDialog({ open, onOpenChange, player }: PlayersDialogProps) {
         <PlayerForm
           key={player?.id ?? "create"}
           player={player}
-          onSuccess={() => onOpenChange(false)}
+          onSuccess={(created) => {
+            if (!player) onCreated?.(created);
+            onOpenChange(false);
+          }}
         />
       </DialogContent>
     </Dialog>

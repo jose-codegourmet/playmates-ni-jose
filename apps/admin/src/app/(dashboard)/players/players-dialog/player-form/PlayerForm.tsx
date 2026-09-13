@@ -41,7 +41,7 @@ function PlayerForm({ player, onSuccess }: PlayerFormProps) {
     }
 
     toast.success(result.message);
-    onSuccess?.();
+    onSuccess?.(result.player);
   }
 
   const isEdit = Boolean(player);
