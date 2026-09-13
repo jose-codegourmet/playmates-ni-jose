@@ -8,11 +8,8 @@ import {
   Button,
   Card,
   CardContent,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  NativeSelect,
+  NativeSelectOption,
 } from "@fe-template/ui";
 import { GripVerticalIcon } from "lucide-react";
 
@@ -120,31 +117,49 @@ function RecordingCard({
               <span className="text-xs text-muted-foreground" id={`move-to-label-${id}`}>
                 Move to…
               </span>
-              <Select
-                value={droppableId}
-                onValueChange={(next) => {
-                  if (typeof next === "string" && next !== droppableId) {
-                    onMoveTo(next);
-                  }
-                }}
-              >
-                <SelectTrigger
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <NativeSelect
+                  key={droppableId}
                   id={`move-to-${id}`}
                   size="sm"
-                  className="w-full max-w-full"
+                  className="min-w-0 flex-1"
                   aria-labelledby={`move-to-label-${id}`}
                   aria-label="Move to"
+                  defaultValue={droppableId}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onChange={(event) => {
+                    const next = event.currentTarget.value;
+                    if (next !== droppableId) {
+                      onMoveTo(next);
+                    }
+                  }}
                 >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent align="start" alignItemWithTrigger={false}>
                   {moveTargets.map((target) => (
-                    <SelectItem key={target.value} value={target.value}>
+                    <NativeSelectOption key={target.value} value={target.value}>
                       {target.label}
-                    </SelectItem>
+                    </NativeSelectOption>
                   ))}
-                </SelectContent>
-              </Select>
+                </NativeSelect>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  aria-label="Apply move destination"
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    const select = event.currentTarget
+                      .closest("[data-slot='recording-card']")
+                      ?.querySelector<HTMLSelectElement>("[data-slot='native-select']");
+                    const next = select?.value;
+                    if (next && next !== droppableId) {
+                      onMoveTo(next);
+                    }
+                  }}
+                >
+                  Move
+                </Button>
+              </div>
             </div>
           ) : null}
         </div>

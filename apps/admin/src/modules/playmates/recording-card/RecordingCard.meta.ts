@@ -34,7 +34,7 @@ export default {
   },
   tags: ["recording", "card", "organize", "camera", "admin"],
   dependencies: ["@fe-template/ui", "@fe-template/mocks", "lucide-react", "@dnd-kit/core"],
-  registryDependencies: ["card", "badge", "button", "select", "status-badge"],
+  registryDependencies: ["card", "badge", "button", "native-select", "status-badge"],
   a11y: { keyboardNav: true, reducedMotion: true },
   preview: { layout: "padded", capture: { themes: ["light", "dark"] } },
 } satisfies PlaymatesComponentMeta;
