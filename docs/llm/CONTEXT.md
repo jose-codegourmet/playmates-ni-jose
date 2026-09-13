@@ -1,6 +1,6 @@
-# Agent Context — fe-multi-web-template
+# Agent Context — Playmates ni José
 
-Concise context for AI agents working in this repository.
+Concise context for AI agents working in this repository. The checkout is a Playmates prototype on the fe-multi-web-template scaffold.
 
 ---
 
@@ -10,12 +10,12 @@ Concise context for AI agents working in this repository.
 | --- | --- |
 | Monorepo | pnpm workspaces + Turborepo |
 | Framework | Next.js 16 App Router (two apps: `web`, `admin`) |
-| UI | shadcn/ui on Base UI, shared via `@fe-template/ui`; Tailwind CSS 4 |
-| Database | Prisma 6 + Supabase Postgres only (`Profile` FK → `auth.users`), shared via `@fe-template/db` |
-| Auth | Supabase Auth (`@supabase/ssr`) — admin only |
+| UI | shadcn/ui on Base UI via `@fe-template/ui`; public visual blocks via JabKit in `apps/web/src/components/jabkit`; Tailwind CSS 4 |
+| Database | Prisma 6 + Supabase Postgres in `@fe-template/db` — **still PawPair models. No Playmates Prisma schema.** |
+| Auth | Supabase Auth (`@supabase/ssr`) — admin only; `MOCK_AUTH=true` bypass |
 | State | Redux Toolkit (`themeSlice`, web) |
 | Theme | next-themes (DOM), Redux source of truth |
-| Data | TanStack Query + TanStack Table; Prisma direct in admin Server Components |
+| Data | Playmates: `@fe-template/mocks` (`getPlaymatesRepos`, public helpers). Shared disk: `packages/mocks/.data/store.json`. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md) |
 | Motion | Framer Motion (scroll-reveal only) |
 | Docs | Storybook co-located with components |
 | Lint | Biome, Husky, commitlint |
@@ -25,45 +25,56 @@ Concise context for AI agents working in this repository.
 ## Folder Map
 
 ```text
-apps/web/src/               ← marketing site (port 9000)
-├── app/                    ← pages (section composition only)
-├── sections/               ← page sections, per page folder
+apps/web/src/               ← public archive (port 9000)
+├── app/                    ← 8 public routes (section composition only)
+├── sections/               ← home, sessions, game-detail, players, venues, …
+├── components/jabkit/      ← installed JabKit only
 ├── constants/              ← routes.ts, seo.ts, navigation.ts
-├── hooks/                  ← use-*/client.ts + server.ts
-├── types/                  ← shared marketing-domain types
+├── hooks/                  ← use-public-sessions|games|players|venues
+├── lib/playmates.ts        ← @fe-template/mocks public helpers
 ├── modules/layout/         ← header, footer
 ├── modules/providers/      ← Redux + Query + theme
 └── store/                  ← Redux store + themeSlice
 
 apps/admin/src/             ← admin portal (port 9001)
-├── app/(dashboard)/        ← dashboard, users, pets, posts, testimonials, contacts
-├── app/login/              ← Supabase sign-in
+├── app/(dashboard)/        ← dashboard, sessions workspace, players, venues, settings
+├── app/(dashboard)/sessions/[id]/
+│   ├── details|players|import|organize|matchups|upload|publish/
+├── app/login/              ← Supabase sign-in (skipped when MOCK_AUTH=true)
+├── lib/playmates.ts        ← getPlaymatesRepos from @fe-template/mocks
 ├── lib/supabase/           ← browser + server clients
-└── modules/                ← AdminSidebar, AdminHeader, providers
+└── modules/playmates/      ← domain widgets (organize, upload, publish, …)
 
 packages/ui/src/            ← @fe-template/ui — shared primitives
-├── components/<kebab>/     ← ~60 shadcn/Base UI components
+├── components/<kebab>/     ← shadcn/Base UI components
 ├── lib/utils.ts            ← cn()
 └── index.ts                ← barrel: every public export
 
-packages/db/                ← @fe-template/db — Prisma client
-├── prisma/schema/*.prisma  ← split schema (user, pet, post, marketing)
+packages/db/                ← @fe-template/db — Prisma client (PawPair leftover)
+├── prisma/schema/*.prisma  ← user, pet, post, marketing — NOT Playmates
 ├── prisma/seed.ts
-└── src/client.ts           ← prisma singleton
+└── src/client.ts           ← prisma singleton (profile/auth only)
 
-packages/mocks/             ← @fe-template/mocks — Playmates in-memory layer
+packages/mocks/             ← @fe-template/mocks — Playmates prototype data
+├── src/memory/             ← in-memory repos
+├── src/public.ts           ← public visibility helpers
+├── src/store.ts            ← persist to .data/store.json
+└── docs/README.md
+
 packages/config/            ← @fe-template/config — PlaymatesComponentMeta
 ```
+
+Route map: [`docs/template/PAGES.md`](../template/PAGES.md). Mock package: [`packages/mocks/docs/README.md`](../../packages/mocks/docs/README.md). Real-data handoff: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 
 Reference docs:
 
 ```text
-docs/about-example-site/aboustwebsite.md   ← PawPair content direction
-docs/about-example-site/branding.md        ← Brand identity
-docs/about-example-site/image-guide.md     ← Image placement guide
-docs/template/                             ← Human-facing docs
+docs/02-domain/                            ← Playmates domain
+docs/03-data/                              ← intended schema (not in Prisma)
+docs/template/                             ← Human-facing docs (PAGES route map)
 docs/llm/                                  ← This folder
-scripts/cleanup-unused.py
+ROADMAP/00-conventions.md                  ← Agent conventions
+ROADMAP/11-handoff-to-real-data.md         ← Owner: mocks → Prisma / Drive / YouTube
 ```
 
 ---
@@ -72,8 +83,9 @@ scripts/cleanup-unused.py
 
 ```ts
 import { Button, Card, ScrollReveal, cn } from "@fe-template/ui";   // shared primitives
-import { prisma } from "@fe-template/db";                            // Prisma client (server only)
-import { HeroSection } from "@/sections/home/hero/HeroSection";      // app-local sections
+import { getPlaymatesRepos, listPublicSessions } from "@fe-template/mocks";
+import { HomeHeroSection } from "@/sections/home/hero/HomeHeroSection";
+// Do not import prisma for Playmates entities. @fe-template/db is still PawPair.
 ```
 
 ---
@@ -85,8 +97,9 @@ import { HeroSection } from "@/sections/home/hero/HeroSection";      // app-loca
 | New web page | `apps/web/src/app/[route]/page.tsx` + `apps/web/src/sections/[page]/` | `page.tsx` composes sections only |
 | New section | `apps/web/src/sections/[page]/[section]/` | `.tsx` + `.stories.tsx` + `.usecase.md`; add `.schema.ts` + `.defaults.ts` only if it is a form |
 | New shared primitive | `packages/ui/src/components/[name]/` | `.tsx` + `.stories.tsx` + `.usecase.md`, plus an export line in `packages/ui/src/index.ts` |
-| New admin page | `apps/admin/src/app/(dashboard)/[route]/page.tsx` | Async Server Component querying `prisma`; mutations in a co-located `actions.ts` |
-| New model / field | `packages/db/prisma/schema/*.prisma` | Then `pnpm --filter @fe-template/db db:migrate` and `db:generate` |
+| New admin page | `apps/admin/src/app/(dashboard)/[route]/page.tsx` | Server Component + `actions.ts` calling `@fe-template/mocks` |
+| Playmates data change | `packages/mocks/` | Types, seed, repos, `store.json`. **Do not** add Playmates models to Prisma |
+| Swap mocks → Prisma | `ROADMAP/11-handoff-to-real-data.md` | Owner work only — keep `getPlaymatesRepos()` as the seam |
 | New hook | `apps/<app>/src/hooks/use-[name]/` | `client.ts` (React Query) + `server.ts` (server prefetch) |
 | New route constant | `apps/web/src/constants/routes.ts` | Add to `ROUTES` object |
 | New SEO entry | `apps/web/src/constants/seo.ts` | Add page metadata |
@@ -95,46 +108,21 @@ import { HeroSection } from "@/sections/home/hero/HeroSection";      // app-loca
 
 ## Brand & Content Summary
 
-### 1. PawPair — Product
+### 1. Playmates ni José — Product
 
-Fictional pet social discovery app. Tagline: **"Better matches. Happier tails."**
+Badminton session archive and publishing app. Public visitors watch published sessions and games. Admins organize recordings, simulate Drive/YouTube uploads, and copy Facebook drafts.
 
-Users create pet profiles, discover compatible pets nearby, match, chat, and arrange playdates. `apps/web` is a **marketing showcase** — it has no auth or matchmaking algorithm. Prisma models in `packages/db` back the admin portal **and** the public site's `/api/blog`, `/api/pricing`, and `/api/testimonials` routes. See [`docs/api-and-data-fetching.md`](../api-and-data-fetching.md).
+`apps/web` has no auth. Playmates data is **`@fe-template/mocks`**, not Prisma. `packages/db` remains the template PawPair schema until the owner follows [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 
-Primary CTAs: Find a playmate, Create a pet profile, Start matching, Join the pack.
-
-Full content direction: [`aboustwebsite.md`](../about-example-site/aboustwebsite.md)
+Product domain: [`docs/02-domain/domain-model.md`](../02-domain/domain-model.md). Routes: [`docs/template/PAGES.md`](../template/PAGES.md).
 
 ### 2. Branding
 
-| Token | Value |
-| --- | --- |
-| Primary CTA | PawPair Coral `#FF6B6B` |
-| Display font | Fraunces (Google Fonts via `next/font`) |
-| Body font | Manrope (Google Fonts via `next/font`) |
-| Light background | Warm Cream `#FFF8EE` |
-| Dark background | Night `#111015` |
-
-Brand personality: playful, friendly, smart, trustworthy, modern — not childish or corporate.
-
-Full brand guide: [`branding.md`](../about-example-site/branding.md)
+Product name: **Playmates ni José**. Fonts in the prototype may still be Fraunces + Manrope (`next/font`). Visual blocks use JabKit tokens (`--jk-*`) plus `@fe-template/ui`. Do not treat leftover PawPair coral / pet-social copy as product truth.
 
 ### 3. Images
 
-Assets live in `apps/web/public/images/`:
-
-```text
-brand/  hero/  product/  features/  about/  community/  pets/  blog/  illustrations/
-```
-
-Rules:
-- Use `next/image` for all photography and raster assets
-- Keep UI text, buttons, pricing, and scores in React — never bake them into images
-- Pet portraits use `4:5` aspect ratio with `object-cover`
-- Only above-the-fold images use `priority` loading
-- Fallback: warm cream background + PawPair icon centred
-
-Full placement guide: [`image-guide.md`](../about-example-site/image-guide.md)
+Use `next/image`. Prefer token backgrounds + initials or files under `apps/web/public/images/`. Do not keep PawPair pet photos on Playmates pages.
 
 ---
 

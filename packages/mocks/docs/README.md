@@ -16,8 +16,10 @@ In-memory Playmates data layer that looks like the future Prisma layer. Apps imp
 
 ## Intended consumers
 
-- `apps/web` — public RSC fetchers (later tickets).
-- `apps/admin` — Server Actions (later tickets).
+- `apps/web` — public RSC fetchers (`apps/web/src/lib/playmates.ts`, `src/hooks/use-public-*`).
+- `apps/admin` — Server Actions and workspace pages (`apps/admin/src/lib/playmates.ts`).
+
+This package **is** the prototype backend. Prisma in `packages/db` is still PawPair — **do not claim Prisma has Playmates models.** Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../../ROADMAP/11-handoff-to-real-data.md).
 
 ## Public entry points
 
@@ -77,7 +79,7 @@ Delete `store.json` (or call `resetState()`) to return both apps to the hardcode
 
 `PostDraft` may include optional `postedAt` / `postedUrl` (PNJ-075). `posts.generate` builds the body from `formatFacebookBody`, current matchup, provider asset URLs, and `settings.defaultHashtags`. `posts.update` increments `version`. `posts.markPosted` / `unmarkPosted` are local flags only — never a Facebook API call.
 
-`packages/db` Prisma schema stays PawPair until the owner migrates it. This package must not start that migration.
+`packages/db` Prisma schema stays PawPair until the owner migrates it (see [`ROADMAP/11-handoff-to-real-data.md`](../../../ROADMAP/11-handoff-to-real-data.md)). This package must not start that migration. Agents working on either app should import Playmates data from here, not from `@fe-template/db`.
 
 ## Development commands
 

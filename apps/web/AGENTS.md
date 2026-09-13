@@ -6,7 +6,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 ## Scope
 
-`apps/web` is the public Playmates ni José site. PawPair marketing pages were removed in PNJ-004. It does **not** have authentication, middleware, or Supabase clients.
+`apps/web` is the public Playmates ni José archive site (eight visitor routes). PawPair marketing pages were removed in PNJ-004. It does **not** have authentication, middleware, or Supabase clients. Playmates data comes from `@fe-template/mocks` via `src/lib/playmates.ts`. Do not import `@fe-template/db` for Playmates entities. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 
 - **Port**: 9000
 - **Filter**: `pnpm --filter web`
@@ -18,12 +18,13 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 | Directory | Purpose |
 |---|---|
-| `src/app/` | Next.js App Router routes and API routes |
-| `src/sections/` | Page sections, organized per page |
+| `src/app/` | Next.js App Router routes (no `src/app/api/*` in this prototype) |
+| `src/sections/` | Page sections, organized per page (`home`, `sessions`, `game-detail`, `players`, `player-detail`, `venues`, `venue-detail`, `not-found`) |
 | `src/components/jabkit/` | **Only** allowed `src/components/` tree. Written by `@jabkit/cli`, not by hand. See [`ROADMAP/00-conventions.md`](../../ROADMAP/00-conventions.md). Domain UI stays in `sections/` and `modules/`. |
 | `src/modules/layout/` | Header, footer, navigation |
 | `src/modules/providers/` | Redux + TanStack Query + theme providers |
-| `src/hooks/` | Query hooks (PawPair hooks deleted in PNJ-004; folder may be empty) |
+| `src/hooks/` | Public fetchers (`use-public-sessions`, `use-public-games`, `use-public-players`, `use-public-venues`) |
+| `src/lib/playmates.ts` | Thin adapter: imports `@fe-template/mocks` public helpers |
 | `src/constants/` | Routes, SEO metadata, navigation (Playmates set from PNJ-006) |
 | `src/types/` | App-local types |
 | `src/store/` | Redux store + theme slice |
@@ -35,8 +36,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 ## Shared packages used
 
 - `@fe-template/ui` — shared UI primitives (Button, Card, ScrollReveal, etc.).
-- `@fe-template/db` — Prisma client used only in API routes (`src/app/api/*`).
-- `@fe-template/mocks` — prototype Playmates data layer (Phase 1; no Prisma).
+- `@fe-template/mocks` — prototype Playmates data layer. Prisma in `@fe-template/db` is still PawPair; **do not claim or use it for Playmates models**.
 
 ---
 
@@ -74,7 +74,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 ## Restrictions and boundaries
 
 - No authentication. Do not add middleware, login, or signup pages here without a plan.
-- Do not import `@fe-template/db` from client components or pages. Only import it in API routes.
+- Do not import `@fe-template/db`. There are no Playmates Prisma models. Public data goes through `@fe-template/mocks` (`src/lib/playmates.ts`). Real-data swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 - Do not create a local `src/components/ui/` folder. Use `@fe-template/ui`.
 - Do not grow `src/components/` except `src/components/jabkit/` via `@jabkit/cli`. Admin never gets `src/components/`. CLI recipe: [`ROADMAP/00-conventions.md`](../../ROADMAP/00-conventions.md).
 - Shared UI wiring must remain in place: `transpilePackages` in `next.config.ts` and the `@source` directive in `globals.css`.
@@ -88,7 +88,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 |---|---|
 | New page | `docs/frontend-conventions.md`, `docs/template/PAGES.md`, then `apps/web/docs/patterns.md` |
 | New section | `docs/frontend-conventions.md`, `docs/template/COMPONENTS.md`, then inspect `src/sections/not-found/` |
-| New API route | `docs/api-and-data-fetching.md` |
+| Public data / mocks | `packages/mocks/docs/README.md`, `ROADMAP/11-handoff-to-real-data.md` |
 | New hook | `docs/template/HOOKS.md` |
 | Style change | `docs/styling-and-design-system.md` |
 

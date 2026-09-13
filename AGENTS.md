@@ -6,20 +6,28 @@ Primary navigation for AI coding agents working in this monorepo. Read this file
 
 ## Repository Purpose
 
-This checkout is **Playmates ni José**, a badminton video archive and publishing app, implemented on [fe-multi-web-template](https://github.com/jose-codegourmet/fe-multi-web-template) (overlay SHA `52fc5a0d2a8edc5beaadf569ff485142c643d64f`). The bundled starter UI and Prisma schema are still **PawPair** until a later rebrand.
+This checkout is **Playmates ni José**, a badminton video archive and publishing app, implemented on [fe-multi-web-template](https://github.com/jose-codegourmet/fe-multi-web-template) (overlay SHA `52fc5a0d2a8edc5beaadf569ff485142c643d64f`). The public site and admin portal now render the Playmates prototype. `@fe-template/db` Prisma models are still the template **PawPair** schema — do not treat them as Playmates entities.
 
-The stack is a **pnpm workspaces + Turborepo** monorepo that pairs a public site with a private admin portal. Both apps are Next.js 16 with React 19, Tailwind CSS 4, and shadcn/Base UI primitives. Shared packages supply the UI library (`@fe-template/ui`) and the Prisma client (`@fe-template/db`).
+The stack is a **pnpm workspaces + Turborepo** monorepo that pairs a public site with a private admin portal. Both apps are Next.js 16 with React 19, Tailwind CSS 4, and shadcn/Base UI primitives. Shared packages supply the UI library (`@fe-template/ui`), the Prisma client (`@fe-template/db`, leftover PawPair models only), and the prototype data layer (`@fe-template/mocks`).
+
+### Prototype data (current source of truth)
+
+- Playmates pages and Server Actions read and write **`packages/mocks`** (`@fe-template/mocks`). Do not import `prisma` for sessions, games, players, venues, recordings, or posts.
+- Shared state across `apps/web` (9000) and `apps/admin` (9001) is `packages/mocks/.data/store.json` (metadata only; no video bytes).
+- Wiring Prisma / Drive / YouTube is **owner work**, not prototype work. Follow [`ROADMAP/11-handoff-to-real-data.md`](ROADMAP/11-handoff-to-real-data.md). The seam is `getPlaymatesRepos()`.
+
+Public routes and admin session workspace paths: [`docs/template/PAGES.md`](docs/template/PAGES.md).
 
 ### Known conflicts (scaffold)
 
-- Product docs describe Playmates; running apps still render PawPair.
-- [`docs/03-data/`](docs/03-data/) is the intended Playmates schema; `packages/db` still has the template PawPair Prisma models.
+- Product docs in `docs/00-foundation`–`docs/10-decisions` remain the product spec; running apps implement them via mocks, not Prisma.
+- [`docs/03-data/`](docs/03-data/) is the intended Playmates schema; `packages/db` still has the template PawPair Prisma models. **Prisma does not have Playmates models.**
 - [`docs/10-decisions/ADR-006-jabkit-first.md`](docs/10-decisions/ADR-006-jabkit-first.md) is **Amended** (2026-09-12) to a hybrid UI boundary: public-site visual/marketing blocks use JabKit via `@jabkit/cli` into `apps/web/src/components/jabkit`; admin and all form/table primitives stay on `@fe-template/ui`; domain widgets stay app-local; do not add JabKit as an npm workspace package. See [`ROADMAP/00-conventions.md`](ROADMAP/00-conventions.md).
 
 - Apps: `apps/web` (port 9000), `apps/admin` (port 9001)
 - Packages: `packages/ui` (`@fe-template/ui`), `packages/db` (`@fe-template/db`), `packages/mocks` (`@fe-template/mocks`), `packages/config` (`@fe-template/config`)
 - Auth: Supabase Auth + `@supabase/ssr` in `apps/admin` only
-- Database: Prisma 6 on Supabase Postgres
+- Database: Prisma 6 on Supabase Postgres (PawPair leftover schema only; Playmates data is `packages/mocks`)
 - Lint/Format: Biome at root; ESLint flat config in each app
 - Tests: Vitest + Storybook in `apps/web`; Storybook only in `apps/admin`
 
@@ -55,7 +63,8 @@ The stack is a **pnpm workspaces + Turborepo** monorepo that pairs a public site
 | Package-specific task | `docs/dependency-guidelines.md` and `docs/api-and-data-fetching.md` | `packages/<package>/AGENTS.md` → `packages/<package>/docs/README.md` |
 | Cross-app task | `docs/architecture.md` | Every affected `apps/<app>/AGENTS.md` and local docs |
 | Playmates domain or product rules | `docs/02-domain/` | `docs/01-product/`, `docs/00-foundation/` |
-| Playmates schema, indexes, or RLS | `docs/03-data/` | `packages/db` docs (starter Prisma is still PawPair) |
+| Playmates schema, indexes, or RLS | `docs/03-data/` | Intended schema only — `packages/db` Prisma is still PawPair. Prototype data: `packages/mocks` |
+| Swap mocks for Prisma / real uploads | `ROADMAP/11-handoff-to-real-data.md` | `packages/mocks/docs/README.md` |
 | Playmates admin/public workflows | `docs/04-workflows/` | `docs/05-integrations/` |
 | Playmates UI information architecture | `docs/06-ui/` | `docs/frontend-conventions.md` |
 | Playmates architectural decisions | `docs/10-decisions/` | Relevant product/engineering docs |
@@ -130,7 +139,9 @@ Key docs:
 - `docs/README.md` — combined product + monorepo documentation index
 - `docs/FILE_INDEX.md` — numbered product docs plus template engineering paths
 - `docs/02-domain/domain-model.md` — Playmates domain
-- `docs/03-data/database-schema.md` — intended Playmates schema (not yet in Prisma)
+- `docs/03-data/database-schema.md` — intended Playmates schema (not in Prisma; prototype uses `packages/mocks`)
+- `ROADMAP/11-handoff-to-real-data.md` — owner handoff from mocks to real data
+- `docs/template/PAGES.md` — public routes and admin session workspace paths
 - `docs/10-decisions/` — product ADRs
 - `docs/llm/CONTEXT.md` — compact stack and folder map
 - `docs/llm/PATTERNS.md` — required code patterns

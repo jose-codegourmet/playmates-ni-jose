@@ -6,7 +6,9 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 
 ## Scope
 
-`apps/admin` is the internal admin portal. PawPair CRUD pages were removed in PNJ-005; the dashboard is a Playmates stub until later phases. It uses Supabase Auth for authentication.
+`apps/admin` is the internal Playmates portal (session workspace, players, venues, settings). PawPair CRUD pages were removed in PNJ-005. Playmates entities come from `@fe-template/mocks` via `src/lib/playmates.ts` — **Prisma does not have Playmates models.** Leftover `@fe-template/db` usage is auth/profile (`Profile` / PawPair `User`) only. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
+
+Auth: Supabase Auth, or `MOCK_AUTH=true` to bypass the login wall for local demo.
 
 - **Port**: 9001
 - **Filter**: `pnpm --filter admin`
@@ -35,8 +37,8 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 ## Shared packages used
 
 - `@fe-template/ui` — all shared UI primitives (Button, DataTable, Dialog, Form, FileUploader, etc.).
-- `@fe-template/db` — Prisma client, used in Server Components, Server Actions, and API routes.
-- `@fe-template/mocks` — prototype Playmates data layer (Phase 1; no Prisma).
+- `@fe-template/mocks` — Playmates prototype data (sessions, games, players, venues, recordings, uploads, posts).
+- `@fe-template/db` — leftover PawPair Prisma client for admin profile / current-user helpers only. Do not add Playmates models here.
 
 ---
 
@@ -53,7 +55,13 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | `/sessions` | `src/app/(dashboard)/sessions/page.tsx` | Sessions list (all / draft / published) |
 | `/sessions/new` | `src/app/(dashboard)/sessions/new/page.tsx` | Create draft session |
 | `/sessions/[id]` | `src/app/(dashboard)/sessions/[id]/page.tsx` | Redirects to `/sessions/[id]/details` |
-| `/sessions/[id]/details` … `/publish` | `src/app/(dashboard)/sessions/[id]/*/page.tsx` | Session workspace steps (header + stepper in `[id]/layout.tsx`) |
+| `/sessions/[id]/details` | `src/app/(dashboard)/sessions/[id]/details/page.tsx` | Workspace: date, venue, notes |
+| `/sessions/[id]/players` | `src/app/(dashboard)/sessions/[id]/players/page.tsx` | Workspace: roster |
+| `/sessions/[id]/import` | `src/app/(dashboard)/sessions/[id]/import/page.tsx` | Workspace: import recording metadata |
+| `/sessions/[id]/organize` | `src/app/(dashboard)/sessions/[id]/organize/page.tsx` | Workspace: games + recordings |
+| `/sessions/[id]/matchups` | `src/app/(dashboard)/sessions/[id]/matchups/page.tsx` | Workspace: Team 1 / Team 2 |
+| `/sessions/[id]/upload` | `src/app/(dashboard)/sessions/[id]/upload/page.tsx` | Workspace: mock Drive / YouTube jobs |
+| `/sessions/[id]/publish` | `src/app/(dashboard)/sessions/[id]/publish/page.tsx` | Workspace: review, Facebook drafts, publish |
 | `/players` | `src/app/(dashboard)/players/page.tsx` | Players list, create/edit dialog, archive |
 | `/venues` | `src/app/(dashboard)/venues/page.tsx` | Venues list, create/edit dialog, archive |
 | `/venues/[id]` | `src/app/(dashboard)/venues/[id]/page.tsx` | Venue detail, add/archive courts |
@@ -82,7 +90,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 
 - All routes under `(dashboard)` are protected by `middleware.ts` by session presence only. Unauthenticated `/api/*` requests are not redirected to `/login`; the route handler returns JSON. A TODO in `middleware.ts` notes that `User.role === ADMIN` enforcement is not yet wired.
 - `(dashboard)/layout.tsx` is a client component (pathname → header title). There are two 404 files (`app/not-found.tsx` and `(dashboard)/not-found.tsx`) plus `loading.tsx` / `error.tsx` at the app root and `(dashboard)` group. See `apps/admin/docs/architecture.md`.
-- `@fe-template/db` and `src/lib/supabase/admin.ts` are server-only. Never import them from client components.
+- `@fe-template/db` and `src/lib/supabase/admin.ts` are server-only. Never import them from client components. Do not use Prisma for Playmates entities — use `@fe-template/mocks` (`src/lib/playmates.ts`). Real-data swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 - Forms use `react-hook-form` + `zod` + `@hookform/resolvers`. Follow the existing `.schema.ts` and `.defaults.ts` pattern in auth modules.
 - Shared UI wiring must remain in place: `transpilePackages` in `next.config.ts` and the `@source` directive in `globals.css`.
 - The empty directory `src/login/` is not used. Use `src/app/login/`.
@@ -99,7 +107,8 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 | New table or dialog | `apps/admin/docs/patterns.md`, `docs/component-guide.md` |
 | New form | `docs/frontend-conventions.md`, inspect `src/modules/auth/login-form/` |
 | Image upload | `src/lib/upload-image.ts`, `src/app/api/images/route.ts` |
-| Database change | `packages/db/docs/development.md`, `docs/api-and-data-fetching.md` |
+| Playmates data / mocks | `packages/mocks/docs/README.md`, `ROADMAP/11-handoff-to-real-data.md` |
+| Database change | Do **not** migrate Prisma for Playmates in this prototype. Owner work: `ROADMAP/11-handoff-to-real-data.md` |
 
 ---
 
