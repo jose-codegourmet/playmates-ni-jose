@@ -36,12 +36,12 @@ export async function fetchCurrentUserByEmail(email: string): Promise<CurrentUse
     return mockCurrentUser();
   }
 
-  const user = await prisma.user.findUnique({
+  const profile = await prisma.profile.findUnique({
     where: { email },
     select: {
       id: true,
       email: true,
-      name: true,
+      displayName: true,
       avatarUrl: true,
       role: true,
       bio: true,
@@ -49,15 +49,15 @@ export async function fetchCurrentUserByEmail(email: string): Promise<CurrentUse
     },
   });
 
-  if (!user) return null;
+  if (!profile?.email) return null;
 
   return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    avatarUrl: user.avatarUrl,
-    role: user.role,
-    bio: user.bio,
-    createdAt: user.createdAt.toISOString(),
+    id: profile.id,
+    email: profile.email,
+    name: profile.displayName,
+    avatarUrl: profile.avatarUrl,
+    role: profile.role,
+    bio: profile.bio,
+    createdAt: profile.createdAt.toISOString(),
   };
 }

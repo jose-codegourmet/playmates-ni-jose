@@ -36,10 +36,10 @@ export async function updateProfile(data: ProfileFormValues): Promise<ActionResu
   }
 
   try {
-    await prisma.user.update({
+    await prisma.profile.update({
       where: { email: user.email },
       data: {
-        name: name || null,
+        displayName: name || null,
         bio: bio || null,
       },
     });

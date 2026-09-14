@@ -13,14 +13,17 @@ packages/db/
 │   └── index.ts           # Public exports
 ├── prisma/
 │   ├── schema/
-│   │   ├── schema.prisma  # generator + datasource
-│   │   ├── user.prisma
-│   │   ├── pet.prisma
+│   │   ├── schema.prisma
+│   │   ├── profile.prisma
+│   │   ├── player.prisma
+│   │   ├── venue.prisma
+│   │   ├── session.prisma
+│   │   ├── game.prisma
+│   │   ├── recording.prisma
+│   │   ├── provider.prisma
 │   │   ├── post.prisma
-│   │   ├── marketing.prisma
 │   │   └── migrations/    # Prisma migrations
-│   ├── seed.ts            # Seed script
-│   └── constants/         # Seed data constants
+│   └── seed.ts            # Seed script
 ├── prisma.config.ts       # schema path + seed command
 ├── package.json
 └── tsconfig.json
@@ -48,14 +51,7 @@ export default defineConfig({
 });
 ```
 
-Keep models grouped by domain:
-
-- `user.prisma` — `User`, `Profile`, `Role`, `UserStatus`
-- `pet.prisma` — `Pet`, `PetSpecies`, `PetMatch`, `MatchStatus`
-- `post.prisma` — `Post`
-- `marketing.prisma` — `Contact`, `Testimonial`, `PricingPlan`, `ContactStatus`
-
-`schema.prisma` contains the generator and datasource.
+Keep models grouped by domain. `schema.prisma` contains the generator and datasource.
 
 ---
 
@@ -80,17 +76,17 @@ pnpm --filter @fe-template/db db:generate
 pnpm --filter @fe-template/db db:deploy
 ```
 
-`db:migrate` and `db:deploy` run `scripts/assert-supabase-auth.ts` first. That script queries `to_regclass('auth.users')` and exits if the relation is missing.
+`db:migrate` and `db:deploy` run `scripts/assert-supabase-auth.ts` first. That script queries `to_regclass('auth.users')::text` and exits if the relation is missing.
 
 ---
 
 ## Supabase `auth.users` requirement
 
-`20260727060109_add_profiles_table` ends with:
+`20260914132156_init_playmates` ends with:
 
 ```sql
-ALTER TABLE "Profile"
-  ADD CONSTRAINT "Profile_id_fkey"
+ALTER TABLE "profiles"
+  ADD CONSTRAINT "profiles_id_fkey"
   FOREIGN KEY ("id") REFERENCES auth.users(id) ON DELETE CASCADE;
 ```
 
@@ -102,9 +98,9 @@ ALTER TABLE "Profile"
 | `supabase start` | Local stack includes `auth.users`. Point `DATABASE_URL` / `DIRECT_URL` at the local URL, then migrate. |
 | Plain Postgres | Preflight fails with a documented error. Without the preflight, Prisma fails on the missing `auth.users` relation. |
 
-Do **not** edit the applied `20260727060109_add_profiles_table` SQL to add a guard or drop the FK. Changing that file invalidates `_prisma_migrations` checksums on the live Supabase project. Do **not** drop the FK to support generic Postgres — `Profile` is keyed to Supabase Auth users.
+Do **not** drop the FK to support generic Postgres — `Profile` is keyed to Supabase Auth users.
 
-`db:push` will create the `Profile` table without `Profile_id_fkey`. That is not a supported substitute for migrate on a real environment.
+`db:push` will create the `profiles` table without `profiles_id_fkey`. That is not a supported substitute for migrate on a real environment.
 
 ---
 
@@ -126,17 +122,15 @@ pnpm --filter @fe-template/db db:push
 pnpm --filter @fe-template/db db:seed
 ```
 
-Seed data is in `prisma/constants/` and imported by `prisma/seed.ts`. The demo seed includes `admin@example.com` with `Role.ADMIN` and `UserStatus.VERIFIED`, plus other demo users also set to `VERIFIED`. It also upserts representative `Contact` rows (one per `ContactStatus`) and `PetMatch` rows between seeded pets (one per `MatchStatus`).
-
-`Profile` is **not** invented by the seed. `Profile.id` must be a real `auth.users` UUID; demo `User` rows use string IDs such as `seed-user-admin` and are a separate application table. The seed never writes to `auth.users`. If Auth users already exist, it upserts a `Profile` for each of those UUIDs. If `auth.users` is empty or unreadable, Profile seeding is skipped and the seed still succeeds.
+`prisma/seed.ts` upserts a couple of venues, courts, and players. It does **not** invent `Profile` rows. `Profile.id` must be a real `auth.users` UUID.
 
 ---
 
 ## Pooled vs direct URLs
 
 - `DATABASE_URL` should use the pooled connection (`*.pooler.supabase.com:6543?pgbouncer=true`) in production/serverless.
-- `DIRECT_URL` must always use the direct connection (`db.<project-ref>.supabase.co:5432`) for migrations.
-- Local development can point both to the direct URL.
+- `DIRECT_URL` must use a session-mode pooler (`*.pooler.supabase.com:5432`) or the direct host (`db.<project-ref>.supabase.co:5432`) for migrations. The direct host is IPv6-only on hosted Supabase.
+- Local development can point both to the same reachable URL.
 
 `prisma.config.ts` loads `packages/db/.env` with `dotenv` because Prisma 6 skips automatic `.env` loading when a config file is present.
 
@@ -162,7 +156,7 @@ See `docs/environment-variables.md` for the full matrix.
 2. Create and apply a migration.
 3. Generate the client.
 4. Update `packages/db/docs/README.md` and `packages/db/docs/api.md` if the public API changed.
-5. Identify all consumers (`apps/admin`, `apps/web` API routes) and update their imports if needed.
+5. Identify all consumers (`apps/admin`, `apps/web`) and update their imports if needed.
 6. Run type-checking and builds for affected consumers.
 7. Seed or migrate data as needed.
 

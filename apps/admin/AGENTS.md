@@ -6,7 +6,7 @@ Local agent instructions for the admin portal. Read `/AGENTS.md` first, then thi
 
 ## Scope
 
-`apps/admin` is the internal Playmates portal (session workspace, players, venues, settings). PawPair CRUD pages were removed in PNJ-005. Playmates entities come from `@fe-template/mocks` via `src/lib/playmates.ts` — **Prisma does not have Playmates models.** Leftover `@fe-template/db` usage is auth/profile (`Profile` / PawPair `User`) only. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
+`apps/admin` is the internal Playmates portal (session workspace, players, venues, settings). PawPair CRUD pages were removed in PNJ-005. Playmates pages still read `@fe-template/mocks` via `src/lib/playmates.ts`. Prisma in `@fe-template/db` now has the Playmates schema; admin uses it for `Profile` (auth) only until the `getPlaymatesRepos()` swap. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 
 Auth: Supabase Auth, or `MOCK_AUTH=true` to bypass the login wall for local demo.
 
@@ -38,7 +38,7 @@ Auth: Supabase Auth, or `MOCK_AUTH=true` to bypass the login wall for local demo
 
 - `@fe-template/ui` — all shared UI primitives (Button, DataTable, Dialog, Form, FileUploader, etc.).
 - `@fe-template/mocks` — Playmates prototype data (sessions, games, players, venues, recordings, uploads, posts).
-- `@fe-template/db` — leftover PawPair Prisma client for admin profile / current-user helpers only. Do not add Playmates models here.
+- `@fe-template/db` — Playmates Prisma client. Admin currently uses it for `Profile` / current-user helpers only. Do not query Playmates entities from pages until the repo swap.
 
 ---
 
@@ -90,7 +90,7 @@ Auth: Supabase Auth, or `MOCK_AUTH=true` to bypass the login wall for local demo
 
 - All routes under `(dashboard)` are protected by `middleware.ts` by session presence only. Unauthenticated `/api/*` requests are not redirected to `/login`; the route handler returns JSON. A TODO in `middleware.ts` notes that `User.role === ADMIN` enforcement is not yet wired.
 - `(dashboard)/layout.tsx` is a client component (pathname → header title). There are two 404 files (`app/not-found.tsx` and `(dashboard)/not-found.tsx`) plus `loading.tsx` / `error.tsx` at the app root and `(dashboard)` group. See `apps/admin/docs/architecture.md`.
-- `@fe-template/db` and `src/lib/supabase/admin.ts` are server-only. Never import them from client components. Do not use Prisma for Playmates entities — use `@fe-template/mocks` (`src/lib/playmates.ts`). Real-data swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
+- `@fe-template/db` and `src/lib/supabase/admin.ts` are server-only. Never import them from client components. Playmates pages still use `@fe-template/mocks` (`src/lib/playmates.ts`). Real-data swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 - Forms use `react-hook-form` + `zod` + `@hookform/resolvers`. Follow the existing `.schema.ts` and `.defaults.ts` pattern in auth modules.
 - Shared UI wiring must remain in place: `transpilePackages` in `next.config.ts` and the `@source` directive in `globals.css`.
 - The empty directory `src/login/` is not used. Use `src/app/login/`.
@@ -108,7 +108,7 @@ Auth: Supabase Auth, or `MOCK_AUTH=true` to bypass the login wall for local demo
 | New form | `docs/frontend-conventions.md`, inspect `src/modules/auth/login-form/` |
 | Image upload | `src/lib/upload-image.ts`, `src/app/api/images/route.ts` |
 | Playmates data / mocks | `packages/mocks/docs/README.md`, `ROADMAP/11-handoff-to-real-data.md` |
-| Database change | Do **not** migrate Prisma for Playmates in this prototype. Owner work: `ROADMAP/11-handoff-to-real-data.md` |
+| Database change | `packages/db/AGENTS.md`, `packages/db/docs/development.md` |
 
 ---
 

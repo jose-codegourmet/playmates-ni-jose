@@ -7,10 +7,15 @@ This is a logical schema. Adapt naming to the repository's existing conventions.
 ```sql
 id uuid primary key references auth.users(id)
 display_name text
+email text unique
+avatar_url text
+bio text
 role text not null default 'admin'
 created_at timestamptz default now()
 updated_at timestamptz default now()
 ```
+
+Prisma implements `role` as enum `Role` (`USER` | `ADMIN`, default `ADMIN`). `email`, `avatar_url`, and `bio` are optional columns added so admin `CurrentUser` / profile updates keep working. They are not in the original logical spec.
 
 ## players
 

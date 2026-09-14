@@ -1,0 +1,58 @@
+enum SessionStatus {
+  draft
+  organizing
+  uploading
+  ready
+  published
+  archived
+}
+
+enum Visibility {
+  private
+  public
+}
+
+model Session {
+  id             String        @id @default(uuid()) @db.Uuid
+  sessionDate    DateTime      @map("session_date") @db.Date
+  title          String?
+  slug           String?       @unique
+  clubName       String?       @map("club_name")
+  venueId        String?       @map("venue_id") @db.Uuid
+  courtId        String?       @map("court_id") @db.Uuid
+  notes          String?
+  status         SessionStatus @default(draft)
+  visibility     Visibility    @default(private)
+  driveFolderId  String?       @map("drive_folder_id")
+  driveFolderUrl String?       @map("drive_folder_url")
+  createdBy      String?       @map("created_by") @db.Uuid
+  publishedAt    DateTime?     @map("published_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  venue    Venue?   @relation(fields: [venueId], references: [id])
+  court    Court?   @relation(fields: [courtId], references: [id])
+  creator  Profile? @relation(fields: [createdBy], references: [id])
+
+  players    SessionPlayer[]
+  games      Game[]
+  recordings Recording[]
+
+  @@index([sessionDate(sort: Desc)])
+  @@index([venueId])
+  @@index([visibility])
+  @@index([status])
+  @@map("sessions")
+}
+
+model SessionPlayer {
+  sessionId String @map("session_id") @db.Uuid
+  playerId  String @map("player_id") @db.Uuid
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  player  Player  @relation(fields: [playerId], references: [id])
+
+  @@id([sessionId, playerId])
+  @@index([playerId])
+  @@map("session_players")
+}

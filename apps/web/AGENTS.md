@@ -6,7 +6,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 ## Scope
 
-`apps/web` is the public Playmates ni José archive site (eight visitor routes). PawPair marketing pages were removed in PNJ-004. It does **not** have authentication, middleware, or Supabase clients. Playmates data comes from `@fe-template/mocks` via `src/lib/playmates.ts`. Do not import `@fe-template/db` for Playmates entities. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
+`apps/web` is the public Playmates ni José archive site (eight visitor routes). PawPair marketing pages were removed in PNJ-004. It has no authentication or middleware. A read-only anon Supabase server client lives in `src/lib/supabase/server.ts`. Playmates page data still comes from `@fe-template/mocks` via `src/lib/playmates.ts`. Do not query Prisma from pages until the `getPlaymatesRepos()` swap. Owner swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 
 - **Port**: 9000
 - **Filter**: `pnpm --filter web`
@@ -25,6 +25,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 | `src/modules/providers/` | Redux + TanStack Query + theme providers |
 | `src/hooks/` | Public fetchers (`use-public-sessions`, `use-public-games`, `use-public-players`, `use-public-venues`) |
 | `src/lib/playmates.ts` | Thin adapter: imports `@fe-template/mocks` public helpers |
+| `src/lib/supabase/server.ts` | Read-only anon Supabase server client |
 | `src/constants/` | Routes, SEO metadata, navigation (Playmates set from PNJ-006) |
 | `src/types/` | App-local types |
 | `src/store/` | Redux store + theme slice |
@@ -36,7 +37,8 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 ## Shared packages used
 
 - `@fe-template/ui` — shared UI primitives (Button, Card, ScrollReveal, etc.).
-- `@fe-template/mocks` — prototype Playmates data layer. Prisma in `@fe-template/db` is still PawPair; **do not claim or use it for Playmates models**.
+- `@fe-template/mocks` — prototype Playmates data layer used by pages.
+- `@fe-template/db` — Playmates Prisma client, available for the upcoming repo swap. Do not query it from pages yet.
 
 ---
 
@@ -74,11 +76,11 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 ## Restrictions and boundaries
 
 - No authentication. Do not add middleware, login, or signup pages here without a plan.
-- Do not import `@fe-template/db`. There are no Playmates Prisma models. Public data goes through `@fe-template/mocks` (`src/lib/playmates.ts`). Real-data swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
+- Public data still goes through `@fe-template/mocks` (`src/lib/playmates.ts`). Prisma models exist in `@fe-template/db` but pages must not query them until the repo swap. Real-data swap: [`ROADMAP/11-handoff-to-real-data.md`](../../ROADMAP/11-handoff-to-real-data.md).
 - Do not create a local `src/components/ui/` folder. Use `@fe-template/ui`.
 - Do not grow `src/components/` except `src/components/jabkit/` via `@jabkit/cli`. Admin never gets `src/components/`. CLI recipe: [`ROADMAP/00-conventions.md`](../../ROADMAP/00-conventions.md).
 - Shared UI wiring must remain in place: `transpilePackages` in `next.config.ts` and the `@source` directive in `globals.css`.
-- `NEXT_PUBLIC_SITE_URL` is used for server-side self-fetching but is not in `.env.example`. Document it if you add it.
+- `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `DATABASE_URL`, and `DIRECT_URL` are documented in `.env.example`.
 
 ---
 

@@ -9,17 +9,17 @@ Practical examples of using the shared database package in server code.
 ```tsx
 import { prisma } from "@fe-template/db";
 
-export default async function UsersPage() {
-  const users = await prisma.user.findMany({
-    include: { pets: true },
-    orderBy: { createdAt: "desc" },
+export default async function PlayersPage() {
+  const players = await prisma.player.findMany({
+    where: { isArchived: false },
+    orderBy: { displayName: "asc" },
   });
 
-  return <UsersTable users={users} />;
+  return <PlayersTable players={players} />;
 }
 ```
 
-Real reference: `apps/admin/src/app/(dashboard)/users/page.tsx`.
+Playmates pages currently read `@fe-template/mocks` instead. Use this pattern after the `getPlaymatesRepos()` swap.
 
 ---
 
@@ -31,37 +31,17 @@ Real reference: `apps/admin/src/app/(dashboard)/users/page.tsx`.
 import { prisma } from "@fe-template/db";
 import { revalidatePath } from "next/cache";
 
-export async function updateUserStatus(id: string, status: UserStatus) {
-  await prisma.user.update({
+export async function updateProfileDisplayName(id: string, displayName: string) {
+  await prisma.profile.update({
     where: { id },
-    data: { status },
+    data: { displayName },
   });
 
-  revalidatePath("/users");
+  revalidatePath("/profile");
 }
 ```
 
-Real reference: `apps/admin/src/app/(dashboard)/users/actions.ts`.
-
----
-
-## API route query
-
-```ts
-import { prisma } from "@fe-template/db";
-import { NextResponse } from "next/server";
-
-export async function GET() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return NextResponse.json(posts);
-}
-```
-
-Real references: `apps/web/src/app/api/blog/route.ts`, `apps/web/src/app/api/pricing/route.ts`, `apps/web/src/app/api/testimonials/route.ts`.
+Real reference: `apps/admin/src/app/(dashboard)/profile/actions.ts`.
 
 ---
 
@@ -69,14 +49,14 @@ Real references: `apps/web/src/app/api/blog/route.ts`, `apps/web/src/app/api/pri
 
 ```ts
 import { prisma } from "@fe-template/db";
-import type { Role, UserStatus } from "@fe-template/db";
+import type { Role } from "@fe-template/db";
 
-export async function createUser(data: { email: string; name?: string; role: Role }) {
-  return prisma.user.create({ data });
+export async function listAdmins() {
+  return prisma.profile.findMany({
+    where: { role: "ADMIN" satisfies Role },
+  });
 }
 ```
-
-Real reference: `apps/admin/src/app/(dashboard)/users/actions.ts`.
 
 ---
 
@@ -84,23 +64,24 @@ Real reference: `apps/admin/src/app/(dashboard)/users/actions.ts`.
 
 ```ts
 // prisma/seed.ts (excerpt)
-import { prisma } from "@fe-template/db";
-import { users } from "./constants/users";
+import { prisma } from "../src/client";
 
 async function main() {
-  for (const user of users) {
-    await prisma.user.upsert({
-      where: { id: user.id },
-      update: {},
-      create: user,
-    });
-  }
+  await prisma.venue.upsert({
+    where: { id: "bbbbbbbb-0002-4000-8000-000000000001" },
+    update: {},
+    create: {
+      id: "bbbbbbbb-0002-4000-8000-000000000001",
+      name: "Smash Court QC",
+      slug: "smash-court-qc",
+    },
+  });
 }
 
 main();
 ```
 
-Real reference: `packages/db/prisma/seed.ts` and `packages/db/prisma/constants/` (`users`, `pets`, `posts`, `testimonials`, `pricing-plans`, `contacts`, `pet-matches`). `Profile` is seeded only when matching `auth.users` rows already exist; see `packages/db/docs/development.md`.
+Real reference: `packages/db/prisma/seed.ts`. `Profile` is never invented; `id` must be a real `auth.users` UUID.
 
 ---
 
@@ -111,11 +92,16 @@ Real reference: `packages/db/prisma/seed.ts` and `packages/db/prisma/constants/`
 
 import { prisma } from "@fe-template/db";
 
-export async function createProfile(input: { id: string; email: string; name?: string }) {
+export async function createProfile(userId: string, email: string) {
   await prisma.profile.upsert({
-    where: { id: input.id },
-    update: {},
-    create: input,
+    where: { id: userId },
+    create: {
+      id: userId,
+      email,
+    },
+    update: {
+      email,
+    },
   });
 }
 ```
@@ -129,3 +115,4 @@ Real reference: `apps/admin/src/modules/auth/otp-form/actions.ts`.
 - Do not import `@fe-template/db` from client components (`"use client"`).
 - Do not instantiate a new `PrismaClient` in app code; use the exported `prisma` singleton.
 - Do not use `db:push` in production or shared environments.
+- Do not query Playmates entities from pages until `getPlaymatesRepos()` is swapped (see `ROADMAP/11-handoff-to-real-data.md`).

@@ -4,19 +4,16 @@ import { config as loadEnv } from "dotenv";
 
 /**
  * Profile.id is a foreign key to Supabase `auth.users` (applied in
- * `20260727060109_add_profiles_table`). That table exists only on Supabase
+ * `20260914132156_init_playmates`). That table exists only on Supabase
  * Postgres — hosted or `supabase start` locally. This preflight fails fast
  * so `prisma migrate` does not die on a cryptic missing-relation error.
- *
- * The applied migration SQL is left unchanged so existing Supabase checksums
- * stay valid.
  */
 loadEnv({ path: resolve(import.meta.dirname, "../.env"), quiet: true });
 
 const MESSAGE = `This template requires Supabase Postgres.
 
 Profile.id references auth.users(id) ON DELETE CASCADE (see
-packages/db/prisma/schema/migrations/20260727060109_add_profiles_table).
+packages/db/prisma/schema/migrations/20260914132156_init_playmates).
 Plain Postgres (Docker, CI, other hosts) has no auth schema, so migrations fail.
 
 Supported targets:
@@ -39,8 +36,8 @@ async function main() {
   });
 
   try {
-    const rows = await prisma.$queryRaw<Array<{ found: unknown }>>`
-      SELECT to_regclass('auth.users') AS found
+    const rows = await prisma.$queryRaw<Array<{ found: string | null }>>`
+      SELECT to_regclass('auth.users')::text AS found
     `;
     if (rows[0]?.found == null) {
       console.error(MESSAGE);

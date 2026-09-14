@@ -1,0 +1,58 @@
+enum GameStatus {
+  draft
+  ready
+  published
+  archived
+}
+
+model Game {
+  id           String     @id @default(uuid()) @db.Uuid
+  sessionId    String     @map("session_id") @db.Uuid
+  gameNumber   Int?       @map("game_number")
+  sortOrder    Int        @default(0) @map("sort_order")
+  title        String?
+  notes        String?
+  status       GameStatus @default(draft)
+  visibility   Visibility @default(private)
+  winnerTeamNo Int?       @map("winner_team_no")
+  scores       Json?
+  publishedAt  DateTime?  @map("published_at")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  session    Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  teams      GameTeam[]
+  recordings Recording[]
+  postDrafts PostDraft[]
+
+  @@unique([sessionId, gameNumber])
+  @@index([sessionId, sortOrder])
+  @@index([visibility])
+  @@map("games")
+}
+
+model GameTeam {
+  id     String  @id @default(uuid()) @db.Uuid
+  gameId String  @map("game_id") @db.Uuid
+  teamNo Int     @map("team_no")
+  label  String?
+
+  game    Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  players GameTeamPlayer[]
+
+  @@unique([gameId, teamNo])
+  @@map("game_teams")
+}
+
+model GameTeamPlayer {
+  gameTeamId String @map("game_team_id") @db.Uuid
+  playerId   String @map("player_id") @db.Uuid
+  sortOrder  Int    @default(0) @map("sort_order")
+
+  gameTeam GameTeam @relation(fields: [gameTeamId], references: [id], onDelete: Cascade)
+  player   Player   @relation(fields: [playerId], references: [id])
+
+  @@id([gameTeamId, playerId])
+  @@index([playerId])
+  @@map("game_team_players")
+}

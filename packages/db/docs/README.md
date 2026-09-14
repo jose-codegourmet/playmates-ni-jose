@@ -6,13 +6,13 @@ Purpose, models, consumers, and commands for the Prisma + Supabase Postgres pack
 
 ## Purpose
 
-`@fe-template/db` provides the shared Prisma 6 schema, migrations, seed data, and `PrismaClient` singleton for the monorepo. The only supported database is **Supabase Postgres** (hosted or `supabase start`). Plain Postgres is not a target because `Profile.id` foreign-keys to `auth.users`. It is consumed by `apps/admin` and by the API routes in `apps/web`.
+`@fe-template/db` provides the shared Prisma 6 Playmates schema, migrations, seed data, and `PrismaClient` singleton for the monorepo. The only supported database is **Supabase Postgres** (hosted or `supabase start`). Plain Postgres is not a target because `Profile.id` foreign-keys to `auth.users`. It is consumed by `apps/admin` (auth/profile) and is available to `apps/web`. Playmates pages still read `@fe-template/mocks` until the `getPlaymatesRepos()` swap.
 
 ---
 
 ## What problems it solves
 
-- Single source of truth for the database schema and client.
+- Single source of truth for the Playmates database schema and client.
 - Prevents duplicate Prisma client instances and connection pool exhaustion.
 - Centralizes migrations and seeding.
 
@@ -21,7 +21,7 @@ Purpose, models, consumers, and commands for the Prisma + Supabase Postgres pack
 ## Intended consumers
 
 - `apps/admin` — Server Components, Server Actions, and profile upserts.
-- `apps/web` — Internal API routes for blog, pricing, and testimonials.
+- `apps/web` — Prisma client is available; public pages still go through mocks.
 
 ---
 
@@ -52,25 +52,38 @@ The multi-file schema directory and seed command are set in `packages/db/prisma.
 ```text
 packages/db/prisma/schema/
 ├── schema.prisma       # generator + datasource
-├── user.prisma         # User, Profile, Role, UserStatus
-├── pet.prisma          # Pet, PetSpecies, PetMatch, MatchStatus
-├── post.prisma         # Post
-├── marketing.prisma    # Contact, Testimonial, PricingPlan, ContactStatus
-└── migrations/           # Prisma migrations
+├── profile.prisma      # Profile, Role
+├── player.prisma       # Player
+├── venue.prisma        # Venue, Court
+├── session.prisma      # Session, SessionPlayer, SessionStatus, Visibility
+├── game.prisma         # Game, GameTeam, GameTeamPlayer, GameStatus
+├── recording.prisma    # Recording, CameraSide, RecordingStatus
+├── provider.prisma     # ProviderAsset, UploadJob, OauthConnection, Provider enums
+├── post.prisma         # PostDraft, PostPlatform
+└── migrations/         # Prisma migrations
 ```
+
+Tables and indexes follow [`docs/03-data/database-schema.md`](../../../docs/03-data/database-schema.md) and [`docs/03-data/indexes-and-constraints.md`](../../../docs/03-data/indexes-and-constraints.md). Columns use snake_case via `@map` / `@@map`.
 
 ### Models and enums
 
 | Model/Enum | Notes |
 |---|---|
-| `User` | Email-unique, `role` (`USER` \| `ADMIN`), `status` (`PENDING` \| `VERIFIED` \| `DEACTIVATED` \| `MOCK`) |
-| `Profile` | Supabase auth user UUID (`id` = `auth.users` UUID). Required FK `Profile_id_fkey` → `auth.users(id)` in `20260727060109_add_profiles_table`. |
-| `Pet` | Belongs to a `User`; species enum; cascade-deletes with owner |
-| `PetMatch` | Requester/receiver pet pair with match status |
-| `Post` | Slug, tags, `published` flag, author |
-| `Contact` | Contact-form submission with `UNREAD` / `READ` / `RESOLVED` status |
-| `Testimonial` | Review with rating and `published` flag |
-| `PricingPlan` | Plan name, price in cents, interval, features |
+| `Profile` | Supabase auth user UUID (`id` = `auth.users` UUID). Required FK `profiles_id_fkey` → `auth.users(id)` in `20260914132156_init_playmates`. Extra optional columns vs the SQL spec: `email`, `avatar_url`, `bio` (admin `CurrentUser`). |
+| `Role` | `USER` \| `ADMIN` (default `ADMIN`) |
+| `Player` | Archived-capable roster entry with unique slug |
+| `Venue` / `Court` | Venue has many courts; courts have no timestamps in the spec |
+| `Session` / `SessionPlayer` | Includes prototype-only `club_name` |
+| `Game` / `GameTeam` / `GameTeamPlayer` | Unique `(session_id, game_number)` and `(game_id, team_no)`. Includes prototype-only `scores` JSON |
+| `Recording` | No “exactly two recordings per game” constraint (ADR-002) |
+| `ProviderAsset` / `UploadJob` / `OauthConnection` | Provider tokens stay as `token_ref` only — never plaintext refresh tokens |
+| `PostDraft` | Includes prototype-only `posted_at` / `posted_url` |
+
+No constraints on player counts or recordings per game (ADR-001 / ADR-002).
+
+### Outstanding RLS
+
+Policies from [`docs/03-data/rls-and-security.md`](../../../docs/03-data/rls-and-security.md) are **not applied**. Prisma connects as the database owner and bypasses RLS. Do not serve public reads through the Supabase anon key until policies exist.
 
 ---
 
@@ -86,7 +99,7 @@ All run from the repo root with `pnpm --filter @fe-template/db <script>`:
 | `db:deploy` | `prisma migrate deploy` | Apply pending migrations in CI/prod |
 | `db:push` | `prisma db push` | Push schema without migration (prototyping only) |
 | `db:studio` | `prisma studio` | Open Prisma Studio |
-| `db:seed` | `tsx prisma/seed.ts` | Seed demo data, including contacts and pet matches. Profile rows only when `auth.users` UUIDs already exist. |
+| `db:seed` | `tsx prisma/seed.ts` | Seed demo venues, courts, and players. Does not invent `Profile` rows (`id` must be a real `auth.users` UUID). |
 | `typecheck` | `tsc --noEmit` | TypeScript check |
 
 `postinstall` in `package.json` also runs `prisma generate`.
@@ -97,12 +110,12 @@ All run from the repo root with `pnpm --filter @fe-template/db <script>`:
 
 | Variable | Purpose | Required? |
 |---|---|---|
-| `DATABASE_URL` | Prisma runtime connection | Yes |
-| `DIRECT_URL` | Direct Postgres connection for migrations | Yes for migrations |
+| `DATABASE_URL` | Prisma runtime connection (pooled, port 6543) | Yes |
+| `DIRECT_URL` | Session-mode pooler or direct connection for migrations | Yes for migrations |
 
 `prisma.config.ts` loads `packages/db/.env` via `dotenv` (not the root `.env`). Prisma 6 skips automatic `.env` loading when a config file is present.
 
-Both URLs must point at Supabase Postgres (hosted or local `supabase start`). See `packages/db/README.md` (supported targets) and `packages/db/docs/development.md` (`auth.users` requirement).
+Both URLs must point at Supabase Postgres (hosted or local `supabase start`). The hosted `db.<ref>.supabase.co:5432` host is IPv6-only; use the session-mode pooler (`aws-0-<region>.pooler.supabase.com:5432`) when the machine has no IPv6 route.
 
 ---
 
@@ -122,3 +135,4 @@ Both URLs must point at Supabase Postgres (hosted or local `supabase start`). Se
 | Use Prisma in an app | `packages/db/docs/examples.md`, `docs/api-and-data-fetching.md` |
 | Seed data | `packages/db/docs/examples.md`, `prisma/seed.ts` |
 | Migration troubleshooting | `packages/db/docs/development.md` |
+| Swap mocks for Prisma repos | `ROADMAP/11-handoff-to-real-data.md` |
