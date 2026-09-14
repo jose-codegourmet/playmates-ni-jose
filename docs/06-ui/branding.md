@@ -24,6 +24,8 @@ The visual identity should feel like a modern community app wearing a vintage re
 
 On this product, that language is applied to a **badminton session archive**: cream first, green second, accents third.
 
+The public site (`apps/web`) is **neo-brutalist**: Anton display type, 2-3px ink borders, hard offset shadows, and square surfaces. Admin keeps the softer cream-and-green mapping in `apps/admin/src/app/globals.css`.
+
 ---
 
 ## 2. Brand Personality
@@ -90,20 +92,21 @@ Static copies: `apps/web/public/logo.svg`, `apps/admin/public/logo.svg`. Prefer 
 
 | Name | Hex | Use |
 |---|---|---|
+| Ink | `#10100A` | Public-site borders, hard shadows, high-contrast text |
 | Soft Cream | `#FFF9E6` | Elevated cards on cream |
 | Warm White | `#FFFCF3` | Forms, modals, content-heavy surfaces |
-| Ink Green | `#182B0B` | High-contrast text |
+| Ink Green | `#182B0B` | Admin text, leftover ink-green aliases |
 | Muted Olive | `#6D7A45` | Secondary text, metadata, inactive UI |
 
-### Playful accents (sun-faded, not neon)
+### Playful accents (public site uses the stronger values)
 
-| Name | Hex | Use |
-|---|---|---|
-| Guava | `#E97864` | Social highlights, reactions, occasional badges |
-| Mango | `#F2B84B` | Featured moments, activity indicators |
-| Sky | `#8DBCC7` | Informational states |
-| Lilac | `#B6A3C9` | Category tags, special events (sparingly) |
-| Leaf | `#789653` | Secondary positive states |
+| Name | Hex (web) | Hex (admin) | Use |
+|---|---|---|---|
+| Guava | `#F2603F` | `#E97864` | Social highlights, game bands, failed states |
+| Mango | `#FFC42E` | `#F2B84B` | Featured moments, sessions bands |
+| Sky | `#58B4CC` | `#8DBCC7` | Players bands, informational states |
+| Lilac | `#B189D9` | `#B6A3C9` | Venues bands, category tags |
+| Leaf | `#789653` | `#789653` | Secondary positive states |
 
 ### Semantic UI
 
@@ -118,91 +121,66 @@ Static copies: `apps/web/public/logo.svg`, `apps/admin/public/logo.svg`. Prefer 
 
 ## 5. Implementation tokens
 
-Both apps share this mapping. Tailwind utilities: `bg-brand-green`, `text-brand-cream`, `bg-accent-mango`, `shadow-brand`, `shadow-brand-offset`.
+Public site (`apps/web`) is the neo-brutalist mapping. Tailwind utilities: `bg-brand-green`, `text-brand-cream`, `bg-accent-mango`, `bg-ink`, `shadow-nb`, `shadow-brand-offset`. Admin still uses the softer radii and faded accents.
 
 ```css
 :root {
+  --color-ink: #10100a;
   --brand-green: #284400;
-  --brand-green-dark: #182b0b;
   --brand-cream: #fcf4c6;
-  --brand-cream-soft: #fff9e6;
-  --brand-white: #fffcf3;
-
-  --accent-guava: #e97864;
-  --accent-mango: #f2b84b;
-  --accent-sky: #8dbcc7;
-  --accent-lilac: #b6a3c9;
+  --accent-guava: #f2603f;
+  --accent-mango: #ffc42e;
+  --accent-sky: #58b4cc;
+  --accent-lilac: #b189d9;
   --accent-leaf: #789653;
-
   --background: #fcf4c6;
-  --foreground: #182b0b;
-  --card: #fff9e6;
+  --foreground: #10100a;
   --primary: #284400;
-  --primary-foreground: #fff9e6;
-  --accent: #f2b84b;
-  --destructive: #c95d4e;
-  --border: #d9d9b5;
-  --ring: #789653;
-  --radius: 0.875rem;
+  --accent: #ffc42e;
+  --border: #10100a;
+  --radius: 0;
 }
 ```
 
-Dark mode stays warm olive, not black-and-neon:
-
-```css
-.dark {
-  --background: #17200f;
-  --foreground: #fff4c9;
-  --card: #202b17;
-  --border: #485536;
-}
-```
+Dark tokens exist for coherence (`ink` background, cream borders). `Providers.tsx` still sets `forcedTheme="light"`.
 
 ---
 
 ## 6. Typography
 
-1. **Display / headings:** Figtree (600-900). Thick, friendly sans. Used for hero headlines, section titles, empty-state titles, branded moments.
+1. **Display / headings (web):** Anton. Single-weight condensed poster face. Headlines render uppercase with `letter-spacing: -0.02em` and `line-height: 0.92`.
 2. **UI / body:** Manrope. Navigation, forms, buttons, lists, metadata, tables.
+3. **Admin headings:** Figtree is still allowed on selected admin titles.
 
 Do not use a decorative serif to fake the logo lettering. Do not mix a random serif into a sans headline.
 
-```css
-font-weight: 700-900; /* display */
-letter-spacing: -0.02em;
-line-height: 0.95-1.05; /* headlines */
-line-height: 1.5-1.65; /* body */
-```
-
-Loaded via `next/font` as `--font-figtree` and `--font-manrope`. Mapped to `--font-display`, `--font-heading`, and `--font-sans`.
+Loaded via `next/font` as `--font-anton` and `--font-manrope` on the public site. Mapped to `--font-display`, `--font-heading`, and `--font-sans`.
 
 ---
 
 ## 7. Shape, borders, shadows
 
+Public site rule: **every surface is square**. The only round things are player avatars and rotated sticker badges, both with a 2px ink ring.
+
 ```css
---radius-sm: 8px;
---radius-md: 14px;
---radius-lg: 20px;
---radius-xl: 28px;
---radius-pill: 999px;
-
-border: 1px solid #d9d9b5; /* default */
-border: 2px solid #284400; /* featured cards / primary CTAs */
-
---shadow-brand: 0 4px 14px rgba(40, 68, 0, 0.08);
---shadow-brand-offset: 4px 4px 0 #284400; /* sparingly */
+--radius: 0;
+--border-nb: 2px;
+--border-nb-thick: 3px;
+--shadow-nb-sm: 3px 3px 0 var(--color-ink);
+--shadow-nb: 6px 6px 0 var(--color-ink);
+--shadow-nb-lg: 10px 10px 0 var(--color-ink);
+--shadow-brand: 6px 6px 0 var(--color-ink);
 ```
 
-Soft rounded cards, pill filters, circular avatars. Not every control should be bubbly.
+Utility classes in `apps/web/src/app/globals.css`: `.nb-box`, `.nb-box-sm`, `.nb-press`, `.nb-sticker`, `.nb-band`, `.nb-marquee`, `.nb-card-link`. Use at most one marquee per page (footer).
 
 ---
 
 ## 8. Buttons
 
-- **Primary:** `#284400` background, `#FFF9E6` text, pill radius, hover `#182B0B`.
-- **Secondary:** transparent, green text, 1.5px green border.
-- **Playful CTA:** mango, guava, or cream with an offset green shadow. Never generic SaaS blue.
+- **Primary (web):** `#284400` background, cream text, 2px ink border, hard offset shadow. Press: translate 3px and collapse the shadow.
+- **Secondary:** cream or mango fill, ink border, same press.
+- Never generic SaaS blue. Never pill radius on the public site.
 
 ---
 
@@ -234,7 +212,7 @@ Playfulness must not reduce usability. WCAG AA contrast, no color-only status, v
 
 ## 12. Brand formula
 
-> Warm cream foundation + deep green structure + friendly sans-serif UI + expressive Figtree headline + one playful accent + people-first content.
+> Warm cream foundation + deep green structure + Anton headlines + ink outlines + hard shadows + one playful accent + the Playmates mascot.
 
 If a design feels too corporate, increase warmth. If it feels too childish, drop decoration and return to cream and green.
 

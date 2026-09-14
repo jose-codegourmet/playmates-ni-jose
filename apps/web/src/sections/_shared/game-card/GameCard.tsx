@@ -35,7 +35,7 @@ function GameCard({
     <Card size="sm" className="max-w-sm">
       <Link
         href={href}
-        className="block rounded-xl text-inherit no-underline outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="nb-card-link focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={`Game ${gameNumber}, ${matchupLabel}, ${recordingCount} videos`}
       >
         <CardHeader>

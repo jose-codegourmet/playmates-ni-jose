@@ -19,30 +19,29 @@ function SessionDetailHeaderSection({
   return (
     <section
       data-slot="session-detail-header-section"
-      className={cn("mx-auto max-w-7xl px-4 pt-12 pb-4 sm:px-6 sm:pt-16 lg:px-8", className)}
+      className={cn("nb-band bg-accent-mango px-4 pt-10 pb-8 sm:px-6 sm:pt-12 lg:px-8", className)}
     >
-      {showDateLine ? (
-        <time
-          dateTime={sessionDate}
-          className="text-sm font-medium tracking-wide text-muted-foreground uppercase"
-        >
-          {displayDate}
-        </time>
-      ) : (
-        <time dateTime={sessionDate} className="sr-only">
-          {displayDate}
-        </time>
-      )}
-      <h1
-        className={cn(
-          "font-display text-4xl font-semibold tracking-tight md:text-5xl",
-          showDateLine && "mt-2",
+      <div className="mx-auto max-w-7xl">
+        {showDateLine ? (
+          <time
+            dateTime={sessionDate}
+            className="text-sm font-bold tracking-wide text-ink uppercase"
+          >
+            {displayDate}
+          </time>
+        ) : (
+          <time dateTime={sessionDate} className="sr-only">
+            {displayDate}
+          </time>
         )}
-      >
-        {heading}
-      </h1>
-      {venue ? <p className="mt-4 text-base text-muted-foreground md:text-lg">{venue}</p> : null}
-      {note ? <p className="mt-3 max-w-2xl text-base leading-relaxed">{note}</p> : null}
+        <h1
+          className={cn("font-display text-5xl tracking-tight md:text-6xl", showDateLine && "mt-2")}
+        >
+          {heading}
+        </h1>
+        {venue ? <p className="mt-4 text-base text-ink md:text-lg">{venue}</p> : null}
+        {note ? <p className="mt-3 max-w-2xl text-base leading-relaxed">{note}</p> : null}
+      </div>
     </section>
   );
 }

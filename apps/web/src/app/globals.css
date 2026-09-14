@@ -8,9 +8,9 @@
 @theme inline {
   /* Fonts */
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-heading: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
 
   /* Shadcn semantic tokens */
   --color-background: var(--background);
@@ -45,7 +45,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Radius scale */
+  /* Radius scale (all zero when --radius is 0) */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -54,24 +54,28 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* Brand colour tokens — Playmates ni José */
+  /* Brand colour tokens — Playmates ni José, neo-brutalist */
+  --color-ink: #10100a;
   --color-brand-green: #284400;
   --color-brand-green-dark: #182b0b;
   --color-brand-cream: #fcf4c6;
   --color-brand-cream-soft: #fff9e6;
   --color-brand-white: #fffcf3;
   --color-brand-olive: #6d7a45;
-  --color-accent-guava: #e97864;
-  --color-accent-mango: #f2b84b;
-  --color-accent-sky: #8dbcc7;
-  --color-accent-lilac: #b6a3c9;
+  --color-accent-guava: #f2603f;
+  --color-accent-mango: #ffc42e;
+  --color-accent-sky: #58b4cc;
+  --color-accent-lilac: #b189d9;
   --color-accent-leaf: #789653;
-  --color-brand-night: #17200f;
-  --color-brand-night-elevated: #202b17;
-  --color-brand-night-elevated-2: #29361e;
+  --color-brand-night: #10100a;
+  --color-brand-night-elevated: #1c1c12;
+  --color-brand-night-elevated-2: #262618;
   --color-brand-soft-white: #fff4c9;
-  --shadow-brand: 0 4px 14px rgb(40 68 0 / 0.08);
-  --shadow-brand-offset: 4px 4px 0 var(--color-brand-green);
+  --shadow-brand: 6px 6px 0 var(--color-ink);
+  --shadow-brand-offset: 6px 6px 0 var(--color-ink);
+  --shadow-nb-sm: 3px 3px 0 var(--color-ink);
+  --shadow-nb: 6px 6px 0 var(--color-ink);
+  --shadow-nb-lg: 10px 10px 0 var(--color-ink);
 
   /* Legacy aliases so leftover template classes still resolve */
   --color-brand-coral: var(--color-brand-green);
@@ -91,37 +95,39 @@
 
 :root {
   --background: var(--color-brand-cream);
-  --foreground: var(--color-brand-green-dark);
+  --foreground: var(--color-ink);
   --card: var(--color-brand-cream-soft);
-  --card-foreground: var(--color-brand-green-dark);
+  --card-foreground: var(--color-ink);
   --popover: var(--color-brand-white);
-  --popover-foreground: var(--color-brand-green-dark);
+  --popover-foreground: var(--color-ink);
   --primary: var(--color-brand-green);
   --primary-foreground: var(--color-brand-cream-soft);
   --secondary: #e9e7bd;
   --secondary-foreground: var(--color-brand-green);
   --muted: #eeeac9;
-  --muted-foreground: #66704b;
+  --muted-foreground: #4a5236;
   --accent: var(--color-accent-mango);
-  --accent-foreground: var(--color-brand-green-dark);
+  --accent-foreground: var(--color-ink);
   --destructive: #c95d4e;
-  --border: #d9d9b5;
-  --input: #d9d9b5;
-  --ring: var(--color-accent-leaf);
+  --border: var(--color-ink);
+  --input: var(--color-ink);
+  --ring: var(--color-ink);
   --chart-1: var(--color-brand-green);
   --chart-2: var(--color-accent-mango);
   --chart-3: var(--color-accent-sky);
   --chart-4: var(--color-accent-leaf);
   --chart-5: var(--color-accent-guava);
-  --radius: 0.875rem;
+  --radius: 0;
+  --border-nb: 2px;
+  --border-nb-thick: 3px;
   --sidebar: var(--color-brand-cream-soft);
-  --sidebar-foreground: var(--color-brand-green-dark);
+  --sidebar-foreground: var(--color-ink);
   --sidebar-primary: var(--color-brand-green);
   --sidebar-primary-foreground: var(--color-brand-cream-soft);
   --sidebar-accent: #e9e7bd;
   --sidebar-accent-foreground: var(--color-brand-green);
-  --sidebar-border: #d9d9b5;
-  --sidebar-ring: var(--color-accent-leaf);
+  --sidebar-border: var(--color-ink);
+  --sidebar-ring: var(--color-ink);
 
   /* JabKit token bridge
      JabKit blocks read --jk-* (and sometimes var(--jk-*) in shadows).
@@ -147,7 +153,7 @@
   --jk-success: var(--color-accent-leaf);
   --jk-success-foreground: var(--color-brand-cream-soft);
   --jk-warning: var(--color-accent-mango);
-  --jk-warning-foreground: var(--color-brand-green-dark);
+  --jk-warning-foreground: var(--color-ink);
   --jk-border: var(--border);
   --jk-input: var(--input);
   --jk-ring: var(--ring);
@@ -161,36 +167,36 @@
 
 .dark {
   --background: var(--color-brand-night);
-  --foreground: var(--color-brand-soft-white);
+  --foreground: var(--color-brand-cream);
   --card: var(--color-brand-night-elevated);
-  --card-foreground: var(--color-brand-soft-white);
+  --card-foreground: var(--color-brand-cream);
   --popover: var(--color-brand-night-elevated-2);
-  --popover-foreground: var(--color-brand-soft-white);
+  --popover-foreground: var(--color-brand-cream);
   --primary: var(--color-brand-cream);
-  --primary-foreground: var(--color-brand-green-dark);
+  --primary-foreground: var(--color-ink);
   --secondary: var(--color-brand-night-elevated-2);
-  --secondary-foreground: var(--color-brand-soft-white);
+  --secondary-foreground: var(--color-brand-cream);
   --muted: var(--color-brand-night-elevated-2);
-  --muted-foreground: var(--color-brand-muted-lilac);
+  --muted-foreground: #c3c8a6;
   --accent: var(--color-accent-mango);
-  --accent-foreground: var(--color-brand-green-dark);
+  --accent-foreground: var(--color-ink);
   --destructive: #c95d4e;
-  --border: #485536;
-  --input: #485536;
-  --ring: #dce9a7;
+  --border: var(--color-brand-cream);
+  --input: var(--color-brand-cream);
+  --ring: var(--color-brand-cream);
   --chart-1: var(--color-brand-cream);
   --chart-2: var(--color-accent-mango);
   --chart-3: var(--color-accent-sky);
   --chart-4: var(--color-accent-leaf);
   --chart-5: var(--color-accent-guava);
   --sidebar: var(--color-brand-night-elevated);
-  --sidebar-foreground: var(--color-brand-soft-white);
+  --sidebar-foreground: var(--color-brand-cream);
   --sidebar-primary: var(--color-brand-cream);
-  --sidebar-primary-foreground: var(--color-brand-green-dark);
+  --sidebar-primary-foreground: var(--color-ink);
   --sidebar-accent: var(--color-brand-night-elevated-2);
-  --sidebar-accent-foreground: var(--color-brand-soft-white);
-  --sidebar-border: #485536;
-  --sidebar-ring: #dce9a7;
+  --sidebar-accent-foreground: var(--color-brand-cream);
+  --sidebar-border: var(--color-brand-cream);
+  --sidebar-ring: var(--color-brand-cream);
 }
 
 /* JabKit token bridge — sits next to the existing .dark block; does not replace it.
@@ -216,7 +222,7 @@
   --jk-success: var(--color-accent-leaf);
   --jk-success-foreground: var(--color-brand-cream-soft);
   --jk-warning: var(--color-accent-mango);
-  --jk-warning-foreground: var(--color-brand-green-dark);
+  --jk-warning-foreground: var(--color-ink);
   --jk-border: var(--border);
   --jk-input: var(--input);
   --jk-ring: var(--ring);
@@ -239,6 +245,165 @@
   body {
     @apply overflow-x-clip bg-background text-foreground;
   }
+
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.92;
+  }
+
+  /* Shared primitives: square chrome, ink borders, hard shadows.
+     packages/ui is not edited; these slots pick up the theme. */
+  [data-slot="button"]:not([data-variant="ghost"]):not([data-variant="link"]),
+  [data-slot="card"],
+  [data-slot="input"],
+  [data-slot="dialog-content"],
+  [data-slot="badge"] {
+    border-radius: 0;
+    border-width: var(--border-nb);
+    border-color: var(--color-ink);
+    box-shadow: var(--shadow-nb-sm);
+  }
+
+  [data-slot="button"] {
+    border-radius: 0;
+  }
+
+  [data-slot="button"][data-variant="ghost"],
+  [data-slot="button"][data-variant="link"] {
+    box-shadow: none;
+    border-color: transparent;
+  }
+
+  [data-slot="dialog-content"] {
+    border-width: var(--border-nb-thick);
+    box-shadow: var(--shadow-nb-lg);
+  }
+
+  [data-slot="dialog-overlay"],
+  [data-slot="sheet-overlay"] {
+    background: rgb(16 16 10 / 0.55);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  [data-slot="sheet-content"] {
+    border-radius: 0;
+    border-color: var(--color-ink);
+    border-width: var(--border-nb-thick);
+    box-shadow: var(--shadow-nb-lg);
+  }
+
+  [data-slot="avatar"],
+  [data-slot="avatar-image"],
+  [data-slot="avatar-fallback"] {
+    border: 2px solid var(--color-ink);
+  }
+
+  [data-slot="avatar"]::after {
+    border: 2px solid var(--color-ink);
+  }
+
+  /* JabKit Button has no data-slot; target its token-radius class. */
+  button.rounded-\[--radius\],
+  a.rounded-\[--radius\] {
+    border-radius: 0;
+    border: var(--border-nb) solid var(--color-ink);
+    box-shadow: var(--shadow-nb-sm);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot="button"]:not([data-variant="ghost"]):not([data-variant="link"]):active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+}
+
+@layer components {
+  .nb-box {
+    border: var(--border-nb) solid var(--color-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-nb);
+  }
+
+  .nb-box-sm {
+    border: var(--border-nb) solid var(--color-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-nb-sm);
+  }
+
+  .nb-press {
+    transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+  }
+
+  .nb-press:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+
+  .nb-sticker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-nb) solid var(--color-ink);
+    box-shadow: var(--shadow-nb-sm);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    rotate: -3deg;
+  }
+
+  .nb-band {
+    width: 100%;
+    border-bottom: var(--border-nb-thick) solid var(--color-ink);
+  }
+
+  .nb-marquee {
+    overflow: hidden;
+    border-block: var(--border-nb) solid var(--color-ink);
+    background: var(--color-accent-mango);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  .nb-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: nb-marquee 28s linear infinite;
+  }
+
+  .nb-marquee-item {
+    padding: 0.65rem 1.5rem;
+  }
+
+  .nb-card-link {
+    display: block;
+    border-radius: 0;
+    text-decoration: none;
+    color: inherit;
+    outline: none;
+    transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+  }
+
+  .nb-card-link:hover [data-slot="card"] {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-nb);
+  }
+}
+
+@keyframes nb-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -246,5 +411,14 @@
   [data-slot="split-text"] [data-slot="split-text-glyph"],
   [data-slot="hero228"] * {
     animation: none !important;
+  }
+
+  .nb-marquee-track,
+  .nb-press,
+  .nb-card-link,
+  .nb-card-link:hover [data-slot="card"] {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 }

@@ -53,8 +53,8 @@ function NavLinks({ className, onNavigate }: { className?: string; onNavigate?: 
             onClick={onNavigate}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "inline-flex min-h-10 min-w-10 items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground",
-              active ? "bg-muted text-foreground" : "text-foreground/80",
+              "inline-flex min-h-10 min-w-10 items-center border-2 border-transparent px-3 py-2 text-sm font-bold uppercase tracking-wide transition-colors hover:border-ink hover:bg-primary hover:text-primary-foreground",
+              active ? "border-ink bg-primary text-primary-foreground" : "text-foreground",
             )}
           >
             {link.label}
@@ -72,7 +72,7 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
     <header
       data-slot="header"
       className={cn(
-        "sticky top-0 z-40 w-full min-w-0 overflow-x-clip border-b border-border/60 bg-background/90 backdrop-blur-md",
+        "sticky top-0 z-40 w-full min-w-0 overflow-x-clip border-b-[3px] border-ink bg-background",
         className,
       )}
     >

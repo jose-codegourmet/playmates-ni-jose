@@ -60,7 +60,33 @@ export const MultipleSessions: Story = {
   },
 };
 export const Dark: Story = { globals: { theme: "dark" } };
+export const TabletWeek: Story = {
+  parameters: { viewport: { defaultViewport: "tablet" } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "Sep 13 - 19, 2026" })).toBeVisible();
+    await expect(canvas.getByText("Sun")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: /RK Sports Center, Monday/ })).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "Next week" }));
+    await expect(canvas.getByRole("heading", { name: "Sep 20 - 26, 2026" })).toBeVisible();
+  },
+};
+export const MobileDay: Story = {
+  parameters: { viewport: { defaultViewport: "mobile1" } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "Mon, Sep 14" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "Sunday, September 13" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: /RK Sports Center, Monday/ })).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "Next day" }));
+    await expect(canvas.getByRole("heading", { name: "Tue, Sep 15" })).toBeVisible();
+    await expect(canvas.getByText("No session on this day")).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "Previous session" }));
+    await expect(canvas.getByRole("heading", { name: "Mon, Sep 14" })).toBeVisible();
+  },
+};
 export const SessionToGame: Story = {
+  parameters: { viewport: { defaultViewport: "desktop" } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: /RK Sports Center, Monday/ }));

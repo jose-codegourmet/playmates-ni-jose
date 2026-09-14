@@ -1,5 +1,6 @@
 import type { SessionListItem } from "@fe-template/mocks";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@fe-template/ui";
+import Image from "next/image";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 import { SessionCard } from "@/sections/_shared/session-card/SessionCard";
@@ -28,27 +29,36 @@ function LatestSessionsSection({ className, sessions }: LatestSessionsSectionPro
   return (
     <section
       data-slot="latest-sessions-section"
-      className={cn("mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8", className)}
+      className={cn("px-4 py-12 sm:px-6 lg:px-8", className)}
     >
-      <h2 className="font-display text-2xl font-semibold tracking-tight">Latest sessions</h2>
-      {sessions.length === 0 ? (
-        <Empty className="mt-6 border">
-          <EmptyHeader>
-            <EmptyTitle>No published sessions</EmptyTitle>
-            <EmptyDescription>
-              Public sessions will show up here when they are ready.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : (
-        <ul className="mt-6 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
-          {sessions.map((session) => (
-            <li key={session.href} className="min-w-0">
-              <SessionCard {...session} />
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="mx-auto max-w-7xl">
+        <h2 className="font-display text-4xl tracking-tight">Latest sessions</h2>
+        {sessions.length === 0 ? (
+          <Empty className="nb-box-sm mt-6">
+            <EmptyHeader>
+              <Image
+                src="/images/mascot/shrug.png"
+                alt=""
+                width={160}
+                height={160}
+                className="mx-auto mb-3"
+              />
+              <EmptyTitle>No published sessions</EmptyTitle>
+              <EmptyDescription>
+                Public sessions will show up here when they are ready.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : (
+          <ul className="mt-6 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+            {sessions.map((session) => (
+              <li key={session.href} className="min-w-0">
+                <SessionCard {...session} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

@@ -32,13 +32,13 @@ function PlayerCard({
   return (
     <Link
       href={href}
-      className="block max-w-sm rounded-xl text-inherit no-underline outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="nb-card-link max-w-sm focus-visible:ring-2 focus-visible:ring-ring"
       aria-label={ariaParts.filter(Boolean).join(", ")}
     >
       <Card
         size="sm"
         className={cn(
-          "h-full transition-colors hover:bg-muted/40",
+          "h-full",
           isArchived && "bg-muted/30 text-muted-foreground opacity-70 hover:bg-muted/30",
         )}
       >

@@ -34,27 +34,29 @@ function RecentGamesSection({ className, games }: RecentGamesSectionProps) {
   return (
     <section
       data-slot="recent-games-section"
-      className={cn("mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8", className)}
+      className={cn("px-4 py-12 sm:px-6 lg:px-8", className)}
     >
-      <h2 className="font-display text-2xl font-semibold tracking-tight">Recent games</h2>
-      {games.length === 0 ? (
-        <Empty className="mt-6 border">
-          <EmptyHeader>
-            <EmptyTitle>No published games</EmptyTitle>
-            <EmptyDescription>
-              Public games from published sessions will appear here.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : (
-        <ul className="mt-6 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
-          {games.map((game) => (
-            <li key={game.href} className="min-w-0">
-              <GameCard {...game} />
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="mx-auto max-w-7xl">
+        <h2 className="font-display text-4xl tracking-tight">Recent games</h2>
+        {games.length === 0 ? (
+          <Empty className="mt-6 border">
+            <EmptyHeader>
+              <EmptyTitle>No published games</EmptyTitle>
+              <EmptyDescription>
+                Public games from published sessions will appear here.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : (
+          <ul className="mt-6 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+            {games.map((game) => (
+              <li key={game.href} className="min-w-0">
+                <GameCard {...game} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

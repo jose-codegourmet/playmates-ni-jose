@@ -3,10 +3,10 @@ import type { PlaymatesComponentMeta } from "@fe-template/mocks";
 export default {
   name: "hero",
   displayName: "Home Hero Section",
-  version: "0.1.0",
+  version: "0.2.0",
   addedAt: "2026-09-12",
   description:
-    "Calendar-first archive with session and game dialogs and per-camera YouTube playback.",
+    "Calendar-first archive with day, week, and month views, session and game dialogs, and per-camera YouTube playback.",
   sectionCategory: "hero",
   purpose: "Browse public badminton sessions by date and watch each court view.",
   bestFor: ["home page"],
