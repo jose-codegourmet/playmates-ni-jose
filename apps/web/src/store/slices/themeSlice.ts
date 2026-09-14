@@ -7,7 +7,7 @@ interface ThemeState {
 }
 
 const initialState: ThemeState = {
-  mode: "system",
+  mode: "light",
 };
 
 const themeSlice = createSlice({

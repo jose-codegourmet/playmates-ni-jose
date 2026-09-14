@@ -98,7 +98,7 @@ Starter apps still ship **PawPair** marketing content and Prisma models. Playmat
 - `03-data/` — suggested Supabase schema and security
 - `04-workflows/` — end-to-end admin workflows
 - `05-integrations/` — Google/YouTube/Facebook integration boundaries
-- `06-ui/` — public/admin UX (Jabkit notes remain; implementation uses `@fe-template/ui`)
+- `06-ui/` — public/admin UX, [brand identity](06-ui/branding.md) (Jabkit notes remain; implementation uses `@fe-template/ui`)
 - `07-engineering/` — product architecture, uploads, jobs, errors, observability
 - `08-implementation/` — phased delivery plan and acceptance criteria
 - `09-ai-prompts/` — prompts for coding agents
@@ -167,6 +167,7 @@ Full product file list: [`FILE_INDEX.md`](FILE_INDEX.md).
 | Playmates schema or RLS | `docs/03-data/` | `packages/db` docs (starter Prisma is still PawPair) |
 | Playmates workflows | `docs/04-workflows/` | `docs/05-integrations/` |
 | Playmates public/admin IA | `docs/06-ui/` | `docs/frontend-conventions.md` |
+| Playmates brand or visual identity | `docs/06-ui/branding.md` | `docs/styling-and-design-system.md` |
 | Repository architecture | `docs/architecture.md` | Relevant app or package docs |
 | App feature (starter code) | `docs/frontend-conventions.md`, `docs/api-and-data-fetching.md` | `apps/<app>/AGENTS.md` → `apps/<app>/docs/README.md` |
 | Shared UI primitive | `docs/frontend-conventions.md`, `docs/styling-and-design-system.md` | `packages/ui/AGENTS.md` → `packages/ui/docs/README.md` |

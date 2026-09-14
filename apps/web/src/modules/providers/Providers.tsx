@@ -43,7 +43,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={storeRef.current}>
       <QueryClientProvider client={queryClientRef.current}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          forcedTheme="light"
+          enableSystem={false}
+        >
           <ThemeSync />
           {children}
         </ThemeProvider>

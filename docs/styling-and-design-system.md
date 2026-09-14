@@ -60,23 +60,21 @@ See `packages/ui/docs/README.md` and `packages/ui/docs/api.md` for the public AP
 
 ---
 
-## Brand tokens (PawPair example)
+## Brand tokens (Playmates ni José)
 
-These are the current tokens for the bundled PawPair brand. Replace them when reusing the template.
+Both apps share the cream + olive-green system. Full identity: [`docs/06-ui/branding.md`](06-ui/branding.md). Do not treat leftover PawPair coral as product truth (`docs/about-example-site/branding.md` is starter-only).
 
 | Token | Value | Where |
 |---|---|---|
-| Primary CTA | PawPair Coral `#FF6B6B` (`--color-brand-coral`) | Both apps. Mapped to shadcn `--primary` / `--sidebar-primary` / `--ring` so default `Button` is coral. `--primary-foreground` is `--color-brand-deep-ink` (`#17151F`) for WCAG AA contrast (~6.6:1) on coral. |
-| Light background | Warm Cream `#FFF8EE` | Both apps |
-| Dark background | Night `#111015` | Both apps |
-| Display font | Fraunces (Google Fonts via `next/font`) | Both apps |
-| Body font | Manrope (Google Fonts via `next/font`) | Both apps |
-| `--color-brand-coral-soft` | `#ffe4e1` | **Admin only** (`apps/admin/src/app/globals.css`); light `--accent` |
-| `--color-brand-night-elevated-2` | `#26212e` | **Admin only**; dark `--secondary` / `--muted` |
+| Primary CTA | Playmates Green `#284400` (`--color-brand-green`) | Both apps. Mapped to `--primary` / `--sidebar-primary`. `--primary-foreground` is `#FFF9E6`. |
+| Light background | Playmates Cream `#FCF4C6` | Both apps |
+| Dark background | Warm olive `#17200F` | Both apps |
+| Display / heading font | Figtree 600-900 (`next/font`) | Both apps (`--font-display`, `--font-heading`) |
+| Body font | Manrope (`next/font`) | Both apps (`--font-sans`) |
+| `--radius` | `0.875rem` | Both apps |
+| Logo | `Logo` from `@fe-template/ui` | Wordmark + mark; `fill` defaults to `currentColor` |
 
-Fonts are loaded in each app's root layout via `next/font/google`.
-
-See `docs/about-example-site/branding.md` for the full brand guide.
+Legacy `bg-brand-coral` / `text-brand-deep-ink` utilities alias to green / ink so leftover template classes still resolve.
 
 ---
 

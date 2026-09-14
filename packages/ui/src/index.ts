@@ -34,6 +34,7 @@ export * from "./components/input-otp/InputOtp";
 export * from "./components/item/Item";
 export * from "./components/kbd/Kbd";
 export * from "./components/label/Label";
+export * from "./components/logo/Logo";
 export * from "./components/marker/Marker";
 export * from "./components/menubar/Menubar";
 export * from "./components/message/Message";

@@ -11,10 +11,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Form,
   FormControl,
   FormField,
@@ -27,9 +23,8 @@ import {
 } from "@fe-template/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckIcon, Loader2Icon, LogOutIcon, MoonIcon, SunIcon } from "lucide-react";
+import { Loader2Icon, LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -45,16 +40,9 @@ import {
   profilePasswordSchema,
 } from "./ProfileForm.schema";
 
-const THEME_OPTIONS = [
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-  { value: "system", label: "System" },
-] as const;
-
 export function ProfileForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { theme, setTheme } = useTheme();
   const { data: currentUser, isLoading } = useCurrentUser();
 
   const profileForm = useForm<ProfileFormValues>({
@@ -273,30 +261,9 @@ export function ProfileForm() {
       <Card className="rounded-3xl border-border/60 shadow-sm">
         <CardHeader>
           <CardTitle className="font-display text-xl">Preferences</CardTitle>
-          <CardDescription>Theme and session controls.</CardDescription>
+          <CardDescription>Session controls.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button type="button" variant="outline" className="rounded-full" />}
-            >
-              <SunIcon className="size-4 dark:hidden" />
-              <MoonIcon className="hidden size-4 dark:block" />
-              Theme
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-36">
-              {THEME_OPTIONS.map((option) => (
-                <DropdownMenuItem
-                  key={option.value}
-                  onClick={() => setTheme(option.value)}
-                  className="justify-between"
-                >
-                  {option.label}
-                  {theme === option.value ? <CheckIcon className="size-4" /> : null}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
           <Button
             type="button"
             variant="destructive"

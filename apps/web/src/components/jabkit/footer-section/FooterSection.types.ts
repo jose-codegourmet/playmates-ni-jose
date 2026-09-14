@@ -1,4 +1,4 @@
-import type { FormEventHandler, HTMLAttributes } from "react";
+import type { FormEventHandler, HTMLAttributes, ReactNode } from "react";
 
 export type FooterSectionTheme = "light" | "dark";
 
@@ -32,6 +32,7 @@ export interface FooterSectionSocialLink {
 export interface FooterSectionProps
   extends Omit<HTMLAttributes<HTMLElement>, "title" | "onSubmit"> {
   brandTitle?: string;
+  brandMark?: ReactNode;
   brandDescription?: string;
   emailPlaceholder?: string;
   subscribeLabel?: string;
