@@ -1,0 +1,84 @@
+enum Provider {
+  google_drive
+  youtube
+}
+
+enum ProviderAssetStatus {
+  created
+}
+
+enum UploadJobStatus {
+  queued
+  initiating
+  uploading
+  processing
+  completed
+  failed
+  cancelled
+}
+
+model ProviderAsset {
+  id               String               @id @default(uuid()) @db.Uuid
+  recordingId      String               @map("recording_id") @db.Uuid
+  provider         Provider
+  providerAssetId  String               @map("provider_asset_id")
+  providerParentId String?              @map("provider_parent_id")
+  url              String?
+  embedUrl         String?              @map("embed_url")
+  privacy          String?
+  title            String?
+  description      String?
+  metadata         Json                 @default("{}")
+  status           ProviderAssetStatus  @default(created)
+  publishedAt      DateTime?            @map("published_at")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  recording Recording @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+
+  @@index([recordingId, provider])
+  @@index([provider, providerAssetId])
+  @@map("provider_assets")
+}
+
+model UploadJob {
+  id                   String          @id @default(uuid()) @db.Uuid
+  recordingId          String          @map("recording_id") @db.Uuid
+  provider             Provider
+  status               UploadJobStatus @default(queued)
+  progressPercent      Decimal?        @map("progress_percent")
+  bytesUploaded        BigInt?         @map("bytes_uploaded")
+  totalBytes           BigInt?         @map("total_bytes")
+  attemptCount         Int             @default(0) @map("attempt_count")
+  resumableSessionRef  String?         @map("resumable_session_ref")
+  lastErrorCode        String?         @map("last_error_code")
+  lastErrorMessage     String?         @map("last_error_message")
+  startedAt            DateTime?       @map("started_at")
+  completedAt          DateTime?       @map("completed_at")
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
+
+  recording Recording @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+
+  @@index([recordingId, provider])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("upload_jobs")
+}
+
+model OauthConnection {
+  id                 String    @id @default(uuid()) @db.Uuid
+  profileId          String    @map("profile_id") @db.Uuid
+  provider           Provider
+  providerAccountId  String?   @map("provider_account_id")
+  email              String?
+  scopes             String?
+  tokenRef           String?   @map("token_ref")
+  expiresAt          DateTime? @map("expires_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("oauth_connections")
+}

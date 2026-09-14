@@ -34,9 +34,11 @@ apps/*/src/lib/playmates.ts     → import getPlaymatesRepos from @fe-template/d
 
 Follow [`docs/03-data/database-schema.md`](../docs/03-data/database-schema.md), [`docs/03-data/indexes-and-constraints.md`](../docs/03-data/indexes-and-constraints.md), [`docs/03-data/rls-and-security.md`](../docs/03-data/rls-and-security.md).
 
+- **Done:** `packages/db/prisma/schema/` now holds the Playmates models (multi-file Prisma). Initial migration `20260914132156_init_playmates` is applied to the hosted Supabase project. `Profile.id` FKs to `auth.users`.
+- **Open:** implement `packages/db/src/prisma-repos.ts` against `PlaymatesRepos` and repoint `apps/*/src/lib/playmates.ts`.
+- **Open:** RLS policies from `docs/03-data/rls-and-security.md` (Prisma currently connects as the database owner and bypasses RLS).
 - Do not store video bytes (ADR-001).
 - Do not enforce two recordings per game (ADR-002).
-- `packages/db` today is still PawPair — migrate or replace those models when you are ready. Prototype agents must not start that.
 
 ## Auth (owner)
 

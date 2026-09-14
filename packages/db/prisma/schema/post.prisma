@@ -1,18 +1,20 @@
-model Post {
-  id          String    @id @default(cuid())
-  title       String
-  slug        String    @unique
-  excerpt     String?
-  content     String
-  coverImage  String?
-  tags        String[]
-  published   Boolean   @default(false)
-  publishedAt DateTime?
-  author      User      @relation(fields: [authorId], references: [id])
-  authorId    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+enum PostPlatform {
+  facebook_group
+}
 
-  @@index([slug])
-  @@index([published])
+model PostDraft {
+  id        String       @id @default(uuid()) @db.Uuid
+  gameId    String       @map("game_id") @db.Uuid
+  platform  PostPlatform @default(facebook_group)
+  title     String?
+  body      String
+  version   Int          @default(1)
+  postedAt  DateTime?    @map("posted_at")
+  postedUrl String?      @map("posted_url")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@map("post_drafts")
 }

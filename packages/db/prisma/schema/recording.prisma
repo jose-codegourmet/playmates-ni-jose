@@ -1,0 +1,47 @@
+enum CameraSide {
+  A
+  B
+  UNASSIGNED
+}
+
+enum RecordingStatus {
+  imported
+  organized
+  ready
+  uploading
+  uploaded
+  published
+  failed
+  archived
+}
+
+model Recording {
+  id                  String          @id @default(uuid()) @db.Uuid
+  sessionId           String          @map("session_id") @db.Uuid
+  gameId              String?         @map("game_id") @db.Uuid
+  originalFilename    String          @map("original_filename")
+  displayName         String?         @map("display_name")
+  cameraSide          CameraSide      @default(UNASSIGNED) @map("camera_side")
+  partNumber          Int             @default(1) @map("part_number")
+  sortOrder           Int             @default(0) @map("sort_order")
+  mimeType            String?         @map("mime_type")
+  sizeBytes           BigInt?         @map("size_bytes")
+  durationSeconds     Decimal?        @map("duration_seconds")
+  capturedAt          DateTime?       @map("captured_at")
+  localLastModifiedAt DateTime?       @map("local_last_modified_at")
+  checksum            String?
+  notes               String?
+  status              RecordingStatus @default(imported)
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+
+  session        Session         @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  game           Game?           @relation(fields: [gameId], references: [id], onDelete: SetNull)
+  providerAssets ProviderAsset[]
+  uploadJobs     UploadJob[]
+
+  @@index([sessionId, sortOrder])
+  @@index([gameId, cameraSide, partNumber])
+  @@index([status])
+  @@map("recordings")
+}

@@ -20,7 +20,7 @@ Documented public exports of `@fe-template/db`. Internal seed and migration help
 ```ts
 import { prisma } from "@fe-template/db";
 
-const users = await prisma.user.findMany({ include: { pets: true } });
+const players = await prisma.player.findMany({ where: { isArchived: false } });
 ```
 
 ---
@@ -29,15 +29,15 @@ const users = await prisma.user.findMany({ include: { pets: true } });
 
 `src/index.ts` re-exports everything from `@prisma/client`, including:
 
-- Generated model types: `User`, `Profile`, `Pet`, `PetMatch`, `Post`, `Contact`, `Testimonial`, `PricingPlan` (8 models)
-- Enums: `Role`, `UserStatus`, `PetSpecies`, `MatchStatus`, `ContactStatus`
+- Generated model types: `Profile`, `Player`, `Venue`, `Court`, `Session`, `SessionPlayer`, `Game`, `GameTeam`, `GameTeamPlayer`, `Recording`, `ProviderAsset`, `UploadJob`, `OauthConnection`, `PostDraft`
+- Enums: `Role`, `SessionStatus`, `Visibility`, `GameStatus`, `CameraSide`, `RecordingStatus`, `Provider`, `ProviderAssetStatus`, `UploadJobStatus`, `PostPlatform`
 - The `Prisma` namespace
 - The `PrismaClient` class
 
 Example:
 
 ```ts
-import type { Role, UserStatus } from "@fe-template/db";
+import type { Role, SessionStatus } from "@fe-template/db";
 ```
 
 ---

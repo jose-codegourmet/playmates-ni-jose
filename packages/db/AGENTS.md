@@ -6,7 +6,7 @@ Local agent instructions for the shared database package. Read `/AGENTS.md` firs
 
 ## Scope
 
-`packages/db` (`@fe-template/db`) is the shared Prisma 6 client, schema, migrations, and seed data for the monorepo. It connects to Supabase Postgres. It is consumed by `apps/admin` and by the API routes in `apps/web`.
+`packages/db` (`@fe-template/db`) is the shared Prisma 6 client, Playmates schema, migrations, and seed data for the monorepo. It connects to Supabase Postgres. It is consumed by `apps/admin` (auth/profile) and is available to `apps/web`. Playmates pages still read `@fe-template/mocks` until the `getPlaymatesRepos()` swap.
 
 - **Workspace name**: `@fe-template/db`
 - **Filter**: `pnpm --filter @fe-template/db`
@@ -26,7 +26,7 @@ Local agent instructions for the shared database package. Read `/AGENTS.md` firs
 ## Consumers
 
 - `apps/admin` — Server Components, Server Actions, and auth profile upserts.
-- `apps/web` — API routes (`src/app/api/{blog,pricing,testimonials}/route.ts`).
+- `apps/web` — Prisma client is available; public pages still go through `@fe-template/mocks`.
 
 Both apps consume `@fe-template/db` at runtime. No other workspace *package* (`packages/ui`, `packages/config`) depends on it.
 
@@ -39,10 +39,9 @@ Both apps consume `@fe-template/db` at runtime. No other workspace *package* (`p
 | `src/client.ts` | PrismaClient singleton |
 | `src/index.ts` | Public exports |
 | `prisma.config.ts` | Schema path and seed command for the Prisma CLI |
-| `prisma/schema/` | Multi-file Prisma schema |
+| `prisma/schema/` | Multi-file Playmates Prisma schema |
 | `prisma/schema/migrations/` | Prisma migrations |
-| `prisma/seed.ts` | Seed script |
-| `prisma/constants/` | Seed data constants |
+| `prisma/seed.ts` | Seed script (venues, courts, players) |
 
 ---
 
@@ -65,8 +64,9 @@ Both apps consume `@fe-template/db` at runtime. No other workspace *package* (`p
 - Preserve the public API (`prisma` and re-exported Prisma types). Do not remove `export * from "@prisma/client"` without a plan.
 - Do not add app-specific logic to this package. Keep it a generic database client and schema.
 - Migrations must be applied in the correct order. Do not edit existing migration files after they have been applied to a shared environment.
-- `Profile.id` has a required FK to Supabase `auth.users` (`20260727060109_add_profiles_table`). Do not drop that FK to support plain Postgres. Do not rewrite that migration SQL (checksums on the live Supabase project). Local/CI databases must be Supabase (`supabase start` or hosted).
-- Use the pooled URL for `DATABASE_URL` in production/serverless; use the direct URL for `DIRECT_URL` always.
+- `Profile.id` has a required FK to Supabase `auth.users` (`20260914132156_init_playmates`). Do not drop that FK to support plain Postgres. Local/CI databases must be Supabase (`supabase start` or hosted).
+- Use the pooled URL for `DATABASE_URL` in production/serverless; use a session-mode or direct URL for `DIRECT_URL` always.
+- RLS policies from `docs/03-data/rls-and-security.md` are not applied yet. Prisma connects as the database owner and bypasses RLS. Do not point the public anon key at these tables for reads until policies exist.
 
 ---
 
@@ -76,8 +76,9 @@ Both apps consume `@fe-template/db` at runtime. No other workspace *package* (`p
 |---|---|
 | Add or change a model | `packages/db/docs/development.md`, `packages/db/docs/README.md` |
 | Use Prisma in an app | `docs/api-and-data-fetching.md`, `packages/db/docs/examples.md` |
-| Add seed data | `prisma/seed.ts`, `prisma/constants/`, `packages/db/docs/examples.md` |
+| Add seed data | `prisma/seed.ts`, `packages/db/docs/examples.md` |
 | Migration issue | `packages/db/docs/development.md` |
+| Swap mocks for Prisma repos | `ROADMAP/11-handoff-to-real-data.md` |
 
 ---
 
