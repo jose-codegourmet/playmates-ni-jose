@@ -2,7 +2,7 @@ export const DEFAULT_SEO = {
   title: "Playmates ni José — Badminton archive",
   description:
     "Public archive of Playmates ni José badminton sessions, games, players, and published recordings.",
-  ogImage: "/images/brand/og-playmates.png",
+  ogImage: "/images/mascot/og.png",
   siteName: "Playmates ni José",
   tagline: "Games, sides, and the links that matter.",
 } as const;

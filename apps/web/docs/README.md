@@ -34,7 +34,7 @@ Prisma (`@fe-template/db`) still contains leftover PawPair models. **It does not
 | State | Redux Toolkit (theme), TanStack Query (unused for public lists today) |
 | Data | `@fe-template/mocks` via `src/lib/playmates.ts` (in-memory + `packages/mocks/.data/store.json`) |
 | Auth | None |
-| Styling | Tailwind CSS 4, `next/font` (Figtree, Manrope) |
+| Styling | Tailwind CSS 4, neo-brutalist tokens in `src/app/globals.css`, `next/font` (Anton, Manrope) |
 
 ---
 
@@ -79,6 +79,7 @@ Canonical map: [`docs/template/PAGES.md`](../../../docs/template/PAGES.md).
 | `src/constants/` | `routes.ts`, `seo.ts`, `navigation.ts` |
 | `src/store/` | Redux store and theme slice |
 | `public/images/` | Brand and marketing image assets |
+| `public/images/mascot/` | Higgsfield mascot art (smash, shrug, sign, stickers, OG) |
 
 ---
 

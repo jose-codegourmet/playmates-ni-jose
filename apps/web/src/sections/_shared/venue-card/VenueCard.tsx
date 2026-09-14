@@ -14,10 +14,10 @@ function VenueCard({ href, name, address, sessionCount }: VenueCardProps) {
   return (
     <Link
       href={href}
-      className="block max-w-64 rounded-xl text-inherit no-underline outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="nb-card-link max-w-64 focus-visible:ring-2 focus-visible:ring-ring"
       aria-label={[name, addressLabel, sessionLabel].filter(Boolean).join(", ")}
     >
-      <Card size="sm" className="h-full transition-colors hover:bg-muted/40">
+      <Card size="sm" className="h-full">
         <CardHeader>
           <CardTitle>{name}</CardTitle>
           {addressLabel ? <CardDescription>{addressLabel}</CardDescription> : null}

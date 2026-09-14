@@ -20,7 +20,7 @@ export function YoutubeEmbed({ embedUrl, title }: YoutubeEmbedProps) {
   const src = resolvedEmbedUrl(embedUrl);
 
   return (
-    <AspectRatio className="overflow-hidden rounded-lg bg-muted" ratio={16 / 9}>
+    <AspectRatio className="nb-box overflow-hidden bg-muted" ratio={16 / 9}>
       {src ? (
         <iframe
           allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

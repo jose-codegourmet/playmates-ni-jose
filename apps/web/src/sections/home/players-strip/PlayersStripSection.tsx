@@ -40,35 +40,37 @@ function PlayersStripSection({ className, players }: PlayersStripSectionProps) {
   return (
     <section
       data-slot="players-strip-section"
-      className={cn("mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8", className)}
+      className={cn("px-4 py-12 sm:px-6 lg:px-8", className)}
     >
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <h2 className="font-display text-2xl font-semibold tracking-tight">Players</h2>
-        <Link
-          href={ROUTES.players}
-          className="inline-flex min-h-10 items-center text-sm font-medium text-muted-foreground hover:text-foreground"
-        >
-          All players
-        </Link>
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 className="font-display text-4xl tracking-tight">Players</h2>
+          <Link
+            href={ROUTES.players}
+            className="inline-flex min-h-10 items-center text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            All players
+          </Link>
+        </div>
+        {players.length === 0 ? (
+          <Empty className="mt-6 border">
+            <EmptyHeader>
+              <EmptyTitle>No public players</EmptyTitle>
+              <EmptyDescription>
+                Players appear here when they show up on a published session.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : (
+          <ul className="mt-6 flex max-w-full list-none gap-4 overflow-x-auto p-0 pb-2">
+            {players.map((player) => (
+              <li key={player.href} className="min-w-56 shrink-0">
+                <PlayerCard {...player} />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      {players.length === 0 ? (
-        <Empty className="mt-6 border">
-          <EmptyHeader>
-            <EmptyTitle>No public players</EmptyTitle>
-            <EmptyDescription>
-              Players appear here when they show up on a published session.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : (
-        <ul className="mt-6 flex max-w-full list-none gap-4 overflow-x-auto p-0 pb-2">
-          {players.map((player) => (
-            <li key={player.href} className="min-w-56 shrink-0">
-              <PlayerCard {...player} />
-            </li>
-          ))}
-        </ul>
-      )}
     </section>
   );
 }

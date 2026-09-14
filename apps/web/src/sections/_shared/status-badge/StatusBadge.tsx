@@ -5,7 +5,7 @@ import type {
   UploadJobStatus,
   Visibility,
 } from "@fe-template/mocks";
-import { Badge } from "@fe-template/ui";
+import { Badge, cn } from "@fe-template/ui";
 import type { StatusBadgeProps, UiBadgeVariant, VisibilityBadgeProps } from "./StatusBadge.types";
 
 export const SESSION_STATUS_VARIANT = {
@@ -54,6 +54,32 @@ function formatBadgeLabel(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function statusTone(status: string): string {
+  switch (status) {
+    case "published":
+    case "ready":
+    case "completed":
+    case "uploaded":
+    case "public":
+      return "border-ink bg-accent-leaf font-display uppercase tracking-wide text-brand-cream-soft";
+    case "failed":
+    case "cancelled":
+      return "border-ink bg-accent-guava font-display uppercase tracking-wide text-white";
+    case "uploading":
+    case "processing":
+    case "initiating":
+    case "organizing":
+      return "border-ink bg-accent-mango font-display uppercase tracking-wide text-ink";
+    case "draft":
+    case "archived":
+    case "private":
+    case "queued":
+      return "border-ink bg-secondary font-display uppercase tracking-wide text-ink";
+    default:
+      return "border-ink bg-accent-sky font-display uppercase tracking-wide text-ink";
+  }
+}
+
 function statusVariant(props: StatusBadgeProps): UiBadgeVariant {
   switch (props.kind) {
     case "session":
@@ -69,7 +95,7 @@ function statusVariant(props: StatusBadgeProps): UiBadgeVariant {
 
 export function StatusBadge(props: StatusBadgeProps) {
   return (
-    <Badge variant={statusVariant(props)} className={props.className}>
+    <Badge variant={statusVariant(props)} className={cn(statusTone(props.status), props.className)}>
       {formatBadgeLabel(props.status)}
     </Badge>
   );
@@ -77,7 +103,10 @@ export function StatusBadge(props: StatusBadgeProps) {
 
 export function VisibilityBadge({ visibility, className }: VisibilityBadgeProps) {
   return (
-    <Badge variant={VISIBILITY_VARIANT[visibility]} className={className}>
+    <Badge
+      variant={VISIBILITY_VARIANT[visibility]}
+      className={cn(statusTone(visibility), className)}
+    >
       {formatBadgeLabel(visibility)}
     </Badge>
   );

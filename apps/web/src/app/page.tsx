@@ -40,11 +40,22 @@ export default async function HomePage() {
   ]);
 
   return (
-    <HomeHeroSection
-      sessions={calendarSessions}
-      today={new Date().toLocaleDateString("en-CA", {
-        timeZone: "Asia/Manila",
-      })}
-    />
+    <>
+      <HomeHeroSection
+        sessions={calendarSessions}
+        today={new Date().toLocaleDateString("en-CA", {
+          timeZone: "Asia/Manila",
+        })}
+      />
+      <LatestSessionsSection
+        className="nb-band bg-accent-mango"
+        sessions={toLatestSessionCards(sessions)}
+      />
+      <RecentGamesSection className="nb-band bg-background" games={toRecentGameCards(games)} />
+      <PlayersStripSection
+        className="nb-band bg-accent-sky"
+        players={toPlayersStripCards(players, sessions)}
+      />
+    </>
   );
 }

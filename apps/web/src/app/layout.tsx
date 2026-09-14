@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree, Manrope } from "next/font/google";
+import { Anton, Manrope } from "next/font/google";
 import { DEFAULT_SEO } from "@/constants/seo";
 import { Footer } from "@/modules/layout/footer/Footer";
 import { Header } from "@/modules/layout/navigation/header/Header";
@@ -12,11 +12,11 @@ const manrope = Manrope({
   display: "swap",
 });
 
-const figtree = Figtree({
-  variable: "--font-figtree",
+const anton = Anton({
+  variable: "--font-anton",
   subsets: ["latin"],
   display: "swap",
-  weight: ["600", "700", "800", "900"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${figtree.variable} h-full antialiased`}
+      className={`${manrope.variable} ${anton.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="flex min-h-full min-w-0 flex-col overflow-x-clip">

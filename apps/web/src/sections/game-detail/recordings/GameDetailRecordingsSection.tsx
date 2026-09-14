@@ -98,7 +98,7 @@ function GameDetailRecordingsSection({ className, groups }: GameDetailRecordings
                       {recording.embedUrl ? (
                         <YoutubeEmbed embedUrl={recording.embedUrl} title={recording.embedTitle} />
                       ) : (
-                        <div className="rounded-lg border bg-muted/40 p-4">
+                        <div className="nb-box-sm bg-muted/40 p-4">
                           <p className="text-sm text-foreground">{recording.filename}</p>
                           {recording.driveUrl ? (
                             <a
