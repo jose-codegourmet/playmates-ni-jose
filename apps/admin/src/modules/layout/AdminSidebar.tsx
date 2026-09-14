@@ -1,9 +1,8 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@fe-template/ui";
+import { Avatar, AvatarFallback, AvatarImage, Logo } from "@fe-template/ui";
 import {
   CalendarDaysIcon,
-  CircleDotIcon,
   LayoutDashboardIcon,
   MapPinIcon,
   SettingsIcon,
@@ -43,10 +42,14 @@ export function AdminSidebar() {
     <Sidebar collapsible="icon" className="bg-sidebar">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <CircleDotIcon className="size-5 shrink-0 text-primary" />
-          <span className="truncate font-semibold group-data-[collapsible=icon]:hidden">
-            Playmates Admin
-          </span>
+          <Logo
+            variant="mark"
+            className="hidden size-6 text-primary group-data-[collapsible=icon]:block"
+          />
+          <Logo
+            className="h-7 w-auto text-primary group-data-[collapsible=icon]:hidden"
+            title="Playmates ni José"
+          />
         </div>
       </SidebarHeader>
       <SidebarContent>

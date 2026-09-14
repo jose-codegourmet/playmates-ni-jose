@@ -34,7 +34,7 @@ Prisma (`@fe-template/db`) still contains leftover PawPair models. **It does not
 | State | Redux Toolkit (theme), TanStack Query (unused for public lists today) |
 | Data | `@fe-template/mocks` via `src/lib/playmates.ts` (in-memory + `packages/mocks/.data/store.json`) |
 | Auth | None |
-| Styling | Tailwind CSS 4, `next/font` (Fraunces, Manrope) |
+| Styling | Tailwind CSS 4, `next/font` (Figtree, Manrope) |
 
 ---
 

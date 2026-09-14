@@ -1,15 +1,15 @@
 "use client";
 
 import {
-  Button,
   buttonVariants,
+  Logo,
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@fe-template/ui";
-import { Menu, Monitor, Moon, Sun } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -17,8 +17,6 @@ import { NAV_LINKS } from "@/constants/navigation";
 import { ROUTES } from "@/constants/routes";
 import { DEFAULT_SEO } from "@/constants/seo";
 import { cn } from "@/lib/utils";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setTheme, type ThemeMode } from "@/store/slices/themeSlice";
 
 type HeaderProps = { className?: string; defaultMobileOpen?: boolean };
 
@@ -29,46 +27,14 @@ function isActiveNavHref(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const THEME_ORDER: ThemeMode[] = ["light", "dark", "system"];
-
-function ThemeToggle({ className }: { className?: string }) {
-  const dispatch = useAppDispatch();
-  const mode = useAppSelector((s) => s.theme.mode);
-
-  const cycleTheme = () => {
-    const next = THEME_ORDER[(THEME_ORDER.indexOf(mode) + 1) % THEME_ORDER.length];
-    dispatch(setTheme(next));
-  };
-
-  const Icon = mode === "light" ? Sun : mode === "dark" ? Moon : Monitor;
-  const label = mode === "light" ? "Light theme" : mode === "dark" ? "Dark theme" : "System theme";
-
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      className={cn("size-10", className)}
-      onClick={cycleTheme}
-      aria-label={`Theme: ${label}. Click to change.`}
-      title={label}
-    >
-      <Icon className="size-4" />
-      <span className="sr-only">{label}</span>
-    </Button>
-  );
-}
-
-function Logo({ className }: { className?: string }) {
+function BrandLink({ className }: { className?: string }) {
   return (
     <Link
       href={ROUTES.home}
       className={cn("inline-flex min-h-10 shrink-0 items-center gap-2", className)}
       aria-label={`${DEFAULT_SEO.siteName} home`}
     >
-      <span className="font-display text-lg font-semibold tracking-tight">
-        {DEFAULT_SEO.siteName}
-      </span>
+      <Logo className="h-7 w-auto text-primary" />
     </Link>
   );
 }
@@ -99,14 +65,6 @@ function NavLinks({ className, onNavigate }: { className?: string; onNavigate?: 
   );
 }
 
-function HeaderActions({ className }: { className?: string }) {
-  return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <ThemeToggle />
-    </div>
-  );
-}
-
 function Header({ className, defaultMobileOpen = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(defaultMobileOpen);
 
@@ -119,18 +77,13 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
       )}
     >
       <div className="mx-auto flex h-16 min-w-0 max-w-7xl items-center justify-between gap-4 overflow-x-clip px-4 sm:px-6 lg:px-8">
-        <Logo />
+        <BrandLink />
 
         <NavLinks className="hidden lg:flex" />
 
-        <HeaderActions className="hidden lg:flex" />
-
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "icon" }),
-              "size-10 lg:hidden",
-            )}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "size-10 lg:hidden")}
             aria-label="Open menu"
           >
             <Menu className="size-5" />
@@ -144,7 +97,6 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
                 className="flex-col items-stretch gap-1"
                 onNavigate={() => setMobileOpen(false)}
               />
-              <HeaderActions className="flex-col items-stretch" />
             </div>
           </SheetContent>
         </Sheet>
@@ -154,4 +106,4 @@ function Header({ className, defaultMobileOpen = false }: HeaderProps) {
 }
 
 export { NAV_LINKS } from "@/constants/navigation";
-export { Header, ThemeToggle };
+export { Header };

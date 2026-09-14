@@ -111,6 +111,7 @@ function applyDocumentTheme(next: FooterSectionTheme) {
 export function FooterSection({
   className,
   brandTitle = defaults.brandTitle,
+  brandMark,
   brandDescription = defaults.brandDescription,
   emailPlaceholder = defaults.emailPlaceholder,
   subscribeLabel = defaults.subscribeLabel,
@@ -127,7 +128,7 @@ export function FooterSection({
   theme: themeProp,
   defaultTheme,
   onThemeChange,
-  showThemeToggle = true,
+  showThemeToggle = false,
   ...props
 }: FooterSectionProps) {
   const headingId = useId();
@@ -175,7 +176,14 @@ export function FooterSection({
       <div className="relative mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           <div className="max-w-sm">
-            <h2 id={headingId} className="text-3xl font-semibold tracking-[-0.05em] text-balance">
+            {brandMark ? <div className="mb-4 text-primary-foreground">{brandMark}</div> : null}
+            <h2
+              id={headingId}
+              className={cn(
+                "text-3xl font-semibold tracking-[-0.05em] text-balance",
+                brandMark && "sr-only",
+              )}
+            >
               {brandTitle}
             </h2>
             {brandDescription ? (
@@ -253,67 +261,71 @@ export function FooterSection({
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-sm font-semibold tracking-tight">{socialTitle}</h3>
-            {socialLinks.length ? (
-              <ul className="mt-4 m-0 flex list-none flex-wrap gap-2 p-0">
-                {socialLinks.map((item) => (
-                  <li key={item.name}>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      asChild
-                      className="size-10 rounded-full p-0"
-                    >
-                      <a href={item.href} aria-label={item.name}>
-                        <SocialMark icon={item.icon} className="size-4" />
-                      </a>
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+          {socialLinks.length || showThemeToggle ? (
+            <div>
+              {socialTitle ? (
+                <h3 className="text-sm font-semibold tracking-tight">{socialTitle}</h3>
+              ) : null}
+              {socialLinks.length ? (
+                <ul className="mt-4 m-0 flex list-none flex-wrap gap-2 p-0">
+                  {socialLinks.map((item) => (
+                    <li key={item.name}>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        asChild
+                        className="size-10 rounded-full p-0"
+                      >
+                        <a href={item.href} aria-label={item.name}>
+                          <SocialMark icon={item.icon} className="size-4" />
+                        </a>
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
 
-            {showThemeToggle ? (
-              <fieldset className="mt-6 border-0 p-0">
-                <legend className="text-sm font-semibold tracking-tight">Theme</legend>
-                <div className="mt-3 inline-flex rounded-full border border-border bg-muted p-1">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    aria-pressed={theme === "light"}
-                    onClick={() => setTheme("light")}
-                    className={cn(
-                      "h-8 gap-1.5 rounded-full px-3 text-xs",
-                      theme === "light"
-                        ? "bg-background text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    <SunIcon className="size-3.5" aria-hidden="true" />
-                    Light
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    aria-pressed={theme === "dark"}
-                    onClick={() => setTheme("dark")}
-                    className={cn(
-                      "h-8 gap-1.5 rounded-full px-3 text-xs",
-                      theme === "dark"
-                        ? "bg-background text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    <MoonIcon className="size-3.5" aria-hidden="true" />
-                    Dark
-                  </Button>
-                </div>
-              </fieldset>
-            ) : null}
-          </div>
+              {showThemeToggle ? (
+                <fieldset className="mt-6 border-0 p-0">
+                  <legend className="text-sm font-semibold tracking-tight">Theme</legend>
+                  <div className="mt-3 inline-flex rounded-full border border-border bg-muted p-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      aria-pressed={theme === "light"}
+                      onClick={() => setTheme("light")}
+                      className={cn(
+                        "h-8 gap-1.5 rounded-full px-3 text-xs",
+                        theme === "light"
+                          ? "bg-background text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      <SunIcon className="size-3.5" aria-hidden="true" />
+                      Light
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      aria-pressed={theme === "dark"}
+                      onClick={() => setTheme("dark")}
+                      className={cn(
+                        "h-8 gap-1.5 rounded-full px-3 text-xs",
+                        theme === "dark"
+                          ? "bg-background text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      <MoonIcon className="size-3.5" aria-hidden="true" />
+                      Dark
+                    </Button>
+                  </div>
+                </fieldset>
+              ) : null}
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-center md:flex-row md:text-left">

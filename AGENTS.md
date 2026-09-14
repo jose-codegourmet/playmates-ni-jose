@@ -67,6 +67,7 @@ Public routes and admin session workspace paths: [`docs/template/PAGES.md`](docs
 | Swap mocks for Prisma / real uploads | `ROADMAP/11-handoff-to-real-data.md` | `packages/mocks/docs/README.md` |
 | Playmates admin/public workflows | `docs/04-workflows/` | `docs/05-integrations/` |
 | Playmates UI information architecture | `docs/06-ui/` | `docs/frontend-conventions.md` |
+| Playmates brand, tokens, or visual identity | `docs/06-ui/branding.md` | `docs/styling-and-design-system.md` |
 | Playmates architectural decisions | `docs/10-decisions/` | Relevant product/engineering docs |
 | Playmates capability behavior | `openspec/specs/<capability>/spec.md` then `docs/01-product/` | |
 

@@ -30,6 +30,7 @@ Product documentation (numbered folders) is the Playmates source of truth. Monor
 - `05-integrations/provider-interface.md`
 - `05-integrations/youtube.md`
 - `06-ui/admin-session-workspace.md`
+- `06-ui/branding.md`
 - `06-ui/information-architecture.md`
 - `06-ui/jabkit-guidelines.md`
 - `06-ui/public-site.md`

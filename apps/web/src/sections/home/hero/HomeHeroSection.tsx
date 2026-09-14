@@ -1,7 +1,7 @@
-import { buttonVariants } from "@fe-template/ui";
+import { buttonVariants, Logo } from "@fe-template/ui";
+import Image from "next/image";
 import Link from "next/link";
 import { CountUp } from "@/components/jabkit/count-up";
-import { Hero228 } from "@/components/jabkit/hero228";
 import { ROUTES } from "@/constants/routes";
 import { DEFAULT_SEO } from "@/constants/seo";
 import { cn } from "@/lib/utils";
@@ -24,28 +24,48 @@ function HomeHeroSection({
       data-slot="home-hero-section"
       className={cn("overflow-x-clip bg-background", className)}
     >
-      {portraits.length > 0 ? (
-        <Hero228
-          headline={[{ text: "Playmates " }, { text: "ni José", italic: true }]}
-          description={ARCHIVE_SENTENCE}
-          portraits={portraits}
-          autoplay={false}
-        />
-      ) : (
-        <div className="mx-auto flex max-w-3xl flex-col items-center px-5 py-16 text-center sm:px-8 sm:py-20">
-          <h1 className="max-w-2xl text-4xl leading-[1.08] font-medium tracking-[-0.04em] text-balance sm:text-5xl md:text-6xl">
-            Playmates <span className="font-serif font-normal italic">ni José</span>
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-            {ARCHIVE_SENTENCE}
-          </p>
+      <div className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-7xl flex-col justify-center px-5 pt-10 pb-12 sm:px-8 md:pt-16 lg:px-10">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:gap-16">
+          <div className="max-w-xl">
+            <Logo className="h-10 w-auto text-primary sm:h-12" title={DEFAULT_SEO.siteName} />
+            <h1 className="mt-6 font-display text-4xl font-extrabold tracking-[-0.02em] text-balance text-foreground sm:text-5xl lg:text-6xl lg:leading-[1.02]">
+              Games worth showing up for.
+            </h1>
+            <p className="mt-4 max-w-[65ch] text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {ARCHIVE_SENTENCE}
+            </p>
+            <div className="mt-8">
+              <Link
+                href={ROUTES.sessions}
+                className={cn(buttonVariants({ size: "lg" }), "rounded-full px-6")}
+              >
+                Browse sessions
+              </Link>
+            </div>
+          </div>
+
+          {portraits.length > 0 ? (
+            <ul className="m-0 grid list-none grid-cols-3 gap-3 p-0 sm:grid-cols-5 lg:grid-cols-2">
+              {portraits.slice(0, 4).map((portrait) => (
+                <li
+                  key={portrait.name}
+                  className="relative overflow-hidden rounded-2xl border-2 border-primary bg-card shadow-brand first:col-span-2 first:aspect-4/3 lg:odd:aspect-square lg:first:col-span-2 lg:first:aspect-5/3"
+                >
+                  <Image
+                    src={portrait.src}
+                    alt={portrait.alt}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 14rem, 30vw"
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
-      )}
-      <div className="flex justify-center px-5 pb-10 sm:px-8">
-        <Link href={ROUTES.sessions} className={buttonVariants({ size: "lg" })}>
-          Browse sessions
-        </Link>
       </div>
+
       {showCounts ? (
         <CountUp
           align="center"

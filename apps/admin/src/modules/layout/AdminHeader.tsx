@@ -11,10 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@fe-template/ui";
-import { CheckIcon, HelpCircleIcon, LogOutIcon, MoonIcon, SunIcon, UserIcon } from "lucide-react";
+import { HelpCircleIcon, LogOutIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { getInitials, useCurrentUser } from "@/hooks/use-current-user/client";
 import { createClient } from "@/lib/supabase/client";
 import { SidebarTrigger } from "@/modules/layout/sidebar/Sidebar";
@@ -23,14 +22,7 @@ type AdminHeaderProps = {
   title: string;
 };
 
-const THEME_OPTIONS = [
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-  { value: "system", label: "System" },
-] as const;
-
 export function AdminHeader({ title }: AdminHeaderProps) {
-  const { theme, setTheme } = useTheme();
   const router = useRouter();
   const { data: currentUser } = useCurrentUser();
   const displayName = currentUser?.name?.trim() || currentUser?.email || "Admin";
@@ -58,26 +50,6 @@ export function AdminHeader({ title }: AdminHeaderProps) {
       >
         <HelpCircleIcon className="size-4" />
       </Button>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={<Button type="button" variant="ghost" size="icon-sm" aria-label="Select theme" />}
-        >
-          <SunIcon className="size-4 dark:hidden" />
-          <MoonIcon className="hidden size-4 dark:block" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-36">
-          {THEME_OPTIONS.map((option) => (
-            <DropdownMenuItem
-              key={option.value}
-              onClick={() => setTheme(option.value)}
-              className="justify-between"
-            >
-              {option.label}
-              {theme === option.value ? <CheckIcon className="size-4" /> : null}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
       <DropdownMenu>
         <DropdownMenuTrigger
           render={

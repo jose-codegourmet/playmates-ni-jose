@@ -56,6 +56,7 @@ Exported from `src/index.ts`:
 | Item | `Item`, `ItemActions`, `ItemContent`, `ItemDescription`, `ItemFooter`, `ItemGroup`, `ItemHeader`, `ItemMedia`, `ItemSeparator`, `ItemTitle` |
 | Kbd | `Kbd`, `KbdGroup` |
 | Label | `Label` |
+| Logo | `Logo`, `LogoProps` (type) |
 | Marker | `Marker`, `MarkerContent`, `MarkerIcon`, `markerVariants` |
 | Menubar | `Menubar`, `MenubarCheckboxItem`, `MenubarContent`, `MenubarGroup`, `MenubarItem`, `MenubarLabel`, `MenubarMenu`, `MenubarPortal`, `MenubarRadioGroup`, `MenubarRadioItem`, `MenubarSeparator`, `MenubarShortcut`, `MenubarSub`, `MenubarSubContent`, `MenubarSubTrigger`, `MenubarTrigger` |
 | Message | `Message`, `MessageAvatar`, `MessageContent`, `MessageFooter`, `MessageGroup`, `MessageHeader` |

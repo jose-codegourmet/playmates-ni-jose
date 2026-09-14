@@ -118,7 +118,7 @@ Product domain: [`docs/02-domain/domain-model.md`](../02-domain/domain-model.md)
 
 ### 2. Branding
 
-Product name: **Playmates ni José**. Fonts in the prototype may still be Fraunces + Manrope (`next/font`). Visual blocks use JabKit tokens (`--jk-*`) plus `@fe-template/ui`. Do not treat leftover PawPair coral / pet-social copy as product truth.
+Product name: **Playmates ni José**. Guide: [`docs/06-ui/branding.md`](../06-ui/branding.md). Cream `#FCF4C6` + green `#284400`. Display: Figtree (600-900). Body: Manrope. Logo: `Logo` from `@fe-template/ui` (`currentColor` fill). Visual blocks use JabKit `--jk-*` aliases plus `@fe-template/ui`. Do not treat leftover PawPair coral / pet-social copy as product truth.
 
 ### 3. Images
 

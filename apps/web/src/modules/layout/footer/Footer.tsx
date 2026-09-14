@@ -1,13 +1,11 @@
 "use client";
 
-import { useTheme } from "next-themes";
+import { Logo } from "@fe-template/ui";
 import type { FormEvent } from "react";
 import { FooterSection } from "@/components/jabkit/footer-section";
 import { NAV_LINKS } from "@/constants/navigation";
 import { DEFAULT_SEO } from "@/constants/seo";
 import { cn } from "@/lib/utils";
-import { useAppDispatch } from "@/store/hooks";
-import { setTheme } from "@/store/slices/themeSlice";
 
 type FooterProps = { className?: string };
 
@@ -18,29 +16,25 @@ function handleNewsletterSubmit(event: FormEvent<HTMLFormElement>) {
 }
 
 function Footer({ className }: FooterProps) {
-  const dispatch = useAppDispatch();
-  const { resolvedTheme } = useTheme();
-  const footerTheme = resolvedTheme === "dark" ? "dark" : "light";
-
   return (
     <FooterSection
       className={cn(
-        "mt-auto min-w-0 overflow-x-clip [&_form]:hidden [&_nav_a]:inline-flex [&_nav_a]:min-h-10 [&_nav_a]:items-center",
+        "mt-auto min-w-0 overflow-x-clip bg-brand-green text-brand-cream [&_form]:hidden [&_h3]:text-brand-cream [&_nav_a]:inline-flex [&_nav_a]:min-h-10 [&_nav_a]:items-center [&_p]:text-brand-cream/80 [&_span]:text-brand-cream/80",
         className,
       )}
       brandTitle={DEFAULT_SEO.siteName}
+      brandMark={<Logo className="h-10 w-auto text-brand-cream" />}
       brandDescription={DEFAULT_SEO.tagline}
       linksTitle="Browse"
       links={[...FOOTER_LINKS]}
       contactTitle="Archive"
       contactItems={[{ icon: "mail", label: "Archive by José" }]}
-      socialTitle="Theme"
+      socialTitle=""
       socialLinks={[]}
       legalLinks={[]}
       copyright="Archive by José"
-      theme={footerTheme}
-      onThemeChange={(next) => dispatch(setTheme(next))}
-      showThemeToggle
+      theme="light"
+      showThemeToggle={false}
       onSubmit={handleNewsletterSubmit}
     />
   );

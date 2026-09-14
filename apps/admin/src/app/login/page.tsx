@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fe-template/ui";
-import { CircleDotIcon, KeyRoundIcon, ShieldCheckIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Logo } from "@fe-template/ui";
+import { KeyRoundIcon, ShieldCheckIcon } from "lucide-react";
 import Link from "next/link";
 import { LoginForm } from "@/modules/auth/login-form/LoginForm";
 
@@ -9,17 +9,17 @@ export default function LoginPage() {
   return (
     <div className="relative flex min-h-svh items-center justify-center overflow-hidden bg-background p-4">
       <div className="pointer-events-none absolute -top-24 left-1/4 size-72 rounded-full bg-primary/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-16 bottom-0 size-80 rounded-full bg-[color:var(--color-brand-lavender)]/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-16 bottom-0 size-80 rounded-full bg-accent-sky/15 blur-[120px]" />
 
       <Card className="relative z-10 w-full max-w-[480px] rounded-3xl border-border/60 shadow-xl">
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-            <CircleDotIcon className="size-6" />
+          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <Logo variant="mark" className="size-8" title="Playmates ni José" />
           </div>
-          <CardTitle className="font-display text-3xl tracking-tight">
-            Playmates ni José — Admin
+          <CardTitle className="font-display text-3xl font-extrabold tracking-tight">
+            Playmates Admin
           </CardTitle>
-          <CardDescription className="text-base">Playmates ni José — Admin</CardDescription>
+          <CardDescription className="text-base">Sign in to the badminton archive.</CardDescription>
         </CardHeader>
         <CardContent>
           <LoginForm />
@@ -30,7 +30,7 @@ export default function LoginPage() {
               Encrypted admin access
             </p>
             <div className="flex items-center justify-center gap-4 text-muted-foreground/50">
-              <CircleDotIcon className="size-4" />
+              <Logo variant="mark" className="size-4" />
               <ShieldCheckIcon className="size-4" />
               <KeyRoundIcon className="size-4" />
             </div>
