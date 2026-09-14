@@ -44,7 +44,7 @@ Local agent instructions for the public marketing site. Read `/AGENTS.md` first,
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/app/page.tsx` | Archive home (PNJ-043): hero, latest sessions, recent games, players strip |
+| `/` | `src/app/page.tsx` | Archive home (PNJ-043): calendar hero, latest sessions, recent games, players strip |
 | `/sessions` | `src/app/sessions/page.tsx` | Public sessions index (PNJ-044) |
 | `/sessions/[sessionSlug]` | `src/app/sessions/[sessionSlug]/page.tsx` | Public session detail (PNJ-045) |
 | `/games/[gameSlug]` | `src/app/games/[gameSlug]/page.tsx` | Public game detail (PNJ-046) |
@@ -116,6 +116,7 @@ Installed names (CLI output only; do not hand-edit):
 | `separator` | atom | PNJ-019 |
 | `avatar` | atom | PNJ-019 |
 | `hero228` | marketing | PNJ-020 |
+| `fullscreen-calendar` | dashboard | Calendar hero |
 | `gallery31` | marketing | PNJ-020 |
 | `projects16` | marketing | PNJ-020 |
 | `team17` | marketing | PNJ-020 |
@@ -129,3 +130,7 @@ Installed names (CLI output only; do not hand-edit):
 `hero-section-5` and `tubelight-navbar` were not installed.
 
 The CLI rewrites `@/lib/cn` to `@/components/jabkit/lib/cn` but leaves `@/atoms/<name>` imports as-is. `tsconfig.json` maps `@/atoms/*` → `./src/components/jabkit/*` so those registryDependencies resolve without editing installed source.
+
+### Calendar hero
+
+The home hero adapts the CLI-installed JabKit `fullscreen-calendar` layout in `src/sections/home/hero/`. Registry files remain pristine: the domain adaptation adds session buttons, removes editing controls, and keeps a seven-column grid on mobile. The server supplies the current Asia/Manila date; empty months stay empty. Session events open a dialog, and selecting a game changes the dialog to game details with a Back to session button. Camera Side A/B are independent of Team 1/2. Each view embeds YouTube and exposes its Google Drive link, including multiple recording parts. `calendar-data.ts` projects public sessions/games to display-only props and normalizes YouTube links. Club and per-set scores are optional; existing admin forms do not yet collect them.

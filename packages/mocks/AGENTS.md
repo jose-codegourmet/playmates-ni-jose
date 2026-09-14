@@ -65,3 +65,5 @@ Do not import this package from `packages/db` or `packages/ui`.
 ## Documentation maintenance
 
 Update this file and `packages/mocks/docs/` when public exports or the adapter seam change.
+
+Calendar display metadata: `Session.clubName` and `Game.scores` are optional. Scores are per set for Team 1 and Team 2, independent of camera sides. Existing seed/store records do not require these fields.

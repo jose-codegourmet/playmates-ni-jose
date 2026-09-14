@@ -90,3 +90,5 @@ Delete `store.json` (or call `resetState()`) to return both apps to the hardcode
 ## Local agent instructions
 
 See `packages/mocks/AGENTS.md`.
+
+Optional calendar display metadata: `Session.clubName?: string | null` and `Game.scores?: { team1: number; team2: number }[] | null`. Scores are per set in Team 1/2 order, never camera-side order. Existing records remain valid. Admin entry forms do not yet collect these fields.
