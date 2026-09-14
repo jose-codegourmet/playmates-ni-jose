@@ -44,7 +44,7 @@ The eight public visitor routes:
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/app/page.tsx` | Archive home: hero, latest sessions, recent games, players strip |
+| `/` | `src/app/page.tsx` | Archive home: calendar hero, latest sessions, recent games, players strip |
 | `/sessions` | `src/app/sessions/page.tsx` | Sessions index (filters + grid) |
 | `/sessions/[sessionSlug]` | `src/app/sessions/[sessionSlug]/page.tsx` | Session detail |
 | `/games/[gameSlug]` | `src/app/games/[gameSlug]/page.tsx` | Game detail (YouTube embed, recordings, links) |
@@ -133,3 +133,7 @@ None in the prototype. Public visibility filtering happens in `@fe-template/mock
 | Public data / mocks | `packages/mocks/docs/README.md`, `ROADMAP/11-handoff-to-real-data.md` |
 | Styling | `docs/styling-and-design-system.md` |
 | State | `docs/state-management.md` |
+
+### Calendar hero
+
+The home hero adapts the CLI-installed JabKit `fullscreen-calendar` layout in `src/sections/home/hero/`. Registry files remain pristine: the domain adaptation adds session buttons, removes editing controls, and keeps a seven-column grid on mobile. The server supplies the current Asia/Manila date; empty months stay empty. Session events open a dialog, and selecting a game changes the dialog to game details with a Back to session button. Camera Side A/B are independent of Team 1/2. Each view embeds YouTube and exposes its Google Drive link, including multiple recording parts. `calendar-data.ts` projects public sessions/games to display-only props and normalizes YouTube links. Club and per-set scores are optional; existing admin forms do not yet collect them.

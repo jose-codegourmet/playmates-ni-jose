@@ -503,7 +503,19 @@
         "src/components/jabkit/footer-section/FooterSection.types.ts": "6a607899e60cc91153e33755065dfa34a9a1591f2e4023b287a5982db292433c",
         "src/components/jabkit/footer-section/index.ts": "c82864218fbf7c85c2ec37bb2d3b5537e23f52a9d1ab16252c12de53afd5c0d8"
       }
+    },
+    {
+      "name": "fullscreen-calendar",
+      "files": {
+        "src/components/jabkit/button/Button.tsx": "2b660d4dc10bec05ebcc290d6d619c714354dced88c31edc450eef75601aafdb",
+        "src/components/jabkit/button/Button.types.ts": "2c3632e7311caaf8eed46c7806176ac7efbfac8d213a7bcd4757841d17133198",
+        "src/components/jabkit/button/index.ts": "8549f9c03ab94170ec0e4139cc8d021f86616cf4a9cb207e161429d5197201fa",
+        "src/components/jabkit/lib/cn.ts": "c9a57657916fff3eb276616da2952eab3029ace97a2f17441025e5ed748ce2a9",
+        "src/components/jabkit/fullscreen-calendar/FullscreenCalendar.tsx": "0dd2cbe8966c2029ba79f7b62a1325551eb6f20437c84a6a638f5f9b3d6640ee",
+        "src/components/jabkit/fullscreen-calendar/FullscreenCalendar.types.ts": "9824753305085c2954b6bdd33c56ba5377710c977a2a3e08643ebcd33c540789",
+        "src/components/jabkit/fullscreen-calendar/index.ts": "21056fba25c825cf8237d62f51366fe692466d20645fe7cc03dd1e35e7ea61c2"
+      }
     }
   ],
-  "updatedAt": "2026-09-12T06:15:05.065Z"
+  "updatedAt": "2026-09-14T03:49:58.683Z"
 }

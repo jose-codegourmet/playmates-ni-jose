@@ -88,6 +88,8 @@ export interface Court {
 }
 
 export interface Session {
+  /** Optional club hosting the session. */
+  clubName?: string | null;
   id: string;
   sessionDate: SessionDate;
   title: string | null;
@@ -111,6 +113,8 @@ export interface SessionPlayer {
 }
 
 export interface Game {
+  /** Optional per-set scores, in Team 1 / Team 2 order. */
+  scores?: { team1: number; team2: number }[] | null;
   id: string;
   sessionId: string;
   gameNumber: number | null;

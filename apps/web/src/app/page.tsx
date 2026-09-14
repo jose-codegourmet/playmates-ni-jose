@@ -4,8 +4,8 @@ import { PAGE_SEO } from "@/constants/seo";
 import { fetchPublicGames } from "@/hooks/use-public-games/server";
 import { fetchPublicPlayers } from "@/hooks/use-public-players/server";
 import { fetchPublicSessions } from "@/hooks/use-public-sessions/server";
+import { fetchCalendarSessions } from "@/sections/home/hero/calendar-data";
 import { HomeHeroSection } from "@/sections/home/hero/HomeHeroSection";
-import type { HomeHeroPortrait } from "@/sections/home/hero/HomeHeroSection.types";
 import {
   LatestSessionsSection,
   toLatestSessionCards,
@@ -19,8 +19,7 @@ import {
   toRecentGameCards,
 } from "@/sections/home/recent-games/RecentGamesSection";
 
-const PORTRAIT_PLACEHOLDER =
-  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: PAGE_SEO.home.title,
@@ -32,33 +31,20 @@ export const metadata: Metadata = {
   },
 };
 
-function toHeroPortraits(
-  players: Awaited<ReturnType<typeof fetchPublicPlayers>>,
-): HomeHeroPortrait[] {
-  return players.slice(0, 5).map((player) => ({
-    name: player.displayName,
-    src: PORTRAIT_PLACEHOLDER,
-    alt: player.displayName,
-  }));
-}
-
 export default async function HomePage() {
-  const [sessions, games, players] = await Promise.all([
+  const [sessions, games, players, calendarSessions] = await Promise.all([
     fetchPublicSessions(),
     fetchPublicGames(),
     fetchPublicPlayers(),
+    fetchCalendarSessions(),
   ]);
 
   return (
-    <>
-      <HomeHeroSection
-        sessionCount={sessions.length}
-        gameCount={games.length}
-        portraits={toHeroPortraits(players)}
-      />
-      <LatestSessionsSection sessions={toLatestSessionCards(sessions)} />
-      <RecentGamesSection games={toRecentGameCards(games)} />
-      <PlayersStripSection players={toPlayersStripCards(players, sessions)} />
-    </>
+    <HomeHeroSection
+      sessions={calendarSessions}
+      today={new Date().toLocaleDateString("en-CA", {
+        timeZone: "Asia/Manila",
+      })}
+    />
   );
 }
