@@ -40,14 +40,11 @@ export default async function HomePage() {
   ]);
 
   return (
-    <>
-      <HomeHeroSection
-        sessions={calendarSessions}
-        today={new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Manila" })}
-      />
-      <LatestSessionsSection sessions={toLatestSessionCards(sessions)} />
-      <RecentGamesSection games={toRecentGameCards(games)} />
-      <PlayersStripSection players={toPlayersStripCards(players, sessions)} />
-    </>
+    <HomeHeroSection
+      sessions={calendarSessions}
+      today={new Date().toLocaleDateString("en-CA", {
+        timeZone: "Asia/Manila",
+      })}
+    />
   );
 }
